@@ -433,7 +433,7 @@ if __name__ == "__main__":
     parser.add_argument('--wandb_project',    default="linkage_sb4",         type=str,             help="use weights and biases to log information Modes=[online, offline, disabled]")
 
     parser.add_argument('--verbose',          default=0,                type=int,             help="verbose from sb3")
-    parser.add_argument('--cuda',             default='cuda:2',         type=str,             help="Which GPU to use [0, 1, 2, 3]")
+    parser.add_argument('--cuda',             default='cpu',         type=str,             help="Which GPU to use [0, 1, 2, 3]")
     parser.add_argument('--no_train',         default=False,         action='store_true',             help="If you don't want to train")
 
     
