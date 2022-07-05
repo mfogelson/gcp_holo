@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# gcp_holo
+*designs
+*evaluations
+*logs
+*trained

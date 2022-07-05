@@ -1,9 +1,6 @@
 import os
-import pdb
-import pickle
 import sys
-import time
-from collections import OrderedDict
+import pdb
 from copy import deepcopy
 from datetime import datetime
 from itertools import combinations, product
@@ -15,16 +12,14 @@ import matplotlib.patheffects as pe
 from matplotlib.offsetbox import AnchoredText
 
 import gym
+from gym import spaces
 
-# import mpld3
 import networkx as nx
 import numpy as np
-from gym import spaces
 from numpy.random import MT19937, RandomState, SeedSequence
 
-from utils.env_utils import (circIntersectionVect, distance, dtw_distance,
-                             new_dist, normalize_curve, symbolic_kinematics,
-                             uniquify)
+sys.path.insert(0, os.path.join(sys.path[0], '..'))
+from linkage_gym.utils.env_utils import distance, normalize_curve, symbolic_kinematics
 
 
 class Mech(gym.Env):
@@ -33,27 +28,29 @@ class Mech(gym.Env):
 
 
     def __init__(self, max_nodes, bound, resolution, sample_points, feature_points, node_positions=None, edges=None, goal=None, normalize=True, self_loops=False, use_node_type=False, seed=None, fixed_initial_state=False, ordered_distance=False, constraints=[], min_nodes=5, debug=False, distance_metric='sqeuclidean'):
-        '''
-        :params: \n
-        max_nodes -> int (number of revolute joints) \n
-        bound -> float (all nodes must lie betweek [-B, B]) \n
-        resolution -> int (discretization of bounded space) \n
-        sample_points -> int (number of points sampled in the FK)
-        feature_points -> int (number of points of trajectory sent in observation)
-        node_positions -> Nd.Array Shape: (n, 2) [x, y] \n
-        edges -> Nd.Array | list Shape: (e, 2) [id0, id1] \n
-        goal-> Nd.Array Shape: (2, T) NOTE: this is stupid because its backwards from your node_positions \n
-        normalize -> bool (evaluating the coupler trajectory and goal trajetory in absolute or normalized space)\n
-        self_loops -> bool (wheter to use self_loops in the adjecency matrix) \n
-        use_node_type -> bool (wheter to add feature to observation whether node is coupler or not) \n
-        seed -> int (sets numpy random seed)\n
-        fixed_initial_state -> bool (whether the reset should use the same initial state or select a random new one)\n
-        ordered_distance -> bool (wheter the distance measure should ensure that the points are ordered)\n
-        constraints -> list ([body constraints, coupler constraints]  [[xmin, ymin, xmax, ymax], [xmin, ymin, xmax, ymax]])\n
-        min_nodes -> int (whether the system should prevent the design to terminate without a minimum number of nodes)\n
-        
-        :return:
-        '''
+        """Initialize Mech gym environment
+
+        Args:
+            max_nodes (int): Maximum number of nodes (joints) in the linkage 
+            bound (float): Bounds of the designs space [-bound, bound]
+            resolution (int): Resolution of the scaffold nodes
+            sample_points (int): Number of points that describe the node trajectories
+            feature_points (int): Number of points that describe the node features for GNN
+            node_positions (list/Nd.array, optional):  Shape: (n, 2) [x, y]. Defaults to None.
+            edges (list/Nd.Array, optional): Shape: (e, 2) [id0, id1]. Defaults to None.
+            goal (list/Nd.Array, optional): Shape: (2, T) Goal Trajectory. Defaults to None.
+            normalize (bool, optional): Normalize the coupler trajectory with respect to the goal trajectory. Defaults to True.
+            self_loops (bool, optional): Include self loops in adjaecency matrix for GNN. Defaults to False.
+            use_node_type (bool, optional): Include binary indicator for GNN. Defaults to False.
+            seed (int, optional): Seed for the gym environment. Defaults to None.
+            fixed_initial_state (bool, optional): When reset is called, whether the original linkage stays the same or random valid linkage is sampled. Defaults to False.
+            ordered_distance (bool, optional): Whether the points in the trajectory should be considered ordered. Defaults to False.
+            constraints (list, optional): ([body constraints, coupler constraints]  [[xmin, ymin, xmax, ymax], [xmin, ymin, xmax, ymax]]). Defaults to [].
+            min_nodes (int, optional): Minimum number of nodes in the graph for a terminal action to be valid. Defaults to 5.
+            debug (bool, optional): Enables some extra print statements. Defaults to False.
+            distance_metric (str, optional): Check scipy.spatial.distance.cdist for various options. Defaults to 'sqeuclidean'.
+        """
+
         super(Mech, self).__init__()
 
         self.debug = debug
@@ -85,9 +82,9 @@ class Mech(gym.Env):
         self.min_nodes = min_nodes 
         
         ## GCN hyper parameters
-        self.normalize = normalize
+        self.normalize = normalize ## not used
         self.self_loops = self_loops
-        self.use_node_type = use_node_type
+        self.use_node_type = use_node_type ## not used
 
         ## GYM Action Space and Observation Space
         self.node_combinations = tuple(combinations(range(max_nodes), 2))
@@ -129,9 +126,9 @@ class Mech(gym.Env):
             self.R_point = distance(goal, point, self.ordered, self.distance_metric).sum()*(np.pi*2./self.T)
         # self.R_circle, _, _, _ = new_dist(goal, circle)
         # self.R_point, _, _, _ = new_dist(goal, point)
-        self.max_dist = 20. ## Hyperparameter
         self.goal_tol = 0.0 ## Hyperparameter
         self.invalid_penalty = -1.0
+        
         self.total_dist = None
         self.cycles = None
         self.reward = None
@@ -177,9 +174,20 @@ class Mech(gym.Env):
         self.resets = 0
         
     def seed(self, seed=None):
+        """Set the seed for gym env
+
+        Args:
+            seed (int, optional): seed used for gym env. Defaults to None.
+
+        Returns:
+            int: the seed value
+        """
         if self.rng_seed:
             if self.debug:
-                print("WARNING!!!! You tried reset the random number for the environment")
+                print("WARNING!!!! You tried reset the random number for the environment.")
+                print("To overide the seed apply the following: \n", 
+                      "env.rng_seed = seed \n" ,
+                      "env.rng = RandomState(MT19937(SeedSequence(seed))) \n")
             return self.rng_seed
         self.rng_seed = seed
         self.rng = RandomState(MT19937(SeedSequence(seed))) 
@@ -187,17 +195,18 @@ class Mech(gym.Env):
         return seed
                         
     def clear_best_desings(self):
+        """Clears self.best_designs
+        """
         self.best_designs = {}
         return
         
     # @timebudget
     def _get_action_mask(self):
-        '''
-        Finds all valid actions given current state. Reuses previous masks if found before. 
-        
-        :returns: mask
-        '''
-        
+        """Finds all valid actions of the current environment state. NOTE: resuses previous masks if found in current episode
+
+        Returns:
+            Nd.Array: Binary vector of valid actions Shape: (num_actions, )
+        """
         n = self.number_of_nodes()
         
         ## Reset all non-terminal actions to invalid if last action
@@ -247,45 +256,36 @@ class Mech(gym.Env):
         return self.prev_mask 
     
     def apply_random_action(self):
-        '''
-        apply random valid action
-        '''
+        """Applies a random valid action to the current environment
+
+        Returns:
+            (Nd.Array, float, bool, dict): Observation, Reward, Done, Info
+        """
         action_mask = self._get_action_mask()
 
         action = self.rng.choice(self.num_actions, p=action_mask/action_mask.sum())
         
         return self.step(action)
     
-
-    def _get_num_features(self):
-        '''
-        Number of features for GCN if information about the goal is used or not 
-        '''
-        if self.goal is None:
-            return 2*self.T+self.use_node_type
-        else:
-            return 4*self.T+self.use_node_type
-    
-    def update_root_node(self):
-        ## Switches the root node if not doing well
-        rewards = [o[-1] for _, o in self.best_designs.items()]
-        ## If the best design is not 50% better than a circle switch the root node 
-        if max(rewards) < 5.0:
-            print("Notice: Updating Root Node")
-            self.get_valid_env()
-            node_positions = self.paths[:4, :, 0]
-            edges = self.get_edges()
-            self.init_args = {"node_positions": node_positions, 
-                                "edges":          edges,} 
     
     def reset(self):
-        '''
-        Reset the environment
-        '''
+        """Reset the environment to a root linkage
+
+        Returns:
+            Nd.Array: observation of the linkage (x, adj, mask, action_mask) flattened
+        """
+
+        ## Reset variables
         self.paths = np.zeros([self.max_nodes, 2, self.T])
         self.adj = np.zeros([self.max_nodes, self.max_nodes])
+        self.edge_masks = {}
+        self.prev_mask = np.zeros(len(self.actions)) 
+        self.previous_action = None
+        self.is_terminal = False
+        
         self.resets += 1
         
+        ## Get root node design
         if self.fixed_initial_state:
             node_positions = self.init_args['node_positions']
             edges = self.init_args['edges']
@@ -299,47 +299,59 @@ class Mech(gym.Env):
 
             self._initialize_paths()
             
-            ## Check if root design is a good starter
-            # if self.resets == 500:
-            #     self.update_root_node()
         else:
             self.get_valid_env()
-
-        self.edge_masks = {}
-        self.prev_mask = np.zeros(len(self.actions)) #[0]*len(self.actions)
-        self.previous_action = None
-        self.is_terminal = False
         
         return self.get_observation()
 
     def _get_fixed_ids(self):
-        '''
-        Fixed revolute Joints
-        '''
+        """Returns the indexes of revolute joints that are fixed
+
+        Returns:
+            Nd.Array: indexes of fixed nodes Shape:(m, )
+        """
+
         return np.argwhere(self.node_type == 0)[:,0]
 
     def _get_crank_id(self):
-        '''
-        index for revolute joint connected to the motor
-        '''
+        """Returns the index for the linkage connected to the motor input
+
+        Returns:
+            int: index of crank node
+        """
+
         return 1 # NOTE: np.argwhere(self.adj[0,:] == 1).item()
 
     def _get_dist(self, p1, p2):
-        '''
-        Distance between two revolute joints
-        '''
+        """Helper function to get the distance between two points
+
+        Args:
+            p1 (Nd.Array): Point1 Shape: (2,)
+            p2 (Nd.Array): Point2 Shape: (2,)
+
+        Returns:
+            float: Distance between p1 and p2
+        """
+
         return np.linalg.norm(p1-p2)
 
     def _get_angle(self, p1, p2):
-        '''
-        Angle between two revolute joints
-        '''
+        """Helper function to get the angle between two points
+
+        Args:
+            p1 (Nd.Array): Point1 Shape: (2,)
+            p2 (Nd.Array): Point2 Shape: (2,)
+
+        Returns:
+            float: Angle between vectors from origin to p1 and p2
+        """
+
         return np.arctan2(*(p2[::-1]-p1[::-1])) % (2*np.pi)
 
     def _update_crank_path(self):
-        '''
-        FK for revolute joint attached to motor is fixed
-        '''
+        """Helper function to update self.paths the trajectory of the crank revolute joint
+        """
+
         crank_id = self._get_crank_id()
         edge_length = self._get_dist(self.paths[0,:,0], self.paths[crank_id, :, 0])
         start_pos = self.paths[crank_id, :, 0]
@@ -354,13 +366,9 @@ class Mech(gym.Env):
         self.paths[crank_id, :, :] = np.array([np.cos(theta), np.sin(theta)])*edge_length + self.paths[0,:,0].reshape(-1,1)
 
     def _initialize_paths(self):
-        '''
-        Initializes self.paths from base graph \n
+        """Updates self.paths with trajectories of current linkage
+        """
 
-        :parameters self \n
-
-        :returns nothing   \n     
-        '''
         # Initialize fixed node positions
         fixed_ids = self._get_fixed_ids()
         self.paths[fixed_ids, :, :] = self.paths[fixed_ids, :, 0][:, :, np.newaxis]
@@ -371,9 +379,11 @@ class Mech(gym.Env):
         self.update_paths() 
     
     def number_of_nodes(self):
-        '''
-        :return number of nodes in graph
-        '''
+        """Helper function returns number of nodes currently in the linkage graph
+
+        Returns:
+            int: number of nodes
+        """
         empty_rows = np.argwhere(self.adj.sum(1) == 0)
         if len(empty_rows) > 0:
             return empty_rows[0].item()
@@ -381,37 +391,50 @@ class Mech(gym.Env):
             return self.max_nodes
 
     def number_of_edges(self):
-        '''
-        :return number of edges in graph
-        '''
+        """Helper function returns the number of edges that make up the current linkage graph
+
+        Returns:
+            int: number of edges
+        """
+        
         return sum(sum(self.adj))//2
 
     def get_edges(self, limit=None):
-        '''
-        :return edges -> (e, 2) [id0, id1]
-        '''
+        """Helper function to return all the edges in the current linkage graph
+
+        Args:
+            limit (int, optional): edges between nodes bellow a particular index. Defaults to None.
+
+        Returns:
+            Nd.Array: Array of edge index pairs Shape: (e, 2) [id0, id1]
+        """
+        
         if limit is None:
             limit = self.max_nodes
-        # TODO: get rid of duplicates
+
         return np.array([[i, j] for i in range(self.max_nodes) for j in range(i) if self.adj[i,j]])
 
     def get_edge_lengths(self):
-        '''
-        :return length -> (d, 1) [m]
-        '''
+        """Helper function to return all the edge lengths
+
+        Returns:
+            Nd.Array: Lengths of each edge Shape: (e, )
+        """
+        
         edges = self.get_edges()
         lengths = np.zeros([edges.shape[0],])
+        
         for i, e in enumerate(edges):
             lengths[i] = self._get_dist(self.paths[e[0],:,0], self.paths[e[1], :, 0])
 
         return lengths
 
     def update_paths(self, unknown_joints=None):
-        '''
-        Updates self.path, self.x with forward kinematics of graph
+        """Update self.paths
 
-        :return nothing
-        '''
+        Args:
+            unknown_joints (list, optional): node indexes that are not known or want to be calculated. Defaults to None.
+        """
         n = self.number_of_nodes()
         
         if unknown_joints is None:
@@ -422,24 +445,20 @@ class Mech(gym.Env):
             assert isinstance(unknown_joints, list)
             known_joints = list(set(range(n)) ^ set(unknown_joints))
 
-        # pdb.set_trace()
+
         count = 0
         while list(set(range(n)) ^ set(known_joints)) != [] and count < 100:
-        # print(count)
+
             for i in unknown_joints[:]:
                 
                 if sum(self.adj[i, known_joints]) >= 2:
-                    # print("updating joint", i)
+
 
                     inds = np.array(known_joints)[np.where(self.adj[i, known_joints] >= 1)[0]]
-                    # self.paths[i, :, :] = circIntersectionVect(self.paths[inds[0],:,:], 
-                    #                                    self.paths[inds[1], :, :], 
-                    #                                    self.paths[i, :, 0])
 
                     # Update paths
                     self.paths[i, :, :] = symbolic_kinematics(self.paths[inds[0],:,:], self.paths[inds[1], :, :], self.paths[i, :, 0])
                     
-                    # pdb.set_trace()
                     unknown_joints.remove(i)
                     known_joints.append(i)
                 else:
@@ -448,31 +467,33 @@ class Mech(gym.Env):
         
         
     def add_node(self, node_pos):
-        '''
-        Updates self.adj, self.node_type, self.paths, self.x with empty node
+        """Add node to the linkage graph
 
-        :return Nothing
-        '''
+        Args:
+            node_pos (Nd.Array): initial position of revolute joint Shape: (2, )
+        """
+        
         n = self.number_of_nodes()
+        
         self.paths[n, :, 0] = node_pos
 
     def add_edge(self, id0, id1):
-        '''
-        Updates self.adj
+        """Add edge to linkage graph
 
-        :return nothing
-        '''
+        Args:
+            id0 (int): index of node 0
+            id1 (int): index of node 1
+        """
+        
         self.adj[id0, id1] = 1
         self.adj[id1, id0] = 1
 
     def update_fixed_paths(self, fixed_node_pos):
-        '''
-        Updates self.paths, self.x with new fixed node locations
+        """Update self.paths for fixed revolute joints (DEPRECATED)
 
-        :params fixed_node_pos -> nd.array(# nodes, 2, 1)
-
-        :return Nothing
-        '''
+        Args:
+            fixed_node_pos (Nd.Array): Vector of initial position of fixed nodes Shape: (n, 2)
+        """
         fixed_ids = self._get_fixed_ids()
         self.paths[fixed_ids, :, :] = fixed_node_pos[:, :, np.newaxis]
 
@@ -482,11 +503,16 @@ class Mech(gym.Env):
         self.update_paths()
 
     def coupler_traj(self, normalize=True, scale=None, shift=None):
-        '''
-        :params normalize -> True
-        
-        :return last node trajectory 
-        '''
+        """Return the coupler node trajectory
+
+        Args:
+            normalize (bool, optional): Normalized curve. Defaults to True.
+            scale (float, optional): scaling factor. Defaults to None.
+            shift (Nd.Array, optional): x,y shift for all points. Defaults to None.
+
+        Returns:
+            Nd.Array: coupler trajectory
+        """
         n = self.number_of_nodes()
         # inds = np.linspace(0, self.T-1, self.test_samples).astype(int)
 
@@ -494,20 +520,20 @@ class Mech(gym.Env):
         
         return self.paths[n-1, :, :]
 
-    def check_goal(self):
-        '''
-        Check if coupler trajectory is unique for goal proposing agent
-        '''
-        if self.is_valid():
-            init_nodes = self.init_args['node_positions'].shape[0]
-            goal_traj = self.coupler_traj()
-            unique = [distance(goal_traj, normalize_curve(self.paths[i,:,:])).sum() > self.goal_tol for i in range(init_nodes)]
-                
-            return all(unique)
-        return False
 
-    ## TODO: Fix this ploting / Rendering
     def paper_plotting(self, show=False, show_goal=True, show_coupler=True, show_obj=True):
+        """Helper function for plotting figures used in paper
+
+        Args:
+            show (bool, optional): show the plot. Defaults to False.
+            show_goal (bool, optional): plot the goal on figure. Defaults to True.
+            show_coupler (bool, optional): plot the coupler curve on figure. Defaults to True.
+            show_obj (bool, optional): add objective value of linkage to figure. Defaults to True.
+
+        Returns:
+            Matplotlib.fig: the figure object
+        """
+        
         fig, ax1 = plt.subplots(figsize=(8.5, 11))
         coupler_idx = self.number_of_nodes()-1
         
@@ -516,12 +542,13 @@ class Mech(gym.Env):
         for e in edges: 
             ax1.plot(self.paths[e, 0, 0],self.paths[e,1, 0], '-', color='0.7', linewidth=3, path_effects=[pe.Stroke(linewidth=5, foreground='k'), pe.Normal()]) 
             # plt.plot(self.paths[e, 0, 0],self.paths[e,1, 0], 'r.', label="joints")
-            
+        
+        ## Plot special joints    
         ax1.plot(self.paths[2, 0, 0], self.paths[2,1, 0], marker='^', color='gray', label="fixed joint", ms=15, path_effects=[pe.Stroke(linewidth=3, foreground='k'), pe.Normal()])
         ax1.plot(self.paths[0, 0, 0], self.paths[0,1, 0], marker='^', color='magenta', label="motor joint", ms=15, path_effects=[pe.Stroke(linewidth=3, foreground='k'), pe.Normal()])
         ax1.plot(self.paths[1, 0, 0], self.paths[1,1, 0], marker='o', color='lime', label="crank joint", ms=15)
 
-
+        ## Plot moveable revolute joints
         fixed_ids = self._get_fixed_ids()
         non_fixed_ids = list(set(fixed_ids) ^ set(range(coupler_idx+1)))
         ax1.plot(self.paths[non_fixed_ids[1:], 0, 0], self.paths[non_fixed_ids[1:],1, 0], 'ro', label="pin joints", ms=15)
@@ -534,60 +561,71 @@ class Mech(gym.Env):
         ## Plot Shifted Goal
         mu = self.paths[coupler_idx, :, :].mean(1).reshape(-1, 1)
         std = max(self.paths[coupler_idx, :, :].std(1))
-        # pdb.set_trace()
+        
         goal = (normalize_curve(self.goal)*std+mu)
         if show_goal:
             ax1.plot(goal[0,:], goal[1,:], 'y-', linewidth=4)
-            
+        
+        ## Plot constraints    
         if self.constraints:
-            plt.axhline(y=0, color='red', linestyle='--', lw=5)
+            # plt.axhline(y=0, color='red', linestyle='--', lw=5)
 
-            # body_constraints, coupler_constraints = self.constraints
-            # ax1.plot([body_constraints[0], body_constraints[1], body_constraints[1], body_constraints[0], body_constraints[0]], 
-            #          [body_constraints[2], body_constraints[2], body_constraints[3], body_constraints[3], body_constraints[2]], 'r-.', lw=4)
+            body_constraints, coupler_constraints = self.constraints
+            ax1.plot([body_constraints[0], body_constraints[1], body_constraints[1], body_constraints[0], body_constraints[0]], 
+                     [body_constraints[2], body_constraints[2], body_constraints[3], body_constraints[3], body_constraints[2]], 'r-.', lw=4)
             
-            # ax1.plot([coupler_constraints[0], coupler_constraints[1], coupler_constraints[1], coupler_constraints[0], coupler_constraints[0]], 
-            #          [coupler_constraints[2], coupler_constraints[2], coupler_constraints[3], coupler_constraints[3], coupler_constraints[2]], 'g-.', lw=4)
+            ax1.plot([coupler_constraints[0], coupler_constraints[1], coupler_constraints[1], coupler_constraints[0], coupler_constraints[0]], 
+                     [coupler_constraints[2], coupler_constraints[2], coupler_constraints[3], coupler_constraints[3], coupler_constraints[2]], 'g-.', lw=4)
         ax1.set_axis_off()
         
+        ## Add Objective score to figure
         if show_obj:
             traj_norm = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc) 
 
-            total_dist = distance(goal, self.paths[coupler_idx, :, :], ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
-            total_dist2 = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+            # total_dist = distance(goal, self.paths[coupler_idx, :, :], ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+            total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
             # pdb.set_trace()
             plt.rcParams['font.size'] = 40
-            text_box = AnchoredText(f"obj={round(total_dist2, 2)}", frameon=False, pad=0.0, borderpad=-1.0, loc='lower right')
+            text_box = AnchoredText(f"obj={round(total_dist, 2)}", frameon=False, pad=0.0, borderpad=-1.0, loc='lower right')
             # text_box = AnchoredText(f"obj_MICP={round(total_dist2, 2)}, obj_GCPN={round(total_dist, 2)}", frameon=False, pad=0.0, borderpad=-1.0, loc='lower right')
             plt.setp(text_box.patch, facecolor='white', alpha=0.5)
 
             ax1.add_artist(text_box)
 
-        # fig.suptitle(f'Number of Joints: {self.number_of_nodes()} | Objective: {np.round(total_dist, 2)} | Reward: {np.round(self._get_reward()[0], 2)}', size=20)
-        # ax1.legend(loc='upper center', bbox_to_anchor=(1.0, -0.1),
-        #     fancybox=True, shadow=True, ncol=3)
-        # # ax1 = plt.gca()
-        # ax1.set_title('State Visualization')
+
         ax1.set_xlim([-1.7, 2.5])
         ax1.set_ylim([-1.7, 1.7])
         ax1.set_aspect('equal')
 
     
         if show:
-            mpld3.show()
+            plt.show()
+            
         return fig
     
-    # def render(self, plot_paths=True, plot_coupler=True, coupler_idx=None, filename=None, show=False):
-    #     fig = self.plot_graph(plot_paths=plot_paths, plot_coupler=plot_coupler, filename=filename, coupler_idx=coupler_idx)
-    #     if show:
-    #         mpld3.show()
-        
-    #     return fig
-    
     def coords_to_pix(self, x):
+        """Helper function for self.render converting coordinates to pixels
+
+        Args:
+            x (Nd.Array): coordinates Shape: (2, n)
+
+        Returns:
+            Nd.Array: pixel locations Shape: (2, n)
+        """
         return x * self.scale + self.screen_width / 2.0
     
     def render(self, mode="human"):
+        """Render the linkage being generated
+
+        Args:
+            mode (str, optional): visualization mode. Defaults to "human".
+
+        Raises:
+            DependencyNotInstalled: needs pygame
+
+        Returns:
+            bool: successful
+        """
         try:
             import pygame
             from pygame import gfxdraw
@@ -601,17 +639,11 @@ class Mech(gym.Env):
 
         design_width = self.bound * 5.0
         self.scale = self.screen_width/ design_width 
-        # linkwidth = 10.0
-        # polelen = self.scale * (2 * self.length)
-        # cartwidth = 50.0
-        # cartheight = 30.0
 
-        # if self.state is None:
-        #     return None
+
         self.screen = None # TODO: Fix this
         self.clock = None # TODO: Fix me
         
-        # x = self.state
 
         if self.screen is None:
             pygame.init()
@@ -661,47 +693,6 @@ class Mech(gym.Env):
             gfxdraw.filled_circle(self.surf, goal_pix[0,i], goal_pix[1,i], rad//2, [255, 255, 0])
         
 
-        # l, r, t, b = -cartwidth / 2, cartwidth / 2, cartheight / 2, -cartheight / 2
-        # axleoffset = cartheight / 4.0
-        # cartx = x[0] * scale + screen_width / 2.0  # MIDDLE OF CART
-        # carty = 100  # TOP OF CART
-        # cart_coords = [(l, b), (l, t), (r, t), (r, b)]
-        # cart_coords = [(c[0] + cartx, c[1] + carty) for c in cart_coords]
-        # gfxdraw.aapolygon(self.surf, cart_coords, (0, 0, 0))
-        # gfxdraw.filled_polygon(self.surf, cart_coords, (0, 0, 0))
-
-        # l, r, t, b = (
-        #     -polewidth / 2,
-        #     polewidth / 2,
-        #     polelen - polewidth / 2,
-        #     -polewidth / 2,
-        # )
-
-        # pole_coords = []
-        # for coord in [(l, b), (l, t), (r, t), (r, b)]:
-        #     coord = pygame.math.Vector2(coord).rotate_rad(-x[2])
-        #     coord = (coord[0] + cartx, coord[1] + carty + axleoffset)
-        #     pole_coords.append(coord)
-        # gfxdraw.aapolygon(self.surf, pole_coords, (202, 152, 101))
-        # gfxdraw.filled_polygon(self.surf, pole_coords, (202, 152, 101))
-
-        # gfxdraw.aacircle(
-        #     self.surf,
-        #     int(cartx),
-        #     int(carty + axleoffset),
-        #     int(polewidth / 2),
-        #     (129, 132, 203),
-        # )
-        # gfxdraw.filled_circle(
-        #     self.surf,
-        #     int(cartx),
-        #     int(carty + axleoffset),
-        #     int(polewidth / 2),
-        #     (129, 132, 203),
-        # )
-
-        # gfxdraw.hline(self.surf, 0, screen_width, carty, (0, 0, 0))
-
         self.surf = pygame.transform.flip(self.surf, False, True)
         self.screen.blit(self.surf, (0, 0))
         if mode == "human":
@@ -718,42 +709,54 @@ class Mech(gym.Env):
 
 
     def plot_graph(self, plot_paths=False, plot_coupler=True, filename=None, coupler_idx=None):
-        '''
-        Plots the nodes and edges between the nodes
+        """Helper function to visualize linkage graph
 
-        :return nothing
-        '''
+        Args:
+            plot_paths (bool, optional): plot revolute joint trajectories. Defaults to False.
+            plot_coupler (bool, optional): plot coupler joint trajectory. Defaults to True.
+            filename (str, optional): filename to save figure. Defaults to None.
+            coupler_idx (int, optional): index of coupler index or other node that you want to be known as the coupler. Defaults to None.
+
+        Returns:
+            Matplotlib.fig: figure 
+        """
+        ## Get coupler index
         if coupler_idx is None: 
             coupler_idx = self.number_of_nodes()-1
-            
+        
+        ## Initialize figure    
         if self.goal is not None:
             fig, (ax1, ax2) = plt.subplots(1, 2)
-            fig.suptitle("Bob agent design")
         else:
             fig, ax1 = plt.subplots()
-            fig.suptitle("New mechanism goal")
         
+        ## Plot Edges
         edges = self.get_edges(coupler_idx+1)
         for e in edges: 
             ax1.plot(self.paths[e, 0, 0],self.paths[e,1, 0], 'k-') 
             # plt.plot(self.paths[e, 0, 0],self.paths[e,1, 0], 'r.', label="joints")
+        
+        ## Plot motor and fixed node
         ax1.plot(self.paths[2, 0, 0], self.paths[2,1, 0], 'r^', label="fixed joints", ms=10)
         ax1.plot(self.paths[0, 0, 0], self.paths[0,1, 0], 'm^', label="motor joints", ms=10)
 
+        ## Plot revolute joints
         fixed_ids = self._get_fixed_ids()
         non_fixed_ids = list(set(fixed_ids) ^ set(range(coupler_idx+1)))
         ax1.plot(self.paths[non_fixed_ids, 0, 0], self.paths[non_fixed_ids,1, 0], 'ro', label="pin joints", ms=10)
 
-
+        ## Plot joint trajectories
         if plot_paths:
-            self.plot_paths(ax1, coupler_idx)
+            ax1.plot(self.paths[:coupler_idx+1, 0, :], self.paths[:coupler_idx+1, 1,:], 'b.', markersize=1.0)
 
+        ## Highlight coupler trajectory
         if plot_coupler:
             # n = self.number_of_nodes()-1
             ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], 'yo', label="coupler joint", markersize=10)
             ax1.plot(self.paths[coupler_idx, 0, :], self.paths[coupler_idx, 1,:], 'y-', label="coupler", markersize=3)
 
 
+        ## Figure Formating
         ax1.legend(loc='upper center', bbox_to_anchor=(1.0, -0.1),
             fancybox=True, shadow=True, ncol=3)
         # ax1 = plt.gca()
@@ -762,6 +765,7 @@ class Mech(gym.Env):
         ax1.set_ylim([-self.max_length, self.max_length])
         ax1.set_aspect('equal')
 
+        ## Plot goal
         if self.goal is not None:
             ax2.plot(self.goal[0,:], self.goal[1,:], 'r.', ms=10)
             coupler = self.coupler_traj()
@@ -769,13 +773,15 @@ class Mech(gym.Env):
             ax2.set_xlim([-self.max_length, self.max_length])
             ax2.set_ylim([-self.max_length, self.max_length])
             ax2.set_aspect('equal')
-            
+
+        
+        ## Plot constraints
         if self.constraints:
             colors = ['r--', 'b--']
             for i, c in enumerate(self.constraints):
                 ax1.plot([c[0], c[1], c[1], c[0]], [c[2], c[2], c[3], c[3]], colors[i], lw=3)
 
-
+        ## Save figure
         if filename is not None: 
             if filename in os.listdir(): 
                 out = filename.split(".")
@@ -786,87 +792,28 @@ class Mech(gym.Env):
             plt.close()
         
         return fig
-                
-    def plot_paths(self, ax, coupler_idx):
-        '''
-        Plots self.paths on plot
-
-        :return nothing
-        '''
-        ax.plot(self.paths[:coupler_idx+1, 0, :], self.paths[:coupler_idx+1, 1,:], 'b.', markersize=1.0)
-       
 
     def is_valid(self):
-        '''
-        Checks if self.paths is valid (isnan = False)
+        """Checks that linkage graph is valid
 
-        :return bool 
-        '''
+        Returns:
+            bool: linkage graph is valid
+        """
         return (not np.isnan(self.paths).any())
-    
-    
-    def on_segment(self, p, q, r):
-        
-        return (q[0] <= max(p[0], r[0]) and 
-                q[0] >= min(p[0], r[0]) and
-                q[1] <= max(p[1], r[1]) and
-                q[1] >= min(p[1], r[1]))
-    
-    def point_orientation(self, p, q, r):
-        val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
-        
-        if val == 0:
-            return 0
-        
-        o = val > 0
-        
-        return o * 1.+ (1 - o) * 2.
-            
-    def do_intersect(self, p1, q1, p2, q2):
-        o1 = self.point_orientation(p1, q1, p2)
-        o2 = self.point_orientation(p1, q1, q2)
-        o3 = self.point_orientation(p2, q2, p1)
-        o4 = self.point_orientation(p2, q2, p1)
-        
-        if (o1 != o2 and o3 != o4):
-            return True
-        
-        if o1 == 0 and self.on_segment(p1, p2, q1):
-            return True
-        
-        if o2 == 0 and self.on_segment(p1, q2, q1):
-            return True
-
-        if o3 == 0 and self.on_segment(p2, p1, q2):
-            return True
-        
-        if o4 == 0 and self.on_segment(p2, q1, q2):
-            return True
-        
-        return False
-
-    def link_intersect(self, p1, q1):
-        edges = self.get_edges()
-        
-        for e in edges:
-            p2 = self.paths[e[0], :, 0] # 2xsteps
-            q2 = self.paths[e[1], :, 0]
-            intersect = self.do_intersect(p1, q1, p2, q2)
-            
-            if intersect:
-                return True
-        
-        return False
             
     
     # @timebudget
     def get_edge_mask(self, id0, id1):
-        '''
-        :parameters id0, id1
+        """Valid scaffold node locations for adding to Assur 0DOF linkage to node0 and node1
 
-        :return image
-        '''
+        Args:
+            id0 (int): index of node 0
+            id1 (int): index of node 1
 
+        Returns:
+            Nd.Array: valid scaffold nodes for adding to linkage graph
+        """
+        ## Get nodei and nodej trajectories
         xi = self.paths[id0, :, :] # 2xsteps
         xj = self.paths[id1, :, :]
 
@@ -875,31 +822,20 @@ class Mech(gym.Env):
         l_ik = np.linalg.norm(xi[:, 0].reshape(1,-1) - self.grid, axis=1).reshape(-1, 1) # [1,2] - [121, 2] -> (121, 1)
         l_jk = np.linalg.norm(xj[:, 0].reshape(1,-1) - self.grid, axis=1).reshape(-1, 1) # [1,2] - [121, 2] -> (121, 1)
 
+        ## Triangle inequality between node i and j trajectories
         valid = np.logical_and.reduce((np.all(l_ik+l_jk > l_ij, 1), 
                                         np.all(l_ik+l_ij > l_jk, 1),  
                                         np.all(l_jk+l_ij > l_ik, 1)))
 
         return valid #np.ones_like(valid)
-    
-    def _get_totaldist(self):
-        # coupler_idx = self.number_of_nodes()-1
-        # mu = self.paths[coupler_idx, :, :].mean(1).reshape(-1, 1)
-        # std = max(self.paths[coupler_idx, :, :].std(1))
-        # # pdb.set_trace()
-        # goal = (self.goal*std+mu)
-        coupler = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc)
 
-        return distance(self.goal, coupler, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
     
     def satisfy_constraints(self): 
-        '''
-        :params
-        node_id: int
-        bounding_box: [xmin, xmax, ymin, ymax]
-        
-        :returns
-        Bool
-        '''
+        """Checks if linkage graph satisfies the constraints
+
+        Returns:
+            bool: satifies
+        """
             
         if not self.constraints:
             return True
@@ -936,6 +872,15 @@ class Mech(gym.Env):
         
     
     def get_distance(self, scale=None, shift=None):
+        """Distance between the coupler trajectory and the goal
+
+        Args:
+            scale (float, optional): scaling factor for coupler trajectory. Defaults to None.
+            shift (Nd.Array, optional): shifting vector for coupler trajectory. Defaults to None.
+
+        Returns:
+            float: distance
+        """
         ## Dist
         traj_norm = self.coupler_traj(scale=scale, shift=shift) 
 
@@ -944,50 +889,60 @@ class Mech(gym.Env):
         return total_dist
 
     def _get_reward(self):
+        """Reward for linkage graph
+
+        Returns:
+            (float, bool): reward, success
+        """
+        
         self.cycles = self.number_of_cycles()
 
+        ## Not Valid
         if not self.is_valid():
             self.total_dist = np.nan
             self.reward = self.invalid_penalty
             return self.reward, False
         
+        ## Fails Constraints
         if not self.satisfy_constraints(): 
             self.total_dist = np.nan
             self.reward = self.invalid_penalty
             return self.reward, False
 
+        ## No goal
         if self.goal is None:             
             print("[Warning] _get_reward(): No goal was added")
             return 0.0, False
         
+        ## Invalid design
         if self.cycles == 0:
             self.total_dist = np.nan
             self.reward = self.invalid_penalty
             return self.reward, False
         
+        ## get distance
         self.total_dist = self.get_distance(scale=self.goal_scale, shift=self.goal_loc)
         
+        ## Normalize distance w.r.t circle 
         norm_distance_reward = max((self.R_circle-self.total_dist)/self.R_circle, -0.0) # 0-1
-        cycle_reward = (self.cycles > 2)*(self.cycles*0.15-0.2) # 0-1
-        cycle_weight = 0.0
         
+        ## set reward
         self.reward = norm_distance_reward #max(-self.total_dist, -9.9) #(cycle_weight*cycle_reward + (1.-cycle_weight)*norm_distance_reward)*10.0
         
         return self.reward, (self.total_dist <= self.goal_tol) 
         
 
     def _get_info(self):
+        """linkage graph information
+
+        Returns:
+            dict: various information that might be useful
+        """
+        
+        ## Only return info if terminal linkage design
         if self.is_terminal:
-            ## TODO: Fix this to match SB3
-            # reward, success = self._get_reward()
             n = self.number_of_nodes()
             n_active = self.number_of_active_nodes()
-            
-            # traj_norm = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc) 
-
-            # total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
-            
-            # dist = max((self.R_circle-total_dist)/self.R_circle, -0.9)
             
             info = {'number_of_nodes': n,
                     'number_of_active_nodes': n_active, 
@@ -1012,15 +967,8 @@ class Mech(gym.Env):
     
 
     def _remove_action(self):
-        '''
-        Method for undueing invalid action
-
-        TODO: 
-        adj
-        x
-        paths
-        previous_graph
-        '''
+        """Helper function that removes previous action
+        """
         n = self.number_of_nodes()
         self.paths[n-1, :, :] = 0.
 
@@ -1031,30 +979,16 @@ class Mech(gym.Env):
         assert((n-m)==1)
         assert(not np.isnan(self.paths).any())
 
-    def number_of_initial_nodes(self):
-        if self.init_args['node_positions'] is None: return 4
 
-        return self.init_args['node_positions'].shape[0]
-
-    def get_graph_args(self):
-        init_nodes = self.number_of_initial_nodes()
-        edges = self.get_edges()
-        n = self.number_of_nodes()
-
-        graph_args = {"node_positions":     self.paths[:n,:,0], 
-                           "edges":         edges, 
-                           "steps":         self.T, 
-                           "design_steps":  self.design_steps, 
-                           "x_bounds":      [min(self.grid[:,0]), max(self.grid[:,0])], 
-                           "y_bounds":      [min(self.grid[:,1]), max(self.grid[:,1])], 
-                           "resolution":     self.resolution, 
-                           "goal":           self.goal,
-                           "design_rounds":  self.design_rounds, 
-                           "max_nodes":      self.max_nodes}
-
-        return graph_args
-    
     def dfs(self, visited, edges, node, known_joints):
+        """Helper function for depth first search
+
+        Args:
+            visited (list): visited nodes
+            edges (set): set of edges
+            node (int): node index
+            known_joints (list): known joint trajectories
+        """
         
         if node not in visited and node not in [0, 1, 2]:
             visited.add(node)
@@ -1067,50 +1001,73 @@ class Mech(gym.Env):
                 self.dfs(visited, edges, neighbour, known_joints)
                 
     def get_active_nodes(self):
+        """Helper function to get all known nodes that contribute to coupler trajectory
+
+        Returns:
+            (list, set): node indexes that are used for coupler FK, edges that are useful for linkage graph
+        """
+        ## All nodes
         n = self.number_of_nodes()
 
+        ## Initialize variables
         visited = set()
         edges = set()
         known_joints = np.arange(n)
 
+        ## Recursively trace from coupler to root nodes 
         self.dfs(visited, edges, n-1, known_joints)
         visited = list(visited)
         visited.sort()
-        # new_buffer = None
-        # if buffer is not None:
-        #     new_buffer = prune_buffer(visited, buffer, env.number_of_initial_nodes())
+
         active_nodes = [0, 1, 2] + visited
         
         return active_nodes, edges
     
     def number_of_active_nodes(self):
-        return len(self.get_active_nodes())
+        """Helper function returns number of active nodes
+
+        Returns:
+            int: number of active nodes in linkage graph
+        """
+        return len(self.get_active_nodes()[0])
     
     def prune(self):
+        """Prune linkage graph of unnecessary revolute joints
+        """
+        
+        ## Get active nodes and edges
         active_nodes, edges = self.get_active_nodes()
         active_nodes.sort()
         
         n = len(active_nodes)
         
-        
+        ## update edge list
         edges = np.array([[0, 1], [0, 2]]+ [[active_nodes.index(list(e)[0]), active_nodes.index(list(e)[1])] for e in edges])
         
+        ## get all paths of active nodes
         paths = self.paths[active_nodes,:,0]
 
+        ## Reset linkage graph paths and adj
         self.paths = np.zeros_like(self.paths)
         self.adj = np.zeros_like(self.adj)
         
-        
+        ## Update with only active nodes and edges
         self.paths[:n, :, 0] = paths
         
         self.adj[edges[:,0], edges[:,1]] = 1
         self.adj[edges[:,1], edges[:,0]] = 1 
      
+        ## reinitialize linkage graph
         self._initialize_paths()
         
     def active_cycles(self):
-        graph = nx.Graph()
+        """Returns all the active loops in the linkage graph  
+
+        Returns:
+            list: all cycles in linkage graph NOTE: this includes cycles with 3 nodes which are not valid loops
+        """
         
+        ## Get active nodes and edges
         active_nodes, edges = self.get_active_nodes()
         active_nodes.sort()
         
@@ -1118,69 +1075,66 @@ class Mech(gym.Env):
         
         edges = np.array([[0, 1], [0, 2]]+ [[active_nodes.index(list(e)[0]), active_nodes.index(list(e)[1])] for e in edges])
         
+        ## initialize nx graph
+        graph = nx.Graph()
         graph.add_nodes_from(range(n))
         graph.add_edges_from(edges)
         
+        ## Minimum cycle basis
         return list(nx.minimum_cycle_basis(graph))
     
     def number_of_cycles(self):
+        """Number of active linkage graph loops
+
+        Returns:
+            int: number of active linkage graph loops NOTE: this excludes loops of 3 nodes (also known as triads as they are not useful)
+        """
         cycles = [c for c in self.active_cycles() if len(c) > 3]
         
         return len(cycles)
         
 
-    def update_best_designs(self, reward):
-        '''
-        Save initial state and edge list for strong designs found in search 
-        :param
-        reward
-        '''
-        # traj_norm = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc) 
-
-        # total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
-        
-        # reward = max((self.R_circle-total_dist)/self.R_circle, -0.9)
-        
+    def update_best_designs(self):
+        """Update set of best designs of various linakge graph topologies
+        """
+        ## Prune linkage graph
         self.prune()
         
-
-        # n = self.number_of_cycles()
-        
+        ## If linkage graph topology not accounted for yet        
         if self.cycles not in self.best_designs:
-            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(reward))
+            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
             return 
         
+        ## If linkage graph is better than current topology 
         if self.total_dist > self.best_designs[self.cycles][-1]:
-            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(reward))
+            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
             return 
 
     def step(self, action):
-        '''
-        :param 
-        action -> discrete (node_combinations*resolution**2)
+        """Update linkage graph with new action
 
-        :return
-        observation
-        reward
-        info 
-        done
-        '''
+        Args:
+            action (int): index of action 
+
+        Returns:
+            (Nd.Array, float, bool, dict): Observation, Reward, Done, Info
+        """
+        ## Get action from index
         (node_id0, node_id1), scaffold_id, done = self.actions[int(action)]
+        
+        ## Is terminal action
         self.is_terminal = done
 
-        # (node_id0, node_id1), scaffold_id = self.actions[action]
 
-        ## If Action is the same Terminate Episode
+        ## If Action is the same as previous Terminate Episode
         if action == self.previous_action: 
             if self.debug:
-
                 print("Warning: (Action) Same Action was selected again. Note that this is considered invalid")
-            # reward = 0.0 #self._get_reward()
+                
             obs = self.get_observation()
-            # info = {} #self._get_info()
             done = True 
 
-            return obs, self.invalid_penalty, done, {} # TODO: obs, Reward, Done, Info 
+            return obs, self.invalid_penalty, done, {} 
 
         
         ## Check if node selection is valid 
@@ -1220,7 +1174,7 @@ class Mech(gym.Env):
         if done:
             reward, _ = self._get_reward()
             ## Save all good designs during the search
-            self.update_best_designs(reward)
+            self.update_best_designs()
     
         self.previous_action = action
         
@@ -1228,25 +1182,31 @@ class Mech(gym.Env):
         info = self._get_info() 
         
         # Return Status
-        return obs, reward, done, info # TODO: obs, Reward, Done, Info 
+        return obs, reward, done, info 
     
     def get_observation(self):
-        '''
-        Get observation
-        '''
+        """Observation of current linkage state
+
+        Returns:
+            Nd.Array: [X ((Node_features)*max_nodes), adj (max_nodes*max_nodes), mask (max_nodes), action_mask (number_of_actions)] flattened
+        """
         obs = []
 
         ## Revolution joint positons 
         idx = np.round(np.linspace(0, self.paths.shape[-1]-1, self.feature_points)).astype(int)
-        if self.use_node_type:
-            x = [[self.paths[i, 0, 0], self.paths[i, 1, 0], 1] if (i == self.number_of_nodes()-1 and self.is_terminal) else 
-                [self.paths[i, 0, 0], self.paths[i, 1, 0], 0] for i in range(self.max_nodes)] 
-            obs.append(np.asarray(sum(x, [])).astype('float32'))
+        
+        ## NOTE: use_node_type DEPRECATED
+        # if self.use_node_type:
+        #     x = [[self.paths[i, 0, 0], self.paths[i, 1, 0], 1] if (i == self.number_of_nodes()-1 and self.is_terminal) else 
+        #         [self.paths[i, 0, 0], self.paths[i, 1, 0], 0] for i in range(self.max_nodes)] 
+        #     obs.append(np.asarray(sum(x, [])).astype('float32'))
 
-        else:
-            # x = [[self.paths[i, 0, 0], self.paths[i, 1, 0]] for i in range(self.max_nodes)]
-            x = self.paths[:, :, idx].flatten().astype('float32')
-            obs.append(x)
+        # else:
+        #     # x = [[self.paths[i, 0, 0], self.paths[i, 1, 0]] for i in range(self.max_nodes)]
+        
+        ## Node features
+        x = self.paths[:, :, idx].flatten().astype('float32')
+        obs.append(x)
         
         ## Adjacency Matrix
         adj = self.adj.copy()
@@ -1270,6 +1230,12 @@ class Mech(gym.Env):
         return np.nan_to_num(obs, nan=0.0)
     
     def random_n_bar(self, edges, n):
+        """Random valid n bar linakge NOTE: not really N_bar, based on edges input
+
+        Args:
+            edges (Nd.Array): set of edges Shape: (e, 2)
+            n (int): number of revolute joints
+        """
         pos_ind = range(self.grid.shape[0])
         # s = l = 1 
         # p = q = 0
@@ -1290,9 +1256,11 @@ class Mech(gym.Env):
         self._initialize_paths()
 
     def get_valid_env(self):
-        '''
-        Valid Linkage
-        '''
+        """Generate random valid linkage graph
+
+        Returns:
+            bool: is valid
+        """
 
         ## Basic 4-bar configuration
         edges = np.array([[0, 1], [0, 2], [1, 3], [2, 3]])
@@ -1307,32 +1275,26 @@ class Mech(gym.Env):
         return self.is_valid()
         
         
-
     def close(self):
+        """Close environment
+        """
         pass
 
 
-def linear_schedule(initial_value: float):
-    """
-    Linear learning rate schedule.
 
-    :param initial_value: Initial learning rate.
-    :return: schedule that computes
-      current learning rate depending on remaining progress
-    """
-    def func(progress_remaining: float):
-        """
-        Progress will decrease from 1 (beginning) to 0.
 
-        :param progress_remaining:
-        :return: current learning rate
-        """
-        return progress_remaining * initial_value
+if __name__ == "__main__":
+    import pyvirtualdisplay
 
-    return func
-
-# if __name__ == "__main__":
-    # # env = Mech(max_nodes=10, bound=1., resolution=11, sample_points=20, normalize=True)
+    env = Mech(max_nodes=10, bound=1., resolution=11, sample_points=20, feature_points=1, goal=np.zeros([2,20]), normalize=True)
+    _display = pyvirtualdisplay.Display(visible=True,  # use False with Xvfb
+                                    size=(600, 600))
+    _ = _display.start()
+    done = False
+    while not done:
+        env.render()
+        _, _, done, _ = env.apply_random_action()
+    _display.stop()
     # # pdb.set_trace()
     # filenames = ['jansen_traj', 'klann_traj', 'strider_traj', 'trot_traj'] #['jansen_traj', 'klann_traj'] #, 'strider_traj', 'trot_traj'] #, 'infinity_200', 'loopfolium_150', 'quadrifoilium_200', 'trifolium_100', 'double_loopfolium_200']
     # sample_points = 20

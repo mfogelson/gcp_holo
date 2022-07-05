@@ -1,31 +1,26 @@
 import torch
-import torchvision   
 import torch.nn as nn
-# from torch.utils.data import Dataset, DataLoader
-import torch.nn.functional as F
-from torch_geometric.nn import DenseSAGEConv, dense_diff_pool, SAGEConv
-from torch.distributions import Categorical, Bernoulli
-from torch_geometric.data import Data, DataLoader, DenseDataLoader
-
-from math import ceil
-import pdb
-import pickle
-from concurrent.futures import ProcessPoolExecutor
+from torch_geometric.nn import DenseSAGEConv
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
 
-'''
-class GNN:
-
-define a GNN module
-
-parameters:
-    in_channels: number of feature channels for each input node
-    hidden_channels: number of feature channels for each hidden node
-    batch_normalization: if add a batch normalization after each conv layer
-'''
 class GNN(BaseFeaturesExtractor):
+    """GNN adopted from Zhao et. al "Robogrammar"
+    """
     def __init__(self, observation_space, max_nodes, num_features, hidden_channels=64, out_channels=64, normalize=False, batch_normalization=False, lin=True, add_loop=False):
+        """Graph Convolution network
+
+        Args:
+            observation_space (gym.observation): The observation space of the gym environment
+            max_nodes (int): maximum number of nodes for linkage graph
+            num_features (int): number of points in the trajectory to describe the node features
+            hidden_channels (int, optional): hidden channels for the Dense SAGE convolutions. Defaults to 64.
+            out_channels (int, optional): number of output features. Defaults to 64.
+            normalize (bool, optional): normalization used in Dense SAGE. Defaults to False.
+            batch_normalization (bool, optional): Batch Normalization used. Defaults to False.
+            lin (bool, optional): Add linear layer to the end. Defaults to True.
+            add_loop (bool, optional): Add self loops. Defaults to False.
+        """
         super(GNN, self).__init__(observation_space, features_dim=1)
 
         self.max_nodes = max_nodes #observation_space['mask'].shape[0]
@@ -63,10 +58,12 @@ class GNN(BaseFeaturesExtractor):
         return x
 
     def forward(self, observations):
+        ## Get shapes for observation
         shape_x = self.max_nodes*self.num_features
         shape_adj = self.max_nodes**2
         shape_mask = self.max_nodes
         
+        ## extract information from observation input
         x = observations[:, :shape_x] #['x']
         adj = observations[:, shape_x+1:shape_x+1+shape_adj] #['adj']
         mask = observations[:, shape_x+shape_adj+2:shape_x+2+shape_adj+shape_mask] #['mask']
@@ -76,11 +73,12 @@ class GNN(BaseFeaturesExtractor):
         else:
             batch_size = 1
 
+        ## Reshape for model
         x = x.reshape(batch_size, self.max_nodes, -1) # B, nodes, features
         adj = adj.reshape(batch_size, self.max_nodes, self.max_nodes)
 
-        # pdb.set_trace()
 
+        ## Forward pass
         if self.batch_normalization:
             x1 = self.bn(1, self.relu(self.conv1(x, adj, mask))) #, #self.add_loop)))
             x2 = self.bn(2, self.relu(self.conv2(x1, adj, mask))) #, #self.add_loop)))
@@ -90,41 +88,12 @@ class GNN(BaseFeaturesExtractor):
             x2 = self.relu(self.conv2(x1, adj, mask))
             x3 = self.relu(self.conv3(x2, adj, mask))
 
-        # pdb.set_trace()
-        # x = torch.cat([x1, x2], dim=-1)
+        ## Concatenate latent representations
         x = torch.cat([x1, x2, x3], dim=-1)
-        # x = x1
+
+        ## Extra linear layer
         if self.lin is not None:
             x = self.relu(self.lin(x))
 
+        ## Aggrigate node features to output Graph latent representation
         return x.sum(1)
-
-
-
-# class CustomActorCriticPolicy(ActorCriticPolicy):
-#     def __init__(
-#         self,
-#         observation_space: gym.spaces.Space,
-#         action_space: gym.spaces.Space,
-#         lr_schedule: Callable[[float], float],
-#         net_arch: Optional[List[Union[int, Dict[str, List[int]]]]] = None,
-#         activation_fn: Type[nn.Module] = nn.Tanh,
-#         *args,
-#         **kwargs,
-#     ):
-
-#         super(CustomActorCriticPolicy, self).__init__(
-#             observation_space,
-#             action_space,
-#             lr_schedule,
-#             net_arch,
-#             activation_fn,
-#             # Pass remaining arguments to base class
-#             *args,
-#             **kwargs,
-#         )
-#         # Disable orthogonal initialization
-#         self.ortho_init = False
-
-#     def _build_mlp_extractor(self) -> None:
-#         self.mlp_extractor = CustomNetwork(self.features_dim)

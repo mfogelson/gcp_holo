@@ -3,36 +3,32 @@ import multiprocessing
 import os
 import pdb
 import pickle
-import sys
-import time
-from ast import parse
-from typing import Callable
+
 
 import matplotlib.pyplot as plt
 import numpy as np
 from timebudget import timebudget
-from wandb.integration.sb3 import WandbCallback
 from itertools import repeat
 
 import wandb
 
-from env.Mech_v7 import Mech, linear_schedule
+from linkage_gym.envs.Mech import Mech
+from linkage_gym.utils.env_utils import normalize_curve, uniquify
+from utils.utils import linear_schedule
 
-from model.a2c_gym import CustomActorCriticPolicy
-from model.dqn_gym import CustomDQN, CustomDQNPolicy
-from model.gcpn_gym import GNN
-from model.mcts_gym import mcts_search
-from model.random_gym import random_search
-from model.simulated_annealing_gym import simulated_annealing
+from models.a2c import CustomActorCriticPolicy
+from models.dqn import CustomDQN, CustomDQNPolicy
+from models.gcpn import GNN
+from models.random_search import random_search
+from utils.utils import evaluate_policy
+# from stable_baselines3.common.evaluation import evaluate_policy
 
-from stable_baselines3 import A2C, DQN, PPO  # , HER, PPO1, PPO2, TRPO
-from stable_baselines3.common.env_checker import check_env
+
+from stable_baselines3 import A2C, PPO  # , HER, PPO1, PPO2, TRPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
-from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.callbacks import CheckpointCallback
 
-from utils.env_utils import normalize_curve, uniquify
 from datetime import datetime
 
 import warnings
@@ -66,6 +62,7 @@ def main(args):
         tb_log_dir = f"./logs/{args.goal_filename}/{args.model}/{day}/{run.id}"
         eval_dir = f"./evaluations/{args.goal_filename}/{args.model}/{day}/"
         save_dir = f"./trained/{args.goal_filename}/{args.model}/{day}/"
+        design_dir = f"./designs/{args.goal_filename}/{args.model}/{day}/"
         
         if not os.path.isdir(tb_log_dir):
             os.makedirs(tb_log_dir, exist_ok=True)
@@ -75,14 +72,12 @@ def main(args):
             
         if not os.path.isdir(save_dir):
             os.makedirs(save_dir, exist_ok=True)
+            
+        if not os.path.isdir(design_dir):
+            os.makedirs(design_dir, exist_ok=True)
 
         ## Load Goal information
-        # theta = np.pi/2.
-        # R = np.array([[np.cos(theta), np.sin(theta)], [-np.sin(theta), np.cos(theta)]])
-        if 'tests' in args.goal_path or 'MICP' in args.goal_path:
-            goal_curve = pickle.load(open(f'{args.goal_path}/{args.goal_filename}.pkl', 'rb'))[:,::-1]
-        else:
-            goal_curve = pickle.load(open(f'{args.goal_path}/{args.goal_filename}.pkl', 'rb'))
+        goal_curve = pickle.load(open(f'{args.goal_path}/{args.goal_filename}.pkl', 'rb')) # NOTE: sometimes ordering needs to be reversed add [:,::-1]
             
         idx = np.round(np.linspace(0, goal_curve.shape[1] - 1, args.sample_points)).astype(int)
         goal = normalize_curve(goal_curve[:,idx]) #R@normalize_curve(goal_curve[:,::-1][:,idx])
@@ -102,11 +97,10 @@ def main(args):
                         "constraints": [], #[args.body_constraints, args.coupler_constraints], 
                         "self_loops": args.use_self_loops, 
                         "use_node_type": args.use_node_type,}
-        # env = Mech(seed=args.seed+trial, **env_kwargs)
         
         # If PPO A2C or DQN can use multiple envs while training
         if args.model in ['PPO', 'A2C', 'DQN']:
-            env = make_vec_env(Mech, n_envs=args.n_envs, env_kwargs=env_kwargs, seed=args.seed) # TODO
+            env = make_vec_env(Mech, n_envs=args.n_envs, env_kwargs=env_kwargs, seed=args.seed) # NOTE: For faster training use SubProcVecEnv 
         else:
             env = []
             for i in range(args.n_envs):
@@ -126,7 +120,7 @@ def main(args):
         
         ## Policy Architecture
         dqn_arch = [64, 256, 1024, 4096]
-        ppo_arch = [64, dict(vf=[32], pi=[256, 1024, 4096])]
+        ppo_arch = [64, dict(vf=[32], pi=[256, 1024, 4096])] ## NOTE: Not used
         if args.model == "DQN":
             policy_kwargs = dict(
                 features_extractor_class=GNN,
@@ -261,33 +255,33 @@ def main(args):
             pickle.dump([evaluation_rewards, evaluation_designs], open(f"evaluations/evaluation_{args.model}_{args.goal_filename}_{args.n_eval_episodes*args.n_envs}_{args.m_evals}_{run.id}.pkl", 'wb'))
                 
                 
-        elif args.model == "mcts":
-            mcts_search(env, timesteps=args.steps)
+        # elif args.model == "mcts":
+        #     mcts_search(env, timesteps=args.steps)
             
-        elif args.model == "SA":
-            simulated_annealing(env, args.steps)
-        train = True
+        # elif args.model == "SA":
+        #     simulated_annealing(env, args.steps)
+        
+        
+        train = not args.no_train ## TODO
+        print(f"Training set to: {train}")
         ## Load old checkpoint
         if args.checkpoint:
             print('Loading Checkpoint ...')
             model = model.load(args.checkpoint)
-            train = False
+            # train = False
         
         ## Learn
         if args.model in ["DQN", 'A2C', 'PPO']:    
 
             if train:
                 print("Starting Training...")
-                # Save a checkpoint every 1000 steps
-                # updates = //args.save_freq
+                # Save a checkpoint 
                 callback = CheckpointCallback(save_freq=args.save_freq//args.n_envs, save_path=save_dir, name_prefix=f'{now}_{args.model}_model_{args.goal_filename}')
-                # for i in range(updates):
                     
                 model.learn(args.steps, log_interval=5, reset_num_timesteps=False, callback=callback) 
                 
                 print("Finished Training...")
-                    # model.save(model_{(i+1)*args.save_freq}.zip')
-                #callback=WandbCallback(verbose=args.verbose,  model_save_path=f'trained/{run.id}', model_save_freq=args.save_freq, gradient_save_freq=0)) #f'trained/{run.id}'
+                 
                 print("Saving Model...")
                 model.save(save_dir + f'{now}_{args.model}_model_{args.goal_filename}_final.zip')
             
@@ -296,10 +290,12 @@ def main(args):
             evaluation_rewards = []
             evaluation_designs = []
             for i in range(args.m_evals):
-                ## TODO: Check Torch and Numpy RNG
+                ## Initialize model seed
                 model.set_random_seed(seed=i+args.seed)
+                
                 print("Evaluating Model...")
-                rewards, lengths, designs = evaluate_policy(model, env, n_eval_episodes=args.n_eval_episodes, deterministic=True, render=False, return_episode_rewards=True)
+                rewards, lengths, designs = evaluate_policy(model, env, n_eval_episodes=args.n_eval_episodes, deterministic=False, render=False, return_episode_rewards=True) ## TODO: update
+                
                 wandb.log({
                     'eval/mean_episode_rew': np.mean((rewards)),
                     'eval/std_episode_rew': np.std((rewards)),
@@ -313,10 +309,8 @@ def main(args):
             pickle.dump([evaluation_rewards, evaluation_designs], open(eval_dir + f"{now}_{args.model}_{args.goal_filename}_{args.n_eval_episodes}_{args.m_evals}_{run.id}.pkl", 'wb'))
                 
 
-        # pdb.set_trace()
-        ## Extract Best Designs
+        ## Extract Best Designs 
         if args.model in ["PPO", "A2C", "DQN"]: best_designs = env.get_attr('best_designs')
-        # else: best_designs = env.best_designs
 
         if isinstance(best_designs, list):
         #     pdb.set_trace()
@@ -338,10 +332,7 @@ def main(args):
         elif isinstance(best_designs, dict):
             node_info = best_designs.values()
         
-        # pdb.set_trace()
         ## Plot Best Designs
-        # rewards = []
-        # number_of_cycles_ = []
         for node_positions, edges, _ in node_info:
             env_kwargs['node_positions'] = node_positions
             env_kwargs['edges'] = edges
@@ -375,7 +366,8 @@ def main(args):
         
         ## Save Designs
         if best_designs:
-            pickle.dump(best_dict, open(uniquify(f'designs/best_designs_{run.id}.pkl'), 'wb'))
+            
+            pickle.dump(best_dict, open(uniquify(design_dir+f'best_designs_{run.id}.pkl'), 'wb'))
         
         run.finish()
         # time.sleep(1)
@@ -392,17 +384,17 @@ if __name__ == "__main__":
     # default_path = 'data/training_seeds.pkl'
     
     ## Env Args
-    parser.add_argument('--max_nodes',           default=11,            type=int,             help="number of design steps for each agent")
-    parser.add_argument('--resolution',          default=11,            type=int,             help="design resolution")
-    parser.add_argument('--bound',               default=1.0,           type=float,           help="[x,y] value range for revolute joints")
-    parser.add_argument('--sample_points',       default=20,            type=int,             help="number of sample points from FK")
-    parser.add_argument('--feature_points',      default=1,             type=int,             help="number of feature poinys for GNN")
-    parser.add_argument('--goal_filename',       default='jansen_traj', type=str,             help="Goal filename")
-    parser.add_argument('--goal_path',           default='./goals',     type=str,             help="path to goal file")
-    parser.add_argument('--use_self_loops',      default=False,          action='store_true',  help="Add self loops in adj matrix")
-    parser.add_argument('--normalize',           default=True,          action='store_true',  help="normalize trajectory for feature vector")
-    parser.add_argument('--use_node_type',       default=False,         action='store_true',  help="use node type id for feature vector")
-    parser.add_argument('--fixed_initial_state', default=True,         action='store_true',  help="use same initial state for all training")
+    parser.add_argument('--max_nodes',           default=11,                      type=int,             help="number of design steps for each agent")
+    parser.add_argument('--resolution',          default=11,                      type=int,             help="design resolution")
+    parser.add_argument('--bound',               default=1.0,                     type=float,           help="[x,y] value range for revolute joints")
+    parser.add_argument('--sample_points',       default=20,                      type=int,             help="number of sample points from FK")
+    parser.add_argument('--feature_points',      default=1,                       type=int,             help="number of feature poinys for GNN")
+    parser.add_argument('--goal_filename',       default='jansen_traj',           type=str,             help="Goal filename")
+    parser.add_argument('--goal_path',           default='data/other_curves',     type=str,             help="path to goal file")
+    parser.add_argument('--use_self_loops',      default=False,                   action='store_true',  help="Add self loops in adj matrix")
+    parser.add_argument('--normalize',           default=True,                    action='store_true',  help="normalize trajectory for feature vector")
+    parser.add_argument('--use_node_type',       default=False,                   action='store_true',  help="use node type id for feature vector")
+    parser.add_argument('--fixed_initial_state', default=True,                    action='store_true',  help="use same initial state for all training")
     parser.add_argument('--seed',                default=123,             type=int,             help="Random seed for numpy and gym")
     parser.add_argument('--ordered',             default=True,          action='store_true',  help="Get minimum ordered distance")
     parser.add_argument('--body_constraints',    default=None,            type=float, nargs='+',  help="Non-coupler [xmin, xmax, ymin, ymax]")
@@ -442,6 +434,8 @@ if __name__ == "__main__":
 
     parser.add_argument('--verbose',          default=0,                type=int,             help="verbose from sb3")
     parser.add_argument('--cuda',             default='cuda:2',         type=str,             help="Which GPU to use [0, 1, 2, 3]")
+    parser.add_argument('--no_train',         default=False,         action='store_true',             help="If you don't want to train")
+
     
     # Parse the arguments
     args = parser.parse_args()
