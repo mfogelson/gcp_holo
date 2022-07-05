@@ -1,0 +1,4340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>gcp_holo.linkage_gym.envs.Mech API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>gcp_holo.linkage_gym.envs.Mech</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import os
+import sys
+import pdb
+from copy import deepcopy
+from datetime import datetime
+from itertools import combinations, product
+
+import matplotlib as mpl
+mpl.use(&#39;Agg&#39;)
+import matplotlib.pyplot as plt
+import matplotlib.patheffects as pe
+from matplotlib.offsetbox import AnchoredText
+
+import gym
+from gym import spaces
+
+import networkx as nx
+import numpy as np
+from numpy.random import MT19937, RandomState, SeedSequence
+
+sys.path.insert(0, os.path.join(sys.path[0], &#39;..&#39;))
+from linkage_gym.utils.env_utils import distance, normalize_curve, symbolic_kinematics
+
+
+class Mech(gym.Env):
+    &#34;&#34;&#34;Custom Environment that follows gym interface&#34;&#34;&#34;
+    metadata = {&#34;render_modes&#34;: [&#34;human&#34;, &#34;rgb_array&#34;], &#34;render_fps&#34;: 2}
+
+
+    def __init__(self, max_nodes, bound, resolution, sample_points, feature_points, node_positions=None, edges=None, goal=None, normalize=True, self_loops=False, use_node_type=False, seed=None, fixed_initial_state=False, ordered_distance=False, constraints=[], min_nodes=5, debug=False, distance_metric=&#39;sqeuclidean&#39;):
+        &#34;&#34;&#34;Initialize Mech gym environment
+
+        Args:
+            max_nodes (int): Maximum number of nodes (joints) in the linkage 
+            bound (float): Bounds of the designs space [-bound, bound]
+            resolution (int): Resolution of the scaffold nodes
+            sample_points (int): Number of points that describe the node trajectories
+            feature_points (int): Number of points that describe the node features for GNN
+            node_positions (list/Nd.array, optional):  Shape: (n, 2) [x, y]. Defaults to None.
+            edges (list/Nd.Array, optional): Shape: (e, 2) [id0, id1]. Defaults to None.
+            goal (list/Nd.Array, optional): Shape: (2, T) Goal Trajectory. Defaults to None.
+            normalize (bool, optional): Normalize the coupler trajectory with respect to the goal trajectory. Defaults to True.
+            self_loops (bool, optional): Include self loops in adjaecency matrix for GNN. Defaults to False.
+            use_node_type (bool, optional): Include binary indicator for GNN. Defaults to False.
+            seed (int, optional): Seed for the gym environment. Defaults to None.
+            fixed_initial_state (bool, optional): When reset is called, whether the original linkage stays the same or random valid linkage is sampled. Defaults to False.
+            ordered_distance (bool, optional): Whether the points in the trajectory should be considered ordered. Defaults to False.
+            constraints (list, optional): ([body constraints, coupler constraints]  [[xmin, ymin, xmax, ymax], [xmin, ymin, xmax, ymax]]). Defaults to [].
+            min_nodes (int, optional): Minimum number of nodes in the graph for a terminal action to be valid. Defaults to 5.
+            debug (bool, optional): Enables some extra print statements. Defaults to False.
+            distance_metric (str, optional): Check scipy.spatial.distance.cdist for various options. Defaults to &#39;sqeuclidean&#39;.
+        &#34;&#34;&#34;
+
+        super(Mech, self).__init__()
+
+        self.debug = debug
+        
+        ## Random Seed
+        self.rng_seed = None
+        self.seed(seed)
+        #np.random.seed(seed=seed)
+        
+        ## Keep same initial node and edges for training
+        self.fixed_initial_state = fixed_initial_state 
+        
+        ## Design is terminal
+        self.is_terminal = False
+        
+        ## Initialize Scaffold Nodes
+        self.resolution = resolution
+        self.bound = bound
+        i = np.linspace(-bound, bound, resolution)
+        ii, jj = np.meshgrid(i, i)
+        self.grid = np.vstack([ii.flatten(), jj.flatten()]).T
+
+        ## Environment Hyper parameters
+        self.scaffold_ids = np.arange(self.resolution**2)
+        self.T = sample_points
+        self.feature_points = feature_points
+        assert self.feature_points &lt;= self.T 
+        self.max_nodes = max_nodes
+        self.min_nodes = min_nodes 
+        
+        ## GCN hyper parameters
+        self.normalize = normalize ## not used
+        self.self_loops = self_loops
+        self.use_node_type = use_node_type ## not used
+
+        ## GYM Action Space and Observation Space
+        self.node_combinations = tuple(combinations(range(max_nodes), 2))
+        self.non_term_actions = tuple(product(self.node_combinations, range(self.resolution**2), [0])) # ncr(n, 2) | r^2 | {0, 1}
+        self.term_actions = tuple(product(self.node_combinations, range(self.resolution**2), [1])) # ncr(n, 2) | r^2 | {0, 1}
+        self.actions = self.non_term_actions+self.term_actions  #tuple(product(self.node_combinations, range(self.resolution**2), [0, 1])) # ncr(n, 2) | r^2 | {0, 1}
+        self.num_actions = np.arange(len(self.actions))
+        self.actions_hash = {k: v for k, v in zip(self.actions, self.num_actions)}
+        self.non_term_actions_keys = [self.actions_hash[action] for action in self.non_term_actions]
+        self.term_actions_keys = [self.actions_hash[action] for action in self.term_actions]
+
+        self.valid_node_comb = {k: tuple(combinations(range(k), 2)) for k in range(self.max_nodes+1)}
+        # self.actions = np.vstack([action_node.flatten(), action_pos.flatten()]).T
+    
+        self.action_space = spaces.Discrete(len(self.actions)) #self.node_combinations.shape[0]*self.resolution**2)
+        self.max_length = 2*np.sqrt(2)*bound
+        
+        shape_x = self.max_nodes*(2*self.feature_points+int(use_node_type))
+        shape_adj = self.max_nodes**2
+        shape_mask = self.max_nodes
+        shape_action_mask = len(self.actions)
+        self.observation_space = spaces.Box(low=np.inf, high=np.inf, shape=[shape_x+shape_adj+shape_mask+shape_action_mask]) 
+
+        ## Coupler Goal 
+        self.goal = goal
+        if goal.shape[0] != 2:
+            goal = goal.T
+        self.goal_scale = max(np.std(goal, axis=1).reshape(-1,1))
+        self.goal_loc = np.mean(goal, axis=1).reshape(-1,1)
+        
+        self.distance_metric = distance_metric
+        self.ordered = ordered_distance
+
+        theta = np.linspace(0, np.pi*2, sample_points)
+        circle = normalize_curve(np.array([np.cos(theta), np.sin(theta)]), scale=self.goal_scale, shift=self.goal_loc) #Shift and scale to goal size
+        point = np.zeros([sample_points, 2])
+        if goal is not None:
+            self.R_circle = distance(goal, circle, self.ordered, self.distance_metric).sum()*(np.pi*2./self.T)
+            self.R_point = distance(goal, point, self.ordered, self.distance_metric).sum()*(np.pi*2./self.T)
+        # self.R_circle, _, _, _ = new_dist(goal, circle)
+        # self.R_point, _, _, _ = new_dist(goal, point)
+        self.goal_tol = 0.0 ## Hyperparameter
+        self.invalid_penalty = -1.0
+        
+        self.total_dist = None
+        self.cycles = None
+        self.reward = None
+        
+        ## Design Constraints 
+        self.constraints = constraints # [body_const, coupler_const]
+        
+        ## Node Type 
+        self.node_type = np.ones((self.max_nodes,1))
+        self.node_type[0, 0] = 0 # Input node is fixed
+        self.node_type[2, 0] = 0 # Fixed node
+
+        ### Not fixed
+        ## Mechanism Components
+        self.paths = np.zeros([self.max_nodes, 2, self.T])
+        self.adj = np.zeros([self.max_nodes, self.max_nodes])
+
+        if node_positions is None:
+            # edges = np.array([[0, 1], [0, 2]])
+            # node_positions = np.array([[1.0, 0.7], [0.9, 0.7], [0.7, 0.8]])
+            self.get_valid_env()
+            node_positions = self.paths[:4, :, 0]
+            edges = self.get_edges()
+        else:
+            n = node_positions.shape[0]
+            self.paths[:n, :, 0] = node_positions
+            self.adj[edges[:,0], edges[:,1]] = 1
+            self.adj[edges[:,1], edges[:,0]] = 1
+
+            ## Initialize Paths
+            self._initialize_paths()
+
+        self.previous_action = None
+
+        self.best_designs = {}
+        self.edge_masks = {}
+        # action_mask = self._get_action_mask()
+        self.prev_mask =  np.zeros(len(self.actions)) #action_mask
+        
+        self.init_args = {&#34;node_positions&#34;: node_positions, 
+                          &#34;edges&#34;:          edges,} 
+                        #   &#34;prev_mask&#34;:      action_mask}
+        self.resets = 0
+        
+    def seed(self, seed=None):
+        &#34;&#34;&#34;Set the seed for gym env
+
+        Args:
+            seed (int, optional): seed used for gym env. Defaults to None.
+
+        Returns:
+            int: the seed value
+        &#34;&#34;&#34;
+        if self.rng_seed:
+            if self.debug:
+                print(&#34;WARNING!!!! You tried reset the random number for the environment.&#34;)
+                print(&#34;To overide the seed apply the following: \n&#34;, 
+                      &#34;env.rng_seed = seed \n&#34; ,
+                      &#34;env.rng = RandomState(MT19937(SeedSequence(seed))) \n&#34;)
+            return self.rng_seed
+        self.rng_seed = seed
+        self.rng = RandomState(MT19937(SeedSequence(seed))) 
+        
+        return seed
+                        
+    def clear_best_desings(self):
+        &#34;&#34;&#34;Clears self.best_designs
+        &#34;&#34;&#34;
+        self.best_designs = {}
+        return
+        
+    # @timebudget
+    def _get_action_mask(self):
+        &#34;&#34;&#34;Finds all valid actions of the current environment state. NOTE: resuses previous masks if found in current episode
+
+        Returns:
+            Nd.Array: Binary vector of valid actions Shape: (num_actions, )
+        &#34;&#34;&#34;
+        n = self.number_of_nodes()
+        
+        ## Reset all non-terminal actions to invalid if last action
+        if n &gt;= self.max_nodes-1:
+            self.prev_mask[self.non_term_actions_keys] = 0
+            
+        
+        node_combinations = self.valid_node_comb[n]
+
+        for comb in node_combinations:
+            ## Only if valid scaffold nodes not explored
+            if comb in self.edge_masks:
+                continue
+            
+            ## Get valid scaffold node ids
+            valid = self.get_edge_mask(comb[0], comb[1])
+            
+            ## Cache for future designs
+            self.edge_masks[comb] = valid
+            
+            ## Update actions_mask
+            for v in self.scaffold_ids[valid]:
+                ## If no constraints on coupler or body positions
+                if self.constraints:
+                     ## Check if scaffold node is in constraint TODO: this is wrong since it is trajectory and node position...
+                    for i, c in enumerate(self.constraints):
+                        if (i == 0 and n &lt; self.max_nodes-1) or (i == 1 and n &gt; self.min_nodes):
+                            x_min, x_max, y_min, y_max = c
+                            scaffold_x = self.grid[v,0]
+                            scaffold_y = self.grid[v,1]
+                            self.prev_mask[self.actions_hash[(comb, v, i)]] = float(scaffold_x &gt; x_min and 
+                                                                                    scaffold_x &lt; x_max and
+                                                                                    scaffold_y &gt; y_min and 
+                                                                                    scaffold_y &lt; y_max)
+                else:
+                    ## Max number of actions
+                    if n &lt; self.max_nodes-1:
+                        self.prev_mask[self.actions_hash[(comb, v, 0)]] = 1
+                    
+                    ## Min number of actions
+                    if n &gt; self.min_nodes:
+                        self.prev_mask[self.actions_hash[(comb, v, 1)]] = 1
+        ## 
+        if self.previous_action:
+            self.prev_mask[self.previous_action] = 0
+    
+        return self.prev_mask 
+    
+    def apply_random_action(self):
+        &#34;&#34;&#34;Applies a random valid action to the current environment
+
+        Returns:
+            (Nd.Array, float, bool, dict): Observation, Reward, Done, Info
+        &#34;&#34;&#34;
+        action_mask = self._get_action_mask()
+
+        action = self.rng.choice(self.num_actions, p=action_mask/action_mask.sum())
+        
+        return self.step(action)
+    
+    
+    def reset(self):
+        &#34;&#34;&#34;Reset the environment to a root linkage
+
+        Returns:
+            Nd.Array: observation of the linkage (x, adj, mask, action_mask) flattened
+        &#34;&#34;&#34;
+
+        ## Reset variables
+        self.paths = np.zeros([self.max_nodes, 2, self.T])
+        self.adj = np.zeros([self.max_nodes, self.max_nodes])
+        self.edge_masks = {}
+        self.prev_mask = np.zeros(len(self.actions)) 
+        self.previous_action = None
+        self.is_terminal = False
+        
+        self.resets += 1
+        
+        ## Get root node design
+        if self.fixed_initial_state:
+            node_positions = self.init_args[&#39;node_positions&#39;]
+            edges = self.init_args[&#39;edges&#39;]
+
+            n = node_positions.shape[0]
+
+            self.paths[:n, :, 0] = node_positions
+
+            self.adj[edges[:,0], edges[:,1]] = 1
+            self.adj[edges[:,1], edges[:,0]] = 1
+
+            self._initialize_paths()
+            
+        else:
+            self.get_valid_env()
+        
+        return self.get_observation()
+
+    def _get_fixed_ids(self):
+        &#34;&#34;&#34;Returns the indexes of revolute joints that are fixed
+
+        Returns:
+            Nd.Array: indexes of fixed nodes Shape:(m, )
+        &#34;&#34;&#34;
+
+        return np.argwhere(self.node_type == 0)[:,0]
+
+    def _get_crank_id(self):
+        &#34;&#34;&#34;Returns the index for the linkage connected to the motor input
+
+        Returns:
+            int: index of crank node
+        &#34;&#34;&#34;
+
+        return 1 # NOTE: np.argwhere(self.adj[0,:] == 1).item()
+
+    def _get_dist(self, p1, p2):
+        &#34;&#34;&#34;Helper function to get the distance between two points
+
+        Args:
+            p1 (Nd.Array): Point1 Shape: (2,)
+            p2 (Nd.Array): Point2 Shape: (2,)
+
+        Returns:
+            float: Distance between p1 and p2
+        &#34;&#34;&#34;
+
+        return np.linalg.norm(p1-p2)
+
+    def _get_angle(self, p1, p2):
+        &#34;&#34;&#34;Helper function to get the angle between two points
+
+        Args:
+            p1 (Nd.Array): Point1 Shape: (2,)
+            p2 (Nd.Array): Point2 Shape: (2,)
+
+        Returns:
+            float: Angle between vectors from origin to p1 and p2
+        &#34;&#34;&#34;
+
+        return np.arctan2(*(p2[::-1]-p1[::-1])) % (2*np.pi)
+
+    def _update_crank_path(self):
+        &#34;&#34;&#34;Helper function to update self.paths the trajectory of the crank revolute joint
+        &#34;&#34;&#34;
+
+        crank_id = self._get_crank_id()
+        edge_length = self._get_dist(self.paths[0,:,0], self.paths[crank_id, :, 0])
+        start_pos = self.paths[crank_id, :, 0]
+        start = self._get_angle(self.paths[0,:,0], self.paths[crank_id, :, 0]) 
+        try:
+            assert (np.cos(start)*edge_length+self.paths[0,0,0])-start_pos[0] &lt;= 1e-3 and (np.sin(start)*edge_length+self.paths[0,1,0])-start_pos[1] &lt;= 1e-3
+        except:
+            pdb.set_trace()
+        theta = np.linspace(start, start+(np.pi*2), num=self.T)
+        
+        # pdb.set_trace()
+        self.paths[crank_id, :, :] = np.array([np.cos(theta), np.sin(theta)])*edge_length + self.paths[0,:,0].reshape(-1,1)
+
+    def _initialize_paths(self):
+        &#34;&#34;&#34;Updates self.paths with trajectories of current linkage
+        &#34;&#34;&#34;
+
+        # Initialize fixed node positions
+        fixed_ids = self._get_fixed_ids()
+        self.paths[fixed_ids, :, :] = self.paths[fixed_ids, :, 0][:, :, np.newaxis]
+
+        # Initialize pin node positions
+        self._update_crank_path()
+        
+        self.update_paths() 
+    
+    def number_of_nodes(self):
+        &#34;&#34;&#34;Helper function returns number of nodes currently in the linkage graph
+
+        Returns:
+            int: number of nodes
+        &#34;&#34;&#34;
+        empty_rows = np.argwhere(self.adj.sum(1) == 0)
+        if len(empty_rows) &gt; 0:
+            return empty_rows[0].item()
+        else:
+            return self.max_nodes
+
+    def number_of_edges(self):
+        &#34;&#34;&#34;Helper function returns the number of edges that make up the current linkage graph
+
+        Returns:
+            int: number of edges
+        &#34;&#34;&#34;
+        
+        return sum(sum(self.adj))//2
+
+    def get_edges(self, limit=None):
+        &#34;&#34;&#34;Helper function to return all the edges in the current linkage graph
+
+        Args:
+            limit (int, optional): edges between nodes bellow a particular index. Defaults to None.
+
+        Returns:
+            Nd.Array: Array of edge index pairs Shape: (e, 2) [id0, id1]
+        &#34;&#34;&#34;
+        
+        if limit is None:
+            limit = self.max_nodes
+
+        return np.array([[i, j] for i in range(self.max_nodes) for j in range(i) if self.adj[i,j]])
+
+    def get_edge_lengths(self):
+        &#34;&#34;&#34;Helper function to return all the edge lengths
+
+        Returns:
+            Nd.Array: Lengths of each edge Shape: (e, )
+        &#34;&#34;&#34;
+        
+        edges = self.get_edges()
+        lengths = np.zeros([edges.shape[0],])
+        
+        for i, e in enumerate(edges):
+            lengths[i] = self._get_dist(self.paths[e[0],:,0], self.paths[e[1], :, 0])
+
+        return lengths
+
+    def update_paths(self, unknown_joints=None):
+        &#34;&#34;&#34;Update self.paths
+
+        Args:
+            unknown_joints (list, optional): node indexes that are not known or want to be calculated. Defaults to None.
+        &#34;&#34;&#34;
+        n = self.number_of_nodes()
+        
+        if unknown_joints is None:
+            known_joints = list(np.argwhere(self.node_type == 0)[:,0])
+            known_joints.append(1) #(np.argwhere(self.adj[0,:] == 1).item()) #TODO: Fix this
+            unknown_joints = list(set(range(n)) ^ set(known_joints)) 
+        else:
+            assert isinstance(unknown_joints, list)
+            known_joints = list(set(range(n)) ^ set(unknown_joints))
+
+
+        count = 0
+        while list(set(range(n)) ^ set(known_joints)) != [] and count &lt; 100:
+
+            for i in unknown_joints[:]:
+                
+                if sum(self.adj[i, known_joints]) &gt;= 2:
+
+
+                    inds = np.array(known_joints)[np.where(self.adj[i, known_joints] &gt;= 1)[0]]
+
+                    # Update paths
+                    self.paths[i, :, :] = symbolic_kinematics(self.paths[inds[0],:,:], self.paths[inds[1], :, :], self.paths[i, :, 0])
+                    
+                    unknown_joints.remove(i)
+                    known_joints.append(i)
+                else:
+                    pass
+            count += 1
+        
+        
+    def add_node(self, node_pos):
+        &#34;&#34;&#34;Add node to the linkage graph
+
+        Args:
+            node_pos (Nd.Array): initial position of revolute joint Shape: (2, )
+        &#34;&#34;&#34;
+        
+        n = self.number_of_nodes()
+        
+        self.paths[n, :, 0] = node_pos
+
+    def add_edge(self, id0, id1):
+        &#34;&#34;&#34;Add edge to linkage graph
+
+        Args:
+            id0 (int): index of node 0
+            id1 (int): index of node 1
+        &#34;&#34;&#34;
+        
+        self.adj[id0, id1] = 1
+        self.adj[id1, id0] = 1
+
+    def update_fixed_paths(self, fixed_node_pos):
+        &#34;&#34;&#34;Update self.paths for fixed revolute joints (DEPRECATED)
+
+        Args:
+            fixed_node_pos (Nd.Array): Vector of initial position of fixed nodes Shape: (n, 2)
+        &#34;&#34;&#34;
+        fixed_ids = self._get_fixed_ids()
+        self.paths[fixed_ids, :, :] = fixed_node_pos[:, :, np.newaxis]
+
+        self._update_crank_path()
+
+        # Update rest of mechanism
+        self.update_paths()
+
+    def coupler_traj(self, normalize=True, scale=None, shift=None):
+        &#34;&#34;&#34;Return the coupler node trajectory
+
+        Args:
+            normalize (bool, optional): Normalized curve. Defaults to True.
+            scale (float, optional): scaling factor. Defaults to None.
+            shift (Nd.Array, optional): x,y shift for all points. Defaults to None.
+
+        Returns:
+            Nd.Array: coupler trajectory
+        &#34;&#34;&#34;
+        n = self.number_of_nodes()
+        # inds = np.linspace(0, self.T-1, self.test_samples).astype(int)
+
+        if normalize: return normalize_curve(self.paths[n-1, :, :], scale=scale, shift=shift)
+        
+        return self.paths[n-1, :, :]
+
+
+    def paper_plotting(self, show=False, show_goal=True, show_coupler=True, show_obj=True):
+        &#34;&#34;&#34;Helper function for plotting figures used in paper
+
+        Args:
+            show (bool, optional): show the plot. Defaults to False.
+            show_goal (bool, optional): plot the goal on figure. Defaults to True.
+            show_coupler (bool, optional): plot the coupler curve on figure. Defaults to True.
+            show_obj (bool, optional): add objective value of linkage to figure. Defaults to True.
+
+        Returns:
+            Matplotlib.fig: the figure object
+        &#34;&#34;&#34;
+        
+        fig, ax1 = plt.subplots(figsize=(8.5, 11))
+        coupler_idx = self.number_of_nodes()-1
+        
+        ## Plot Links and Joints
+        edges = self.get_edges()
+        for e in edges: 
+            ax1.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;-&#39;, color=&#39;0.7&#39;, linewidth=3, path_effects=[pe.Stroke(linewidth=5, foreground=&#39;k&#39;), pe.Normal()]) 
+            # plt.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;r.&#39;, label=&#34;joints&#34;)
+        
+        ## Plot special joints    
+        ax1.plot(self.paths[2, 0, 0], self.paths[2,1, 0], marker=&#39;^&#39;, color=&#39;gray&#39;, label=&#34;fixed joint&#34;, ms=15, path_effects=[pe.Stroke(linewidth=3, foreground=&#39;k&#39;), pe.Normal()])
+        ax1.plot(self.paths[0, 0, 0], self.paths[0,1, 0], marker=&#39;^&#39;, color=&#39;magenta&#39;, label=&#34;motor joint&#34;, ms=15, path_effects=[pe.Stroke(linewidth=3, foreground=&#39;k&#39;), pe.Normal()])
+        ax1.plot(self.paths[1, 0, 0], self.paths[1,1, 0], marker=&#39;o&#39;, color=&#39;lime&#39;, label=&#34;crank joint&#34;, ms=15)
+
+        ## Plot moveable revolute joints
+        fixed_ids = self._get_fixed_ids()
+        non_fixed_ids = list(set(fixed_ids) ^ set(range(coupler_idx+1)))
+        ax1.plot(self.paths[non_fixed_ids[1:], 0, 0], self.paths[non_fixed_ids[1:],1, 0], &#39;ro&#39;, label=&#34;pin joints&#34;, ms=15)
+
+        ## Plot Coupler Path 
+        if show_coupler:
+            ax1.plot(self.paths[coupler_idx, 0, :], self.paths[coupler_idx, 1,:], &#39;b-&#39;, label=&#34;coupler&#34;, linewidth=4)
+        ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], &#39;ro&#39;, label=&#34;coupler joint&#34;, markersize=15)
+
+        ## Plot Shifted Goal
+        mu = self.paths[coupler_idx, :, :].mean(1).reshape(-1, 1)
+        std = max(self.paths[coupler_idx, :, :].std(1))
+        
+        goal = (normalize_curve(self.goal)*std+mu)
+        if show_goal:
+            ax1.plot(goal[0,:], goal[1,:], &#39;y-&#39;, linewidth=4)
+        
+        ## Plot constraints    
+        if self.constraints:
+            # plt.axhline(y=0, color=&#39;red&#39;, linestyle=&#39;--&#39;, lw=5)
+
+            body_constraints, coupler_constraints = self.constraints
+            ax1.plot([body_constraints[0], body_constraints[1], body_constraints[1], body_constraints[0], body_constraints[0]], 
+                     [body_constraints[2], body_constraints[2], body_constraints[3], body_constraints[3], body_constraints[2]], &#39;r-.&#39;, lw=4)
+            
+            ax1.plot([coupler_constraints[0], coupler_constraints[1], coupler_constraints[1], coupler_constraints[0], coupler_constraints[0]], 
+                     [coupler_constraints[2], coupler_constraints[2], coupler_constraints[3], coupler_constraints[3], coupler_constraints[2]], &#39;g-.&#39;, lw=4)
+        ax1.set_axis_off()
+        
+        ## Add Objective score to figure
+        if show_obj:
+            traj_norm = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc) 
+
+            # total_dist = distance(goal, self.paths[coupler_idx, :, :], ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+            total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+            # pdb.set_trace()
+            plt.rcParams[&#39;font.size&#39;] = 40
+            text_box = AnchoredText(f&#34;obj={round(total_dist, 2)}&#34;, frameon=False, pad=0.0, borderpad=-1.0, loc=&#39;lower right&#39;)
+            # text_box = AnchoredText(f&#34;obj_MICP={round(total_dist2, 2)}, obj_GCPN={round(total_dist, 2)}&#34;, frameon=False, pad=0.0, borderpad=-1.0, loc=&#39;lower right&#39;)
+            plt.setp(text_box.patch, facecolor=&#39;white&#39;, alpha=0.5)
+
+            ax1.add_artist(text_box)
+
+
+        ax1.set_xlim([-1.7, 2.5])
+        ax1.set_ylim([-1.7, 1.7])
+        ax1.set_aspect(&#39;equal&#39;)
+
+    
+        if show:
+            plt.show()
+            
+        return fig
+    
+    def coords_to_pix(self, x):
+        &#34;&#34;&#34;Helper function for self.render converting coordinates to pixels
+
+        Args:
+            x (Nd.Array): coordinates Shape: (2, n)
+
+        Returns:
+            Nd.Array: pixel locations Shape: (2, n)
+        &#34;&#34;&#34;
+        return x * self.scale + self.screen_width / 2.0
+    
+    def render(self, mode=&#34;human&#34;):
+        &#34;&#34;&#34;Render the linkage being generated
+
+        Args:
+            mode (str, optional): visualization mode. Defaults to &#34;human&#34;.
+
+        Raises:
+            DependencyNotInstalled: needs pygame
+
+        Returns:
+            bool: successful
+        &#34;&#34;&#34;
+        try:
+            import pygame
+            from pygame import gfxdraw
+        except ImportError:
+            raise DependencyNotInstalled(
+                &#34;pygame is not installed, run `pip install gym[classic_control]`&#34;
+            )
+
+        self.screen_width = 600
+        self.screen_height = 600
+
+        design_width = self.bound * 5.0
+        self.scale = self.screen_width/ design_width 
+
+
+        self.screen = None # TODO: Fix this
+        self.clock = None # TODO: Fix me
+        
+
+        if self.screen is None:
+            pygame.init()
+            pygame.display.init()
+            self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+        if self.clock is None:
+            self.clock = pygame.time.Clock()
+
+        self.surf = pygame.Surface((self.screen_width, self.screen_height))
+        self.surf.fill((255, 255, 255))
+        
+        path_pix = self.coords_to_pix(self.paths).astype(int)
+        
+        
+        ## Draw Links
+        for e in self.get_edges():
+            gfxdraw.line(self.surf, path_pix[e[0], 0, 0], path_pix[e[0], 1, 0], 
+                                    path_pix[e[1], 0, 0], path_pix[e[1], 1, 0], [0, 0, 0])
+        
+        rad = 5
+        ## Draw Motor
+        gfxdraw.filled_circle(self.surf, path_pix[0,0,0], path_pix[0,1,0], rad, [255, 0, 255])
+        
+        ## Draw Crank Node
+        gfxdraw.filled_circle(self.surf, path_pix[1,0,0], path_pix[1,1,0], rad, [0, 255, 0])
+        
+        ## Draw Fixed Node
+        gfxdraw.filled_circle(self.surf, path_pix[2,0,0], path_pix[2,1,0], rad, [160, 160, 160])
+        
+        ## Draw Other Nodes
+        n = self.number_of_nodes()
+        for i in range(3, n):
+            gfxdraw.filled_circle(self.surf, path_pix[i,0,0], path_pix[i,1,0], rad, [255, 0, 0])
+
+        
+        ## Draw Coupler Traj
+        for i in range(self.T):
+            gfxdraw.filled_circle(self.surf, path_pix[n-1,0,i], path_pix[n-1,1,i], rad//2, [255, 0, 0])
+
+        mu = self.paths[n-1, :, :].mean(1).reshape(-1, 1)
+        std = max(self.paths[n-1, :, :].std(1))
+        # pdb.set_trace()
+        goal = (self.goal*std+mu)
+        goal_pix = self.coords_to_pix(goal).astype(int)
+        ## Draw Goal Traj
+        for i in range(self.T):
+            gfxdraw.filled_circle(self.surf, goal_pix[0,i], goal_pix[1,i], rad//2, [255, 255, 0])
+        
+
+        self.surf = pygame.transform.flip(self.surf, False, True)
+        self.screen.blit(self.surf, (0, 0))
+        if mode == &#34;human&#34;:
+            pygame.event.pump()
+            self.clock.tick(self.metadata[&#34;render_fps&#34;])
+            pygame.display.flip()
+
+        if mode == &#34;rgb_array&#34;:
+            return np.transpose(
+                np.array(pygame.surfarray.pixels3d(self.screen)), axes=(1, 0, 2)
+            )
+        else:
+            return True
+
+
+    def plot_graph(self, plot_paths=False, plot_coupler=True, filename=None, coupler_idx=None):
+        &#34;&#34;&#34;Helper function to visualize linkage graph
+
+        Args:
+            plot_paths (bool, optional): plot revolute joint trajectories. Defaults to False.
+            plot_coupler (bool, optional): plot coupler joint trajectory. Defaults to True.
+            filename (str, optional): filename to save figure. Defaults to None.
+            coupler_idx (int, optional): index of coupler index or other node that you want to be known as the coupler. Defaults to None.
+
+        Returns:
+            Matplotlib.fig: figure 
+        &#34;&#34;&#34;
+        ## Get coupler index
+        if coupler_idx is None: 
+            coupler_idx = self.number_of_nodes()-1
+        
+        ## Initialize figure    
+        if self.goal is not None:
+            fig, (ax1, ax2) = plt.subplots(1, 2)
+        else:
+            fig, ax1 = plt.subplots()
+        
+        ## Plot Edges
+        edges = self.get_edges(coupler_idx+1)
+        for e in edges: 
+            ax1.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;k-&#39;) 
+            # plt.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;r.&#39;, label=&#34;joints&#34;)
+        
+        ## Plot motor and fixed node
+        ax1.plot(self.paths[2, 0, 0], self.paths[2,1, 0], &#39;r^&#39;, label=&#34;fixed joints&#34;, ms=10)
+        ax1.plot(self.paths[0, 0, 0], self.paths[0,1, 0], &#39;m^&#39;, label=&#34;motor joints&#34;, ms=10)
+
+        ## Plot revolute joints
+        fixed_ids = self._get_fixed_ids()
+        non_fixed_ids = list(set(fixed_ids) ^ set(range(coupler_idx+1)))
+        ax1.plot(self.paths[non_fixed_ids, 0, 0], self.paths[non_fixed_ids,1, 0], &#39;ro&#39;, label=&#34;pin joints&#34;, ms=10)
+
+        ## Plot joint trajectories
+        if plot_paths:
+            ax1.plot(self.paths[:coupler_idx+1, 0, :], self.paths[:coupler_idx+1, 1,:], &#39;b.&#39;, markersize=1.0)
+
+        ## Highlight coupler trajectory
+        if plot_coupler:
+            # n = self.number_of_nodes()-1
+            ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], &#39;yo&#39;, label=&#34;coupler joint&#34;, markersize=10)
+            ax1.plot(self.paths[coupler_idx, 0, :], self.paths[coupler_idx, 1,:], &#39;y-&#39;, label=&#34;coupler&#34;, markersize=3)
+
+
+        ## Figure Formating
+        ax1.legend(loc=&#39;upper center&#39;, bbox_to_anchor=(1.0, -0.1),
+            fancybox=True, shadow=True, ncol=3)
+        # ax1 = plt.gca()
+        ax1.set_title(&#39;State Visualization&#39;)
+        ax1.set_xlim([-self.max_length, self.max_length])
+        ax1.set_ylim([-self.max_length, self.max_length])
+        ax1.set_aspect(&#39;equal&#39;)
+
+        ## Plot goal
+        if self.goal is not None:
+            ax2.plot(self.goal[0,:], self.goal[1,:], &#39;r.&#39;, ms=10)
+            coupler = self.coupler_traj()
+            ax2.plot(coupler[0,:], coupler[1,:], &#39;y.&#39;)
+            ax2.set_xlim([-self.max_length, self.max_length])
+            ax2.set_ylim([-self.max_length, self.max_length])
+            ax2.set_aspect(&#39;equal&#39;)
+
+        
+        ## Plot constraints
+        if self.constraints:
+            colors = [&#39;r--&#39;, &#39;b--&#39;]
+            for i, c in enumerate(self.constraints):
+                ax1.plot([c[0], c[1], c[1], c[0]], [c[2], c[2], c[3], c[3]], colors[i], lw=3)
+
+        ## Save figure
+        if filename is not None: 
+            if filename in os.listdir(): 
+                out = filename.split(&#34;.&#34;)
+                out[0] += (&#39;_&#39;+str(datetime.now()))
+                filename = &#39;.&#39;.join(out)
+            
+            plt.savefig(filename)
+            plt.close()
+        
+        return fig
+
+    def is_valid(self):
+        &#34;&#34;&#34;Checks that linkage graph is valid
+
+        Returns:
+            bool: linkage graph is valid
+        &#34;&#34;&#34;
+        return (not np.isnan(self.paths).any())
+            
+    
+    # @timebudget
+    def get_edge_mask(self, id0, id1):
+        &#34;&#34;&#34;Valid scaffold node locations for adding to Assur 0DOF linkage to node0 and node1
+
+        Args:
+            id0 (int): index of node 0
+            id1 (int): index of node 1
+
+        Returns:
+            Nd.Array: valid scaffold nodes for adding to linkage graph
+        &#34;&#34;&#34;
+        ## Get nodei and nodej trajectories
+        xi = self.paths[id0, :, :] # 2xsteps
+        xj = self.paths[id1, :, :]
+
+        l_ij = np.linalg.norm(xi - xj, axis=0).reshape(1, -1) # (1, steps)
+
+        l_ik = np.linalg.norm(xi[:, 0].reshape(1,-1) - self.grid, axis=1).reshape(-1, 1) # [1,2] - [121, 2] -&gt; (121, 1)
+        l_jk = np.linalg.norm(xj[:, 0].reshape(1,-1) - self.grid, axis=1).reshape(-1, 1) # [1,2] - [121, 2] -&gt; (121, 1)
+
+        ## Triangle inequality between node i and j trajectories
+        valid = np.logical_and.reduce((np.all(l_ik+l_jk &gt; l_ij, 1), 
+                                        np.all(l_ik+l_ij &gt; l_jk, 1),  
+                                        np.all(l_jk+l_ij &gt; l_ik, 1)))
+
+        return valid #np.ones_like(valid)
+
+    
+    def satisfy_constraints(self): 
+        &#34;&#34;&#34;Checks if linkage graph satisfies the constraints
+
+        Returns:
+            bool: satifies
+        &#34;&#34;&#34;
+            
+        if not self.constraints:
+            return True
+        
+        valid = []
+        for i, bounding_box in enumerate(self.constraints):
+            ## Get body and couple index
+            if self.is_terminal:
+                node = self.number_of_nodes()-1 if i else range(self.number_of_nodes()-1)
+            else:
+                node = range(self.number_of_nodes())
+                
+                ## If non-terminal and coupler constraints break
+                if i:
+                    return all(valid)
+            
+            ## Check that iniital state inside bounding box 
+            # TODO: this is wrong, it should consider the whole trajectory
+            if not bounding_box:
+                valid.append(True)
+            
+            xmin = np.min(self.paths[node,0,:])
+            xmax = np.max(self.paths[node,0,:])
+            
+            ymin = np.min(self.paths[node,1,:])
+            ymax = np.max(self.paths[node,1,:])
+            
+            valid.append(all([xmin&gt;bounding_box[0], 
+                                xmax&lt;bounding_box[1], 
+                                ymin&gt;bounding_box[2], 
+                                ymax&lt;bounding_box[3]]))
+                
+        return all(valid)
+        
+    
+    def get_distance(self, scale=None, shift=None):
+        &#34;&#34;&#34;Distance between the coupler trajectory and the goal
+
+        Args:
+            scale (float, optional): scaling factor for coupler trajectory. Defaults to None.
+            shift (Nd.Array, optional): shifting vector for coupler trajectory. Defaults to None.
+
+        Returns:
+            float: distance
+        &#34;&#34;&#34;
+        ## Dist
+        traj_norm = self.coupler_traj(scale=scale, shift=shift) 
+
+        total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+        
+        return total_dist
+
+    def _get_reward(self):
+        &#34;&#34;&#34;Reward for linkage graph
+
+        Returns:
+            (float, bool): reward, success
+        &#34;&#34;&#34;
+        
+        self.cycles = self.number_of_cycles()
+
+        ## Not Valid
+        if not self.is_valid():
+            self.total_dist = np.nan
+            self.reward = self.invalid_penalty
+            return self.reward, False
+        
+        ## Fails Constraints
+        if not self.satisfy_constraints(): 
+            self.total_dist = np.nan
+            self.reward = self.invalid_penalty
+            return self.reward, False
+
+        ## No goal
+        if self.goal is None:             
+            print(&#34;[Warning] _get_reward(): No goal was added&#34;)
+            return 0.0, False
+        
+        ## Invalid design
+        if self.cycles == 0:
+            self.total_dist = np.nan
+            self.reward = self.invalid_penalty
+            return self.reward, False
+        
+        ## get distance
+        self.total_dist = self.get_distance(scale=self.goal_scale, shift=self.goal_loc)
+        
+        ## Normalize distance w.r.t circle 
+        norm_distance_reward = max((self.R_circle-self.total_dist)/self.R_circle, -0.0) # 0-1
+        
+        ## set reward
+        self.reward = norm_distance_reward #max(-self.total_dist, -9.9) #(cycle_weight*cycle_reward + (1.-cycle_weight)*norm_distance_reward)*10.0
+        
+        return self.reward, (self.total_dist &lt;= self.goal_tol) 
+        
+
+    def _get_info(self):
+        &#34;&#34;&#34;linkage graph information
+
+        Returns:
+            dict: various information that might be useful
+        &#34;&#34;&#34;
+        
+        ## Only return info if terminal linkage design
+        if self.is_terminal:
+            n = self.number_of_nodes()
+            n_active = self.number_of_active_nodes()
+            
+            info = {&#39;number_of_nodes&#39;: n,
+                    &#39;number_of_active_nodes&#39;: n_active, 
+                    &#39;max_nodes&#39;:       self.max_nodes,
+                    &#39;resolution&#39;:      self.resolution,
+                    &#39;bound&#39;:           self.bound,
+                    &#39;feature_points&#39;:  self.feature_points,
+                    &#39;sample_points&#39;:   self.T,
+                    &#39;number_of_edges&#39;: self.number_of_edges(),
+                    &#39;node_positions&#39;:  self.paths[:n, :, 0],
+                    &#39;edges&#39;:           self.get_edges(),
+                    &#39;valid&#39;:           self.is_valid(),
+                    &#39;goal&#39;:            self.goal,
+                    &#39;coupler&#39;:         self.paths[n-1, :, :],
+                    &#39;reward&#39;:          self.reward, ## This includes information that is biased about desired behavior
+                    &#39;cycles&#39;:          self.cycles,
+                    &#39;distance&#39;:        self.total_dist, ## This is the actual metric of comparison
+                    }
+            
+            return info #info
+        return {}
+    
+
+    def _remove_action(self):
+        &#34;&#34;&#34;Helper function that removes previous action
+        &#34;&#34;&#34;
+        n = self.number_of_nodes()
+        self.paths[n-1, :, :] = 0.
+
+        self.adj[n-1,:] = 0
+        self.adj[:,n-1] = 0
+        
+        m = self.number_of_nodes()
+        assert((n-m)==1)
+        assert(not np.isnan(self.paths).any())
+
+
+    def dfs(self, visited, edges, node, known_joints):
+        &#34;&#34;&#34;Helper function for depth first search
+
+        Args:
+            visited (list): visited nodes
+            edges (set): set of edges
+            node (int): node index
+            known_joints (list): known joint trajectories
+        &#34;&#34;&#34;
+        
+        if node not in visited and node not in [0, 1, 2]:
+            visited.add(node)
+
+            neighbours = np.array(known_joints)[np.where(self.adj[int(node), known_joints] &gt;= 1)[0]][:2]
+            # print(node, neighbours)
+            edges.add(frozenset((node, neighbours[0])))
+            edges.add(frozenset((node, neighbours[1])))
+            for neighbour in neighbours:
+                self.dfs(visited, edges, neighbour, known_joints)
+                
+    def get_active_nodes(self):
+        &#34;&#34;&#34;Helper function to get all known nodes that contribute to coupler trajectory
+
+        Returns:
+            (list, set): node indexes that are used for coupler FK, edges that are useful for linkage graph
+        &#34;&#34;&#34;
+        ## All nodes
+        n = self.number_of_nodes()
+
+        ## Initialize variables
+        visited = set()
+        edges = set()
+        known_joints = np.arange(n)
+
+        ## Recursively trace from coupler to root nodes 
+        self.dfs(visited, edges, n-1, known_joints)
+        visited = list(visited)
+        visited.sort()
+
+        active_nodes = [0, 1, 2] + visited
+        
+        return active_nodes, edges
+    
+    def number_of_active_nodes(self):
+        &#34;&#34;&#34;Helper function returns number of active nodes
+
+        Returns:
+            int: number of active nodes in linkage graph
+        &#34;&#34;&#34;
+        return len(self.get_active_nodes()[0])
+    
+    def prune(self):
+        &#34;&#34;&#34;Prune linkage graph of unnecessary revolute joints
+        &#34;&#34;&#34;
+        
+        ## Get active nodes and edges
+        active_nodes, edges = self.get_active_nodes()
+        active_nodes.sort()
+        
+        n = len(active_nodes)
+        
+        ## update edge list
+        edges = np.array([[0, 1], [0, 2]]+ [[active_nodes.index(list(e)[0]), active_nodes.index(list(e)[1])] for e in edges])
+        
+        ## get all paths of active nodes
+        paths = self.paths[active_nodes,:,0]
+
+        ## Reset linkage graph paths and adj
+        self.paths = np.zeros_like(self.paths)
+        self.adj = np.zeros_like(self.adj)
+        
+        ## Update with only active nodes and edges
+        self.paths[:n, :, 0] = paths
+        
+        self.adj[edges[:,0], edges[:,1]] = 1
+        self.adj[edges[:,1], edges[:,0]] = 1 
+     
+        ## reinitialize linkage graph
+        self._initialize_paths()
+        
+    def active_cycles(self):
+        &#34;&#34;&#34;Returns all the active loops in the linkage graph  
+
+        Returns:
+            list: all cycles in linkage graph NOTE: this includes cycles with 3 nodes which are not valid loops
+        &#34;&#34;&#34;
+        
+        ## Get active nodes and edges
+        active_nodes, edges = self.get_active_nodes()
+        active_nodes.sort()
+        
+        n = len(active_nodes)
+        
+        edges = np.array([[0, 1], [0, 2]]+ [[active_nodes.index(list(e)[0]), active_nodes.index(list(e)[1])] for e in edges])
+        
+        ## initialize nx graph
+        graph = nx.Graph()
+        graph.add_nodes_from(range(n))
+        graph.add_edges_from(edges)
+        
+        ## Minimum cycle basis
+        return list(nx.minimum_cycle_basis(graph))
+    
+    def number_of_cycles(self):
+        &#34;&#34;&#34;Number of active linkage graph loops
+
+        Returns:
+            int: number of active linkage graph loops NOTE: this excludes loops of 3 nodes (also known as triads as they are not useful)
+        &#34;&#34;&#34;
+        cycles = [c for c in self.active_cycles() if len(c) &gt; 3]
+        
+        return len(cycles)
+        
+
+    def update_best_designs(self):
+        &#34;&#34;&#34;Update set of best designs of various linakge graph topologies
+        &#34;&#34;&#34;
+        ## Prune linkage graph
+        self.prune()
+        
+        ## If linkage graph topology not accounted for yet        
+        if self.cycles not in self.best_designs:
+            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
+            return 
+        
+        ## If linkage graph is better than current topology 
+        if self.total_dist &gt; self.best_designs[self.cycles][-1]:
+            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
+            return 
+
+    def step(self, action):
+        &#34;&#34;&#34;Update linkage graph with new action
+
+        Args:
+            action (int): index of action 
+
+        Returns:
+            (Nd.Array, float, bool, dict): Observation, Reward, Done, Info
+        &#34;&#34;&#34;
+        ## Get action from index
+        (node_id0, node_id1), scaffold_id, done = self.actions[int(action)]
+        
+        ## Is terminal action
+        self.is_terminal = done
+
+
+        ## If Action is the same as previous Terminate Episode
+        if action == self.previous_action: 
+            if self.debug:
+                print(&#34;Warning: (Action) Same Action was selected again. Note that this is considered invalid&#34;)
+                
+            obs = self.get_observation()
+            done = True 
+
+            return obs, self.invalid_penalty, done, {} 
+
+        
+        ## Check if node selection is valid 
+        n = self.number_of_nodes()
+        if node_id0 &gt;= n or node_id1 &gt;= n:
+            if self.debug:
+                print(&#34;Warning: (Nodes) Same Action was selected again. Note that this is considered invalid&#34;)
+
+            return self.get_observation(), self.invalid_penalty, True, {}
+
+        ## Valid node add to linkage
+        self.add_node(self.grid[scaffold_id, :])
+        new_node_id = self.number_of_nodes()
+        self.add_edge(node_id0, new_node_id)
+        self.add_edge(node_id1, new_node_id)
+
+        ## Update Paths
+        self.paths[new_node_id, :, :] = symbolic_kinematics(self.paths[node_id0, :, :], self.paths[node_id1, :, :], self.paths[new_node_id, :, 0])
+
+        ## If Kinematics Valid Check
+        if not self.is_valid():
+            if self.debug:
+                print(&#34;Warning: (Kinematics) Action led to kinematically infeasible design.&#34;)
+
+            self._remove_action()
+            return self.get_observation(), self.invalid_penalty, True, {}
+        
+        ## Check if finished design 
+        if self.number_of_nodes() == self.max_nodes and not done:
+            if self.debug:
+                print(&#34;Warning: (Terminal) Failed to finish design in valid number of steps.&#34;)
+
+            return self.get_observation(), self.invalid_penalty, True, {}
+
+        ## Get reward
+        reward = 0.0
+        if done:
+            reward, _ = self._get_reward()
+            ## Save all good designs during the search
+            self.update_best_designs()
+    
+        self.previous_action = action
+        
+        obs = self.get_observation()
+        info = self._get_info() 
+        
+        # Return Status
+        return obs, reward, done, info 
+    
+    def get_observation(self):
+        &#34;&#34;&#34;Observation of current linkage state
+
+        Returns:
+            Nd.Array: [X ((Node_features)*max_nodes), adj (max_nodes*max_nodes), mask (max_nodes), action_mask (number_of_actions)] flattened
+        &#34;&#34;&#34;
+        obs = []
+
+        ## Revolution joint positons 
+        idx = np.round(np.linspace(0, self.paths.shape[-1]-1, self.feature_points)).astype(int)
+        
+        ## NOTE: use_node_type DEPRECATED
+        # if self.use_node_type:
+        #     x = [[self.paths[i, 0, 0], self.paths[i, 1, 0], 1] if (i == self.number_of_nodes()-1 and self.is_terminal) else 
+        #         [self.paths[i, 0, 0], self.paths[i, 1, 0], 0] for i in range(self.max_nodes)] 
+        #     obs.append(np.asarray(sum(x, [])).astype(&#39;float32&#39;))
+
+        # else:
+        #     # x = [[self.paths[i, 0, 0], self.paths[i, 1, 0]] for i in range(self.max_nodes)]
+        
+        ## Node features
+        x = self.paths[:, :, idx].flatten().astype(&#39;float32&#39;)
+        obs.append(x)
+        
+        ## Adjacency Matrix
+        adj = self.adj.copy()
+        if self.self_loops:
+            np.fill_diagonal(adj, 1.0)
+            
+        obs.append(adj.astype(&#39;float32&#39;).flatten())
+
+        ## Node Mask 
+        n = self.number_of_nodes()
+        mask = np.zeros(self.max_nodes).astype(int)
+        mask[:n] = 1
+        obs.append(mask.astype(&#39;float32&#39;))
+
+        ## Node Action Mask
+        action_mask = np.array(self._get_action_mask())
+        obs.append(action_mask.astype(&#39;float32&#39;))
+        
+        obs = np.concatenate(obs)
+
+        return np.nan_to_num(obs, nan=0.0)
+    
+    def random_n_bar(self, edges, n):
+        &#34;&#34;&#34;Random valid n bar linakge NOTE: not really N_bar, based on edges input
+
+        Args:
+            edges (Nd.Array): set of edges Shape: (e, 2)
+            n (int): number of revolute joints
+        &#34;&#34;&#34;
+        pos_ind = range(self.grid.shape[0])
+        # s = l = 1 
+        # p = q = 0
+        
+        # ## Random Crank-Rocker N-Bar
+        # while s+l &gt; p+q:
+        node_pos_ind = self.rng.choice(pos_ind, size=n, replace=False)
+        node_pos = self.grid[node_pos_ind,:]
+            # s = np.linalg.norm(node_pos[0]-node_pos[1])
+            # q = np.linalg.norm(node_pos[0]-node_pos[2])
+            # l = np.linalg.norm(node_pos[1]-node_pos[3])
+            # p = np.linalg.norm(node_pos[2]-node_pos[3])
+        
+        
+        self.paths[:4, :, 0]=node_pos
+        self.adj[edges[:,0], edges[:,1]] = 1
+        self.adj[edges[:,1], edges[:,0]] = 1 
+        self._initialize_paths()
+
+    def get_valid_env(self):
+        &#34;&#34;&#34;Generate random valid linkage graph
+
+        Returns:
+            bool: is valid
+        &#34;&#34;&#34;
+
+        ## Basic 4-bar configuration
+        edges = np.array([[0, 1], [0, 2], [1, 3], [2, 3]])
+        self.random_n_bar(edges, 4)
+        
+        # Step 2 check validity 
+        while not self.is_valid() or not self.satisfy_constraints():
+            # If not valid save data
+            self.random_n_bar(edges, 4)
+
+
+        return self.is_valid()
+        
+        
+    def close(self):
+        &#34;&#34;&#34;Close environment
+        &#34;&#34;&#34;
+        pass
+
+
+
+
+if __name__ == &#34;__main__&#34;:
+    import pyvirtualdisplay
+
+    env = Mech(max_nodes=10, bound=1., resolution=11, sample_points=20, feature_points=1, goal=np.zeros([2,20]), normalize=True)
+    _display = pyvirtualdisplay.Display(visible=True,  # use False with Xvfb
+                                    size=(600, 600))
+    _ = _display.start()
+    done = False
+    while not done:
+        env.render()
+        _, _, done, _ = env.apply_random_action()
+    _display.stop()
+    # # pdb.set_trace()
+    # filenames = [&#39;jansen_traj&#39;, &#39;klann_traj&#39;, &#39;strider_traj&#39;, &#39;trot_traj&#39;] #[&#39;jansen_traj&#39;, &#39;klann_traj&#39;] #, &#39;strider_traj&#39;, &#39;trot_traj&#39;] #, &#39;infinity_200&#39;, &#39;loopfolium_150&#39;, &#39;quadrifoilium_200&#39;, &#39;trifolium_100&#39;, &#39;double_loopfolium_200&#39;]
+    # sample_points = 20
+    
+    # for goal_filename in filenames:
+    #     for _ in range(1):
+    #         # goal_filename = &#34;fake_jansen_goal&#34;
+    #         tb_log_dir = f&#34;./logs/{goal_filename}&#34;
+
+    #         if not os.path.isdir(tb_log_dir):
+    #             os.mkdir(tb_log_dir)
+
+    #         goal_curve = pickle.load(open(f&#39;saved_footpaths/{goal_filename}.pkl&#39;, &#39;rb&#39;))
+    #         idx = np.round(np.linspace(0, goal_curve.shape[1] - 1, sample_points)).astype(int)
+    #         goal = normalize_curve(goal_curve[:,idx])
+
+    #         env_kwargs = {&#34;max_nodes&#34;:10, 
+    #                       &#34;bound&#34;:1., 
+    #                       &#34;resolution&#34;:11, 
+    #                       &#34;sample_points&#34;:sample_points, 
+    #                       &#34;goal&#34;:goal, 
+    #                       &#34;normalize&#34;:True, 
+    #                       &#34;seed&#34;: 2, 
+    #                       &#34;fixed_initial_state&#34;: False}
+    #         env = Mech(**env_kwargs)
+    #         # env = make_vec_env(Mech, n_envs=4, env_kwargs=env_kwargs) # TODO
+    #         # pdb.set_trace()
+            
+    #         gnn_kwargs = {&#34;hidden_channels&#34;:64, 
+    #                       &#34;out_channels&#34;:64, 
+    #                       &#34;normalize&#34;:False, 
+    #                       &#34;batch_normalization&#34;:False, 
+    #                       &#34;lin&#34;:True, 
+    #                       &#34;add_loop&#34;:False}
+    #         dqn_arch = [64, 256, 1024, 4096]
+    #         ppo_arch = [64, dict(vf=[32], pi=[256, 1024, 4096])]
+    #         # env = make_vec_env(lambda: env, n_envs=1)
+    #         policy_kwargs = dict(
+    #             features_extractor_class=GNN,
+    #             features_extractor_kwargs=gnn_kwargs,
+    #             net_arch=dqn_arch,
+    #         )
+    #         model = CustomDQN(policy=CustomDQNPolicy,
+    #                 env=env,
+    #                 learning_rate=linear_schedule(1e-3),
+    #                 buffer_size=100000,  # 1e6
+    #                 learning_starts=500,
+    #                 batch_size=512,
+    #                 tau=1.0, # the soft update coefficient (“Polyak update”, between 0 and 1)
+    #                 gamma=0.99,
+    #                 train_freq=(1000, &#34;step&#34;),
+    #                 gradient_steps=1,
+    #                 replay_buffer_class=None,
+    #                 replay_buffer_kwargs=None,
+    #                 optimize_memory_usage=False,
+    #                 target_update_interval=10000,
+    #                 exploration_fraction=0.8, # percent of learning that includes exploration
+    #                 exploration_initial_eps=1.0, # Initial random search
+    #                 exploration_final_eps=0.05, # final stochasticity
+    #                 max_grad_norm=10.,
+    #                 tensorboard_log=tb_log_dir,
+    #                 create_eval_env=False,
+    #                 policy_kwargs=policy_kwargs,
+    #                 verbose=0,
+    #                 seed=None,
+    #                 device=&#34;cuda:1&#34;,
+    #                 _init_setup_model=True)
+    #         # model = DQN(policy=&#39;MultiInputPolicy&#39;,
+    #         #         env=env,
+    #         #         learning_rate=linear_schedule(1e-4),
+    #         #         buffer_size=100000,  # 1e6
+    #         #         learning_starts=5000,
+    #         #         batch_size=1024,
+    #         #         tau=1.0,
+    #         #         gamma=0.99,
+    #         #         train_freq=4,
+    #         #         gradient_steps=1,
+    #         #         replay_buffer_class=None,
+    #         #         replay_buffer_kwargs=None,
+    #         #         optimize_memory_usage=False,
+    #         #         target_update_interval=2500,
+    #         #         exploration_fraction=0.8, # percent of learning that includes exploration
+    #         #         exploration_initial_eps=1.0, # Initial random search
+    #         #         exploration_final_eps=0.05, # final stochasticity
+    #         #         max_grad_norm=10.,
+    #         #         tensorboard_log=tb_log_dir,
+    #         #         create_eval_env=False,
+    #         #         policy_kwargs=policy_kwargs,
+    #         #         verbose=0,
+    #         #         seed=None,
+    #         #         device=&#34;cuda:2&#34;,
+    #         #         _init_setup_model=True)
+    #         # model = PPO(policy=CustomActorCriticPolicy, 
+    #         #             env=env, 
+    #         #             learning_rate=1e-4, 
+    #         #             n_steps=1000, 
+    #         #             batch_size=500, 
+    #         #             n_epochs=1, 
+    #         #             gamma=0.99, 
+    #         #             gae_lambda=0.95,
+    #         #             clip_range=0.2, 
+    #         #             clip_range_vf=None, 
+    #         #             # normalize_advantage=True, 
+    #         #             ent_coef=0.01,
+    #         #             vf_coef=0.5, 
+    #         #             max_grad_norm=0.5, 
+    #         #             use_sde=False, 
+    #         #             sde_sample_freq=-1,
+    #         #             target_kl=None, 
+    #         #             tensorboard_log=tb_log_dir, 
+    #         #             create_eval_env=False, 
+    #         #             policy_kwargs=policy_kwargs,
+    #         #             verbose=1, 
+    #         #             seed=None, 
+    #         #             device=&#34;cuda:1&#34;, 
+    #         #             _init_setup_model=True)
+    #         # model = A2C(policy=CustomActorCriticPolicy,
+    #         #     env=env,
+    #         #     learning_rate=linear_schedule(1e-3),
+    #         #     n_steps=5,
+    #         #     gamma=0.99,
+    #         #     gae_lambda=1.0,
+    #         #     ent_coef=0.01,
+    #         #     vf_coef=0.5,
+    #         #     max_grad_norm=0.5,
+    #         #     rms_prop_eps=1e-5,
+    #         #     use_rms_prop=True,
+    #         #     use_sde=False,
+    #         #     sde_sample_freq=-1,
+    #         #     normalize_advantage=False,
+    #         #     tensorboard_log=tb_log_dir,
+    #         #     create_eval_env=False,
+    #         #     policy_kwargs=policy_kwargs,
+    #         #     verbose=1,
+    #         #     seed=0,
+    #         #     device=&#34;cuda:0&#34;,
+    #         #     _init_setup_model=True)
+    #         # model.load(&#34;dqn_mech_v3&#34;)
+
+    #         model.learn(20000)
+    #         model_filename = uniquify(f&#34;./{type(model).__name__}_mech_v4_{goal_filename}.zip&#34;)
+    #         model.save(model_filename)
+            
+    #         if type(model).__name__ == &#34;PPO&#34;: best_designs = env.get_attr(&#39;best_designs&#39;)
+    #         else: best_designs = env.best_designs
+            
+    #         if best_designs:
+    #             pickle.dump(best_designs, open(uniquify(f&#39;best_designs_{goal_filename}.pkl&#39;), &#39;wb&#39;))
+
+    # # model = DQN.load(f&#34;./dqn_mech_v3_{goal_filename}&#34;)
+
+    # # obs = env.reset()
+    # # for _ in range(10):
+    # #     action, _states = model.predict(obs, deterministic=False)
+    # #     obs, reward, done, info = env.step(action)
+    # #     env.render(show=True)
+    # #     if done:
+    # #         obs = env.reset()
+    # # pdb.set_trace()
+
+    # # env.init(node_positions=node_pos, edges=initial_edges, steps=50)
+    # # pdb.set_trace()
+    # # Step 2 check validity 
+    # # while not env.is_valid():
+    # #     # If not valid save data
+    # #     node_pos_ind = np.random.choice(pos_ind, size=4, replace=False)
+    # #     node_pos = pos[node_pos_ind,:]
+    # #     env = Mech()
+    # #     env.init(node_positions=node_pos, edges=initial_edges, steps=50)
+
+    # # try:
+    # # except Exception as e:
+    # #     print(e)
+    # #     pdb.set_trace()
+    # # env.render(show=True)
+
+    # # Tests
+    # # Import random graph
+    # # filename = &#39;saved_graphs/six_bar/six-bar1.pkl&#39;
+    # # g = pickle.load(open(filename, &#39;rb&#39;))
+    # # graph = Mech(node_positions=g.joints[:,:,0].T, edges=g.lam, steps=50)
+    # # graph.update_fixed_paths(fixed_node_pos=np.array([[-1., 0.], graph.paths[3,:,0]-1]))
+    # # graph.add_node(np.array([2., -2.]))
+    # # graph.add_edge(graph.number_of_nodes()-1, 3)
+    # # graph.add_edge(graph.number_of_nodes()-1, 2)
+    # # graph.update_paths()
+    # # graph.sample_workspace(5, 2)
+    # # if graph.is_valid():
+    # #     graph.plot_graph(plot_paths=True, filename=&#34;testing_mech.png&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech"><code class="flex name class">
+<span>class <span class="ident">Mech</span></span>
+<span>(</span><span>max_nodes, bound, resolution, sample_points, feature_points, node_positions=None, edges=None, goal=None, normalize=True, self_loops=False, use_node_type=False, seed=None, fixed_initial_state=False, ordered_distance=False, constraints=[], min_nodes=5, debug=False, distance_metric='sqeuclidean')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Custom Environment that follows gym interface</p>
+<p>Initialize Mech gym environment</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>max_nodes</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximum number of nodes (joints) in the linkage </dd>
+<dt><strong><code>bound</code></strong> :&ensp;<code>float</code></dt>
+<dd>Bounds of the designs space [-bound, bound]</dd>
+<dt><strong><code>resolution</code></strong> :&ensp;<code>int</code></dt>
+<dd>Resolution of the scaffold nodes</dd>
+<dt><strong><code>sample_points</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of points that describe the node trajectories</dd>
+<dt><strong><code>feature_points</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of points that describe the node features for GNN</dd>
+<dt>node_positions (list/Nd.array, optional):
+Shape: (n, 2) [x, y]. Defaults to None.</dt>
+<dt>edges (list/Nd.Array, optional): Shape: (e, 2) [id0, id1]. Defaults to None.</dt>
+<dt>goal (list/Nd.Array, optional): Shape: (2, T) Goal Trajectory. Defaults to None.</dt>
+<dt><strong><code>normalize</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Normalize the coupler trajectory with respect to the goal trajectory. Defaults to True.</dd>
+<dt><strong><code>self_loops</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Include self loops in adjaecency matrix for GNN. Defaults to False.</dd>
+<dt><strong><code>use_node_type</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Include binary indicator for GNN. Defaults to False.</dd>
+<dt><strong><code>seed</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Seed for the gym environment. Defaults to None.</dd>
+<dt><strong><code>fixed_initial_state</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>When reset is called, whether the original linkage stays the same or random valid linkage is sampled. Defaults to False.</dd>
+<dt><strong><code>ordered_distance</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Whether the points in the trajectory should be considered ordered. Defaults to False.</dd>
+<dt><strong><code>constraints</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>([body constraints, coupler constraints]
+[[xmin, ymin, xmax, ymax], [xmin, ymin, xmax, ymax]]). Defaults to [].</dd>
+<dt><strong><code>min_nodes</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Minimum number of nodes in the graph for a terminal action to be valid. Defaults to 5.</dd>
+<dt><strong><code>debug</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Enables some extra print statements. Defaults to False.</dd>
+<dt><strong><code>distance_metric</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Check scipy.spatial.distance.cdist for various options. Defaults to 'sqeuclidean'.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Mech(gym.Env):
+    &#34;&#34;&#34;Custom Environment that follows gym interface&#34;&#34;&#34;
+    metadata = {&#34;render_modes&#34;: [&#34;human&#34;, &#34;rgb_array&#34;], &#34;render_fps&#34;: 2}
+
+
+    def __init__(self, max_nodes, bound, resolution, sample_points, feature_points, node_positions=None, edges=None, goal=None, normalize=True, self_loops=False, use_node_type=False, seed=None, fixed_initial_state=False, ordered_distance=False, constraints=[], min_nodes=5, debug=False, distance_metric=&#39;sqeuclidean&#39;):
+        &#34;&#34;&#34;Initialize Mech gym environment
+
+        Args:
+            max_nodes (int): Maximum number of nodes (joints) in the linkage 
+            bound (float): Bounds of the designs space [-bound, bound]
+            resolution (int): Resolution of the scaffold nodes
+            sample_points (int): Number of points that describe the node trajectories
+            feature_points (int): Number of points that describe the node features for GNN
+            node_positions (list/Nd.array, optional):  Shape: (n, 2) [x, y]. Defaults to None.
+            edges (list/Nd.Array, optional): Shape: (e, 2) [id0, id1]. Defaults to None.
+            goal (list/Nd.Array, optional): Shape: (2, T) Goal Trajectory. Defaults to None.
+            normalize (bool, optional): Normalize the coupler trajectory with respect to the goal trajectory. Defaults to True.
+            self_loops (bool, optional): Include self loops in adjaecency matrix for GNN. Defaults to False.
+            use_node_type (bool, optional): Include binary indicator for GNN. Defaults to False.
+            seed (int, optional): Seed for the gym environment. Defaults to None.
+            fixed_initial_state (bool, optional): When reset is called, whether the original linkage stays the same or random valid linkage is sampled. Defaults to False.
+            ordered_distance (bool, optional): Whether the points in the trajectory should be considered ordered. Defaults to False.
+            constraints (list, optional): ([body constraints, coupler constraints]  [[xmin, ymin, xmax, ymax], [xmin, ymin, xmax, ymax]]). Defaults to [].
+            min_nodes (int, optional): Minimum number of nodes in the graph for a terminal action to be valid. Defaults to 5.
+            debug (bool, optional): Enables some extra print statements. Defaults to False.
+            distance_metric (str, optional): Check scipy.spatial.distance.cdist for various options. Defaults to &#39;sqeuclidean&#39;.
+        &#34;&#34;&#34;
+
+        super(Mech, self).__init__()
+
+        self.debug = debug
+        
+        ## Random Seed
+        self.rng_seed = None
+        self.seed(seed)
+        #np.random.seed(seed=seed)
+        
+        ## Keep same initial node and edges for training
+        self.fixed_initial_state = fixed_initial_state 
+        
+        ## Design is terminal
+        self.is_terminal = False
+        
+        ## Initialize Scaffold Nodes
+        self.resolution = resolution
+        self.bound = bound
+        i = np.linspace(-bound, bound, resolution)
+        ii, jj = np.meshgrid(i, i)
+        self.grid = np.vstack([ii.flatten(), jj.flatten()]).T
+
+        ## Environment Hyper parameters
+        self.scaffold_ids = np.arange(self.resolution**2)
+        self.T = sample_points
+        self.feature_points = feature_points
+        assert self.feature_points &lt;= self.T 
+        self.max_nodes = max_nodes
+        self.min_nodes = min_nodes 
+        
+        ## GCN hyper parameters
+        self.normalize = normalize ## not used
+        self.self_loops = self_loops
+        self.use_node_type = use_node_type ## not used
+
+        ## GYM Action Space and Observation Space
+        self.node_combinations = tuple(combinations(range(max_nodes), 2))
+        self.non_term_actions = tuple(product(self.node_combinations, range(self.resolution**2), [0])) # ncr(n, 2) | r^2 | {0, 1}
+        self.term_actions = tuple(product(self.node_combinations, range(self.resolution**2), [1])) # ncr(n, 2) | r^2 | {0, 1}
+        self.actions = self.non_term_actions+self.term_actions  #tuple(product(self.node_combinations, range(self.resolution**2), [0, 1])) # ncr(n, 2) | r^2 | {0, 1}
+        self.num_actions = np.arange(len(self.actions))
+        self.actions_hash = {k: v for k, v in zip(self.actions, self.num_actions)}
+        self.non_term_actions_keys = [self.actions_hash[action] for action in self.non_term_actions]
+        self.term_actions_keys = [self.actions_hash[action] for action in self.term_actions]
+
+        self.valid_node_comb = {k: tuple(combinations(range(k), 2)) for k in range(self.max_nodes+1)}
+        # self.actions = np.vstack([action_node.flatten(), action_pos.flatten()]).T
+    
+        self.action_space = spaces.Discrete(len(self.actions)) #self.node_combinations.shape[0]*self.resolution**2)
+        self.max_length = 2*np.sqrt(2)*bound
+        
+        shape_x = self.max_nodes*(2*self.feature_points+int(use_node_type))
+        shape_adj = self.max_nodes**2
+        shape_mask = self.max_nodes
+        shape_action_mask = len(self.actions)
+        self.observation_space = spaces.Box(low=np.inf, high=np.inf, shape=[shape_x+shape_adj+shape_mask+shape_action_mask]) 
+
+        ## Coupler Goal 
+        self.goal = goal
+        if goal.shape[0] != 2:
+            goal = goal.T
+        self.goal_scale = max(np.std(goal, axis=1).reshape(-1,1))
+        self.goal_loc = np.mean(goal, axis=1).reshape(-1,1)
+        
+        self.distance_metric = distance_metric
+        self.ordered = ordered_distance
+
+        theta = np.linspace(0, np.pi*2, sample_points)
+        circle = normalize_curve(np.array([np.cos(theta), np.sin(theta)]), scale=self.goal_scale, shift=self.goal_loc) #Shift and scale to goal size
+        point = np.zeros([sample_points, 2])
+        if goal is not None:
+            self.R_circle = distance(goal, circle, self.ordered, self.distance_metric).sum()*(np.pi*2./self.T)
+            self.R_point = distance(goal, point, self.ordered, self.distance_metric).sum()*(np.pi*2./self.T)
+        # self.R_circle, _, _, _ = new_dist(goal, circle)
+        # self.R_point, _, _, _ = new_dist(goal, point)
+        self.goal_tol = 0.0 ## Hyperparameter
+        self.invalid_penalty = -1.0
+        
+        self.total_dist = None
+        self.cycles = None
+        self.reward = None
+        
+        ## Design Constraints 
+        self.constraints = constraints # [body_const, coupler_const]
+        
+        ## Node Type 
+        self.node_type = np.ones((self.max_nodes,1))
+        self.node_type[0, 0] = 0 # Input node is fixed
+        self.node_type[2, 0] = 0 # Fixed node
+
+        ### Not fixed
+        ## Mechanism Components
+        self.paths = np.zeros([self.max_nodes, 2, self.T])
+        self.adj = np.zeros([self.max_nodes, self.max_nodes])
+
+        if node_positions is None:
+            # edges = np.array([[0, 1], [0, 2]])
+            # node_positions = np.array([[1.0, 0.7], [0.9, 0.7], [0.7, 0.8]])
+            self.get_valid_env()
+            node_positions = self.paths[:4, :, 0]
+            edges = self.get_edges()
+        else:
+            n = node_positions.shape[0]
+            self.paths[:n, :, 0] = node_positions
+            self.adj[edges[:,0], edges[:,1]] = 1
+            self.adj[edges[:,1], edges[:,0]] = 1
+
+            ## Initialize Paths
+            self._initialize_paths()
+
+        self.previous_action = None
+
+        self.best_designs = {}
+        self.edge_masks = {}
+        # action_mask = self._get_action_mask()
+        self.prev_mask =  np.zeros(len(self.actions)) #action_mask
+        
+        self.init_args = {&#34;node_positions&#34;: node_positions, 
+                          &#34;edges&#34;:          edges,} 
+                        #   &#34;prev_mask&#34;:      action_mask}
+        self.resets = 0
+        
+    def seed(self, seed=None):
+        &#34;&#34;&#34;Set the seed for gym env
+
+        Args:
+            seed (int, optional): seed used for gym env. Defaults to None.
+
+        Returns:
+            int: the seed value
+        &#34;&#34;&#34;
+        if self.rng_seed:
+            if self.debug:
+                print(&#34;WARNING!!!! You tried reset the random number for the environment.&#34;)
+                print(&#34;To overide the seed apply the following: \n&#34;, 
+                      &#34;env.rng_seed = seed \n&#34; ,
+                      &#34;env.rng = RandomState(MT19937(SeedSequence(seed))) \n&#34;)
+            return self.rng_seed
+        self.rng_seed = seed
+        self.rng = RandomState(MT19937(SeedSequence(seed))) 
+        
+        return seed
+                        
+    def clear_best_desings(self):
+        &#34;&#34;&#34;Clears self.best_designs
+        &#34;&#34;&#34;
+        self.best_designs = {}
+        return
+        
+    # @timebudget
+    def _get_action_mask(self):
+        &#34;&#34;&#34;Finds all valid actions of the current environment state. NOTE: resuses previous masks if found in current episode
+
+        Returns:
+            Nd.Array: Binary vector of valid actions Shape: (num_actions, )
+        &#34;&#34;&#34;
+        n = self.number_of_nodes()
+        
+        ## Reset all non-terminal actions to invalid if last action
+        if n &gt;= self.max_nodes-1:
+            self.prev_mask[self.non_term_actions_keys] = 0
+            
+        
+        node_combinations = self.valid_node_comb[n]
+
+        for comb in node_combinations:
+            ## Only if valid scaffold nodes not explored
+            if comb in self.edge_masks:
+                continue
+            
+            ## Get valid scaffold node ids
+            valid = self.get_edge_mask(comb[0], comb[1])
+            
+            ## Cache for future designs
+            self.edge_masks[comb] = valid
+            
+            ## Update actions_mask
+            for v in self.scaffold_ids[valid]:
+                ## If no constraints on coupler or body positions
+                if self.constraints:
+                     ## Check if scaffold node is in constraint TODO: this is wrong since it is trajectory and node position...
+                    for i, c in enumerate(self.constraints):
+                        if (i == 0 and n &lt; self.max_nodes-1) or (i == 1 and n &gt; self.min_nodes):
+                            x_min, x_max, y_min, y_max = c
+                            scaffold_x = self.grid[v,0]
+                            scaffold_y = self.grid[v,1]
+                            self.prev_mask[self.actions_hash[(comb, v, i)]] = float(scaffold_x &gt; x_min and 
+                                                                                    scaffold_x &lt; x_max and
+                                                                                    scaffold_y &gt; y_min and 
+                                                                                    scaffold_y &lt; y_max)
+                else:
+                    ## Max number of actions
+                    if n &lt; self.max_nodes-1:
+                        self.prev_mask[self.actions_hash[(comb, v, 0)]] = 1
+                    
+                    ## Min number of actions
+                    if n &gt; self.min_nodes:
+                        self.prev_mask[self.actions_hash[(comb, v, 1)]] = 1
+        ## 
+        if self.previous_action:
+            self.prev_mask[self.previous_action] = 0
+    
+        return self.prev_mask 
+    
+    def apply_random_action(self):
+        &#34;&#34;&#34;Applies a random valid action to the current environment
+
+        Returns:
+            (Nd.Array, float, bool, dict): Observation, Reward, Done, Info
+        &#34;&#34;&#34;
+        action_mask = self._get_action_mask()
+
+        action = self.rng.choice(self.num_actions, p=action_mask/action_mask.sum())
+        
+        return self.step(action)
+    
+    
+    def reset(self):
+        &#34;&#34;&#34;Reset the environment to a root linkage
+
+        Returns:
+            Nd.Array: observation of the linkage (x, adj, mask, action_mask) flattened
+        &#34;&#34;&#34;
+
+        ## Reset variables
+        self.paths = np.zeros([self.max_nodes, 2, self.T])
+        self.adj = np.zeros([self.max_nodes, self.max_nodes])
+        self.edge_masks = {}
+        self.prev_mask = np.zeros(len(self.actions)) 
+        self.previous_action = None
+        self.is_terminal = False
+        
+        self.resets += 1
+        
+        ## Get root node design
+        if self.fixed_initial_state:
+            node_positions = self.init_args[&#39;node_positions&#39;]
+            edges = self.init_args[&#39;edges&#39;]
+
+            n = node_positions.shape[0]
+
+            self.paths[:n, :, 0] = node_positions
+
+            self.adj[edges[:,0], edges[:,1]] = 1
+            self.adj[edges[:,1], edges[:,0]] = 1
+
+            self._initialize_paths()
+            
+        else:
+            self.get_valid_env()
+        
+        return self.get_observation()
+
+    def _get_fixed_ids(self):
+        &#34;&#34;&#34;Returns the indexes of revolute joints that are fixed
+
+        Returns:
+            Nd.Array: indexes of fixed nodes Shape:(m, )
+        &#34;&#34;&#34;
+
+        return np.argwhere(self.node_type == 0)[:,0]
+
+    def _get_crank_id(self):
+        &#34;&#34;&#34;Returns the index for the linkage connected to the motor input
+
+        Returns:
+            int: index of crank node
+        &#34;&#34;&#34;
+
+        return 1 # NOTE: np.argwhere(self.adj[0,:] == 1).item()
+
+    def _get_dist(self, p1, p2):
+        &#34;&#34;&#34;Helper function to get the distance between two points
+
+        Args:
+            p1 (Nd.Array): Point1 Shape: (2,)
+            p2 (Nd.Array): Point2 Shape: (2,)
+
+        Returns:
+            float: Distance between p1 and p2
+        &#34;&#34;&#34;
+
+        return np.linalg.norm(p1-p2)
+
+    def _get_angle(self, p1, p2):
+        &#34;&#34;&#34;Helper function to get the angle between two points
+
+        Args:
+            p1 (Nd.Array): Point1 Shape: (2,)
+            p2 (Nd.Array): Point2 Shape: (2,)
+
+        Returns:
+            float: Angle between vectors from origin to p1 and p2
+        &#34;&#34;&#34;
+
+        return np.arctan2(*(p2[::-1]-p1[::-1])) % (2*np.pi)
+
+    def _update_crank_path(self):
+        &#34;&#34;&#34;Helper function to update self.paths the trajectory of the crank revolute joint
+        &#34;&#34;&#34;
+
+        crank_id = self._get_crank_id()
+        edge_length = self._get_dist(self.paths[0,:,0], self.paths[crank_id, :, 0])
+        start_pos = self.paths[crank_id, :, 0]
+        start = self._get_angle(self.paths[0,:,0], self.paths[crank_id, :, 0]) 
+        try:
+            assert (np.cos(start)*edge_length+self.paths[0,0,0])-start_pos[0] &lt;= 1e-3 and (np.sin(start)*edge_length+self.paths[0,1,0])-start_pos[1] &lt;= 1e-3
+        except:
+            pdb.set_trace()
+        theta = np.linspace(start, start+(np.pi*2), num=self.T)
+        
+        # pdb.set_trace()
+        self.paths[crank_id, :, :] = np.array([np.cos(theta), np.sin(theta)])*edge_length + self.paths[0,:,0].reshape(-1,1)
+
+    def _initialize_paths(self):
+        &#34;&#34;&#34;Updates self.paths with trajectories of current linkage
+        &#34;&#34;&#34;
+
+        # Initialize fixed node positions
+        fixed_ids = self._get_fixed_ids()
+        self.paths[fixed_ids, :, :] = self.paths[fixed_ids, :, 0][:, :, np.newaxis]
+
+        # Initialize pin node positions
+        self._update_crank_path()
+        
+        self.update_paths() 
+    
+    def number_of_nodes(self):
+        &#34;&#34;&#34;Helper function returns number of nodes currently in the linkage graph
+
+        Returns:
+            int: number of nodes
+        &#34;&#34;&#34;
+        empty_rows = np.argwhere(self.adj.sum(1) == 0)
+        if len(empty_rows) &gt; 0:
+            return empty_rows[0].item()
+        else:
+            return self.max_nodes
+
+    def number_of_edges(self):
+        &#34;&#34;&#34;Helper function returns the number of edges that make up the current linkage graph
+
+        Returns:
+            int: number of edges
+        &#34;&#34;&#34;
+        
+        return sum(sum(self.adj))//2
+
+    def get_edges(self, limit=None):
+        &#34;&#34;&#34;Helper function to return all the edges in the current linkage graph
+
+        Args:
+            limit (int, optional): edges between nodes bellow a particular index. Defaults to None.
+
+        Returns:
+            Nd.Array: Array of edge index pairs Shape: (e, 2) [id0, id1]
+        &#34;&#34;&#34;
+        
+        if limit is None:
+            limit = self.max_nodes
+
+        return np.array([[i, j] for i in range(self.max_nodes) for j in range(i) if self.adj[i,j]])
+
+    def get_edge_lengths(self):
+        &#34;&#34;&#34;Helper function to return all the edge lengths
+
+        Returns:
+            Nd.Array: Lengths of each edge Shape: (e, )
+        &#34;&#34;&#34;
+        
+        edges = self.get_edges()
+        lengths = np.zeros([edges.shape[0],])
+        
+        for i, e in enumerate(edges):
+            lengths[i] = self._get_dist(self.paths[e[0],:,0], self.paths[e[1], :, 0])
+
+        return lengths
+
+    def update_paths(self, unknown_joints=None):
+        &#34;&#34;&#34;Update self.paths
+
+        Args:
+            unknown_joints (list, optional): node indexes that are not known or want to be calculated. Defaults to None.
+        &#34;&#34;&#34;
+        n = self.number_of_nodes()
+        
+        if unknown_joints is None:
+            known_joints = list(np.argwhere(self.node_type == 0)[:,0])
+            known_joints.append(1) #(np.argwhere(self.adj[0,:] == 1).item()) #TODO: Fix this
+            unknown_joints = list(set(range(n)) ^ set(known_joints)) 
+        else:
+            assert isinstance(unknown_joints, list)
+            known_joints = list(set(range(n)) ^ set(unknown_joints))
+
+
+        count = 0
+        while list(set(range(n)) ^ set(known_joints)) != [] and count &lt; 100:
+
+            for i in unknown_joints[:]:
+                
+                if sum(self.adj[i, known_joints]) &gt;= 2:
+
+
+                    inds = np.array(known_joints)[np.where(self.adj[i, known_joints] &gt;= 1)[0]]
+
+                    # Update paths
+                    self.paths[i, :, :] = symbolic_kinematics(self.paths[inds[0],:,:], self.paths[inds[1], :, :], self.paths[i, :, 0])
+                    
+                    unknown_joints.remove(i)
+                    known_joints.append(i)
+                else:
+                    pass
+            count += 1
+        
+        
+    def add_node(self, node_pos):
+        &#34;&#34;&#34;Add node to the linkage graph
+
+        Args:
+            node_pos (Nd.Array): initial position of revolute joint Shape: (2, )
+        &#34;&#34;&#34;
+        
+        n = self.number_of_nodes()
+        
+        self.paths[n, :, 0] = node_pos
+
+    def add_edge(self, id0, id1):
+        &#34;&#34;&#34;Add edge to linkage graph
+
+        Args:
+            id0 (int): index of node 0
+            id1 (int): index of node 1
+        &#34;&#34;&#34;
+        
+        self.adj[id0, id1] = 1
+        self.adj[id1, id0] = 1
+
+    def update_fixed_paths(self, fixed_node_pos):
+        &#34;&#34;&#34;Update self.paths for fixed revolute joints (DEPRECATED)
+
+        Args:
+            fixed_node_pos (Nd.Array): Vector of initial position of fixed nodes Shape: (n, 2)
+        &#34;&#34;&#34;
+        fixed_ids = self._get_fixed_ids()
+        self.paths[fixed_ids, :, :] = fixed_node_pos[:, :, np.newaxis]
+
+        self._update_crank_path()
+
+        # Update rest of mechanism
+        self.update_paths()
+
+    def coupler_traj(self, normalize=True, scale=None, shift=None):
+        &#34;&#34;&#34;Return the coupler node trajectory
+
+        Args:
+            normalize (bool, optional): Normalized curve. Defaults to True.
+            scale (float, optional): scaling factor. Defaults to None.
+            shift (Nd.Array, optional): x,y shift for all points. Defaults to None.
+
+        Returns:
+            Nd.Array: coupler trajectory
+        &#34;&#34;&#34;
+        n = self.number_of_nodes()
+        # inds = np.linspace(0, self.T-1, self.test_samples).astype(int)
+
+        if normalize: return normalize_curve(self.paths[n-1, :, :], scale=scale, shift=shift)
+        
+        return self.paths[n-1, :, :]
+
+
+    def paper_plotting(self, show=False, show_goal=True, show_coupler=True, show_obj=True):
+        &#34;&#34;&#34;Helper function for plotting figures used in paper
+
+        Args:
+            show (bool, optional): show the plot. Defaults to False.
+            show_goal (bool, optional): plot the goal on figure. Defaults to True.
+            show_coupler (bool, optional): plot the coupler curve on figure. Defaults to True.
+            show_obj (bool, optional): add objective value of linkage to figure. Defaults to True.
+
+        Returns:
+            Matplotlib.fig: the figure object
+        &#34;&#34;&#34;
+        
+        fig, ax1 = plt.subplots(figsize=(8.5, 11))
+        coupler_idx = self.number_of_nodes()-1
+        
+        ## Plot Links and Joints
+        edges = self.get_edges()
+        for e in edges: 
+            ax1.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;-&#39;, color=&#39;0.7&#39;, linewidth=3, path_effects=[pe.Stroke(linewidth=5, foreground=&#39;k&#39;), pe.Normal()]) 
+            # plt.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;r.&#39;, label=&#34;joints&#34;)
+        
+        ## Plot special joints    
+        ax1.plot(self.paths[2, 0, 0], self.paths[2,1, 0], marker=&#39;^&#39;, color=&#39;gray&#39;, label=&#34;fixed joint&#34;, ms=15, path_effects=[pe.Stroke(linewidth=3, foreground=&#39;k&#39;), pe.Normal()])
+        ax1.plot(self.paths[0, 0, 0], self.paths[0,1, 0], marker=&#39;^&#39;, color=&#39;magenta&#39;, label=&#34;motor joint&#34;, ms=15, path_effects=[pe.Stroke(linewidth=3, foreground=&#39;k&#39;), pe.Normal()])
+        ax1.plot(self.paths[1, 0, 0], self.paths[1,1, 0], marker=&#39;o&#39;, color=&#39;lime&#39;, label=&#34;crank joint&#34;, ms=15)
+
+        ## Plot moveable revolute joints
+        fixed_ids = self._get_fixed_ids()
+        non_fixed_ids = list(set(fixed_ids) ^ set(range(coupler_idx+1)))
+        ax1.plot(self.paths[non_fixed_ids[1:], 0, 0], self.paths[non_fixed_ids[1:],1, 0], &#39;ro&#39;, label=&#34;pin joints&#34;, ms=15)
+
+        ## Plot Coupler Path 
+        if show_coupler:
+            ax1.plot(self.paths[coupler_idx, 0, :], self.paths[coupler_idx, 1,:], &#39;b-&#39;, label=&#34;coupler&#34;, linewidth=4)
+        ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], &#39;ro&#39;, label=&#34;coupler joint&#34;, markersize=15)
+
+        ## Plot Shifted Goal
+        mu = self.paths[coupler_idx, :, :].mean(1).reshape(-1, 1)
+        std = max(self.paths[coupler_idx, :, :].std(1))
+        
+        goal = (normalize_curve(self.goal)*std+mu)
+        if show_goal:
+            ax1.plot(goal[0,:], goal[1,:], &#39;y-&#39;, linewidth=4)
+        
+        ## Plot constraints    
+        if self.constraints:
+            # plt.axhline(y=0, color=&#39;red&#39;, linestyle=&#39;--&#39;, lw=5)
+
+            body_constraints, coupler_constraints = self.constraints
+            ax1.plot([body_constraints[0], body_constraints[1], body_constraints[1], body_constraints[0], body_constraints[0]], 
+                     [body_constraints[2], body_constraints[2], body_constraints[3], body_constraints[3], body_constraints[2]], &#39;r-.&#39;, lw=4)
+            
+            ax1.plot([coupler_constraints[0], coupler_constraints[1], coupler_constraints[1], coupler_constraints[0], coupler_constraints[0]], 
+                     [coupler_constraints[2], coupler_constraints[2], coupler_constraints[3], coupler_constraints[3], coupler_constraints[2]], &#39;g-.&#39;, lw=4)
+        ax1.set_axis_off()
+        
+        ## Add Objective score to figure
+        if show_obj:
+            traj_norm = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc) 
+
+            # total_dist = distance(goal, self.paths[coupler_idx, :, :], ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+            total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+            # pdb.set_trace()
+            plt.rcParams[&#39;font.size&#39;] = 40
+            text_box = AnchoredText(f&#34;obj={round(total_dist, 2)}&#34;, frameon=False, pad=0.0, borderpad=-1.0, loc=&#39;lower right&#39;)
+            # text_box = AnchoredText(f&#34;obj_MICP={round(total_dist2, 2)}, obj_GCPN={round(total_dist, 2)}&#34;, frameon=False, pad=0.0, borderpad=-1.0, loc=&#39;lower right&#39;)
+            plt.setp(text_box.patch, facecolor=&#39;white&#39;, alpha=0.5)
+
+            ax1.add_artist(text_box)
+
+
+        ax1.set_xlim([-1.7, 2.5])
+        ax1.set_ylim([-1.7, 1.7])
+        ax1.set_aspect(&#39;equal&#39;)
+
+    
+        if show:
+            plt.show()
+            
+        return fig
+    
+    def coords_to_pix(self, x):
+        &#34;&#34;&#34;Helper function for self.render converting coordinates to pixels
+
+        Args:
+            x (Nd.Array): coordinates Shape: (2, n)
+
+        Returns:
+            Nd.Array: pixel locations Shape: (2, n)
+        &#34;&#34;&#34;
+        return x * self.scale + self.screen_width / 2.0
+    
+    def render(self, mode=&#34;human&#34;):
+        &#34;&#34;&#34;Render the linkage being generated
+
+        Args:
+            mode (str, optional): visualization mode. Defaults to &#34;human&#34;.
+
+        Raises:
+            DependencyNotInstalled: needs pygame
+
+        Returns:
+            bool: successful
+        &#34;&#34;&#34;
+        try:
+            import pygame
+            from pygame import gfxdraw
+        except ImportError:
+            raise DependencyNotInstalled(
+                &#34;pygame is not installed, run `pip install gym[classic_control]`&#34;
+            )
+
+        self.screen_width = 600
+        self.screen_height = 600
+
+        design_width = self.bound * 5.0
+        self.scale = self.screen_width/ design_width 
+
+
+        self.screen = None # TODO: Fix this
+        self.clock = None # TODO: Fix me
+        
+
+        if self.screen is None:
+            pygame.init()
+            pygame.display.init()
+            self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+        if self.clock is None:
+            self.clock = pygame.time.Clock()
+
+        self.surf = pygame.Surface((self.screen_width, self.screen_height))
+        self.surf.fill((255, 255, 255))
+        
+        path_pix = self.coords_to_pix(self.paths).astype(int)
+        
+        
+        ## Draw Links
+        for e in self.get_edges():
+            gfxdraw.line(self.surf, path_pix[e[0], 0, 0], path_pix[e[0], 1, 0], 
+                                    path_pix[e[1], 0, 0], path_pix[e[1], 1, 0], [0, 0, 0])
+        
+        rad = 5
+        ## Draw Motor
+        gfxdraw.filled_circle(self.surf, path_pix[0,0,0], path_pix[0,1,0], rad, [255, 0, 255])
+        
+        ## Draw Crank Node
+        gfxdraw.filled_circle(self.surf, path_pix[1,0,0], path_pix[1,1,0], rad, [0, 255, 0])
+        
+        ## Draw Fixed Node
+        gfxdraw.filled_circle(self.surf, path_pix[2,0,0], path_pix[2,1,0], rad, [160, 160, 160])
+        
+        ## Draw Other Nodes
+        n = self.number_of_nodes()
+        for i in range(3, n):
+            gfxdraw.filled_circle(self.surf, path_pix[i,0,0], path_pix[i,1,0], rad, [255, 0, 0])
+
+        
+        ## Draw Coupler Traj
+        for i in range(self.T):
+            gfxdraw.filled_circle(self.surf, path_pix[n-1,0,i], path_pix[n-1,1,i], rad//2, [255, 0, 0])
+
+        mu = self.paths[n-1, :, :].mean(1).reshape(-1, 1)
+        std = max(self.paths[n-1, :, :].std(1))
+        # pdb.set_trace()
+        goal = (self.goal*std+mu)
+        goal_pix = self.coords_to_pix(goal).astype(int)
+        ## Draw Goal Traj
+        for i in range(self.T):
+            gfxdraw.filled_circle(self.surf, goal_pix[0,i], goal_pix[1,i], rad//2, [255, 255, 0])
+        
+
+        self.surf = pygame.transform.flip(self.surf, False, True)
+        self.screen.blit(self.surf, (0, 0))
+        if mode == &#34;human&#34;:
+            pygame.event.pump()
+            self.clock.tick(self.metadata[&#34;render_fps&#34;])
+            pygame.display.flip()
+
+        if mode == &#34;rgb_array&#34;:
+            return np.transpose(
+                np.array(pygame.surfarray.pixels3d(self.screen)), axes=(1, 0, 2)
+            )
+        else:
+            return True
+
+
+    def plot_graph(self, plot_paths=False, plot_coupler=True, filename=None, coupler_idx=None):
+        &#34;&#34;&#34;Helper function to visualize linkage graph
+
+        Args:
+            plot_paths (bool, optional): plot revolute joint trajectories. Defaults to False.
+            plot_coupler (bool, optional): plot coupler joint trajectory. Defaults to True.
+            filename (str, optional): filename to save figure. Defaults to None.
+            coupler_idx (int, optional): index of coupler index or other node that you want to be known as the coupler. Defaults to None.
+
+        Returns:
+            Matplotlib.fig: figure 
+        &#34;&#34;&#34;
+        ## Get coupler index
+        if coupler_idx is None: 
+            coupler_idx = self.number_of_nodes()-1
+        
+        ## Initialize figure    
+        if self.goal is not None:
+            fig, (ax1, ax2) = plt.subplots(1, 2)
+        else:
+            fig, ax1 = plt.subplots()
+        
+        ## Plot Edges
+        edges = self.get_edges(coupler_idx+1)
+        for e in edges: 
+            ax1.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;k-&#39;) 
+            # plt.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;r.&#39;, label=&#34;joints&#34;)
+        
+        ## Plot motor and fixed node
+        ax1.plot(self.paths[2, 0, 0], self.paths[2,1, 0], &#39;r^&#39;, label=&#34;fixed joints&#34;, ms=10)
+        ax1.plot(self.paths[0, 0, 0], self.paths[0,1, 0], &#39;m^&#39;, label=&#34;motor joints&#34;, ms=10)
+
+        ## Plot revolute joints
+        fixed_ids = self._get_fixed_ids()
+        non_fixed_ids = list(set(fixed_ids) ^ set(range(coupler_idx+1)))
+        ax1.plot(self.paths[non_fixed_ids, 0, 0], self.paths[non_fixed_ids,1, 0], &#39;ro&#39;, label=&#34;pin joints&#34;, ms=10)
+
+        ## Plot joint trajectories
+        if plot_paths:
+            ax1.plot(self.paths[:coupler_idx+1, 0, :], self.paths[:coupler_idx+1, 1,:], &#39;b.&#39;, markersize=1.0)
+
+        ## Highlight coupler trajectory
+        if plot_coupler:
+            # n = self.number_of_nodes()-1
+            ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], &#39;yo&#39;, label=&#34;coupler joint&#34;, markersize=10)
+            ax1.plot(self.paths[coupler_idx, 0, :], self.paths[coupler_idx, 1,:], &#39;y-&#39;, label=&#34;coupler&#34;, markersize=3)
+
+
+        ## Figure Formating
+        ax1.legend(loc=&#39;upper center&#39;, bbox_to_anchor=(1.0, -0.1),
+            fancybox=True, shadow=True, ncol=3)
+        # ax1 = plt.gca()
+        ax1.set_title(&#39;State Visualization&#39;)
+        ax1.set_xlim([-self.max_length, self.max_length])
+        ax1.set_ylim([-self.max_length, self.max_length])
+        ax1.set_aspect(&#39;equal&#39;)
+
+        ## Plot goal
+        if self.goal is not None:
+            ax2.plot(self.goal[0,:], self.goal[1,:], &#39;r.&#39;, ms=10)
+            coupler = self.coupler_traj()
+            ax2.plot(coupler[0,:], coupler[1,:], &#39;y.&#39;)
+            ax2.set_xlim([-self.max_length, self.max_length])
+            ax2.set_ylim([-self.max_length, self.max_length])
+            ax2.set_aspect(&#39;equal&#39;)
+
+        
+        ## Plot constraints
+        if self.constraints:
+            colors = [&#39;r--&#39;, &#39;b--&#39;]
+            for i, c in enumerate(self.constraints):
+                ax1.plot([c[0], c[1], c[1], c[0]], [c[2], c[2], c[3], c[3]], colors[i], lw=3)
+
+        ## Save figure
+        if filename is not None: 
+            if filename in os.listdir(): 
+                out = filename.split(&#34;.&#34;)
+                out[0] += (&#39;_&#39;+str(datetime.now()))
+                filename = &#39;.&#39;.join(out)
+            
+            plt.savefig(filename)
+            plt.close()
+        
+        return fig
+
+    def is_valid(self):
+        &#34;&#34;&#34;Checks that linkage graph is valid
+
+        Returns:
+            bool: linkage graph is valid
+        &#34;&#34;&#34;
+        return (not np.isnan(self.paths).any())
+            
+    
+    # @timebudget
+    def get_edge_mask(self, id0, id1):
+        &#34;&#34;&#34;Valid scaffold node locations for adding to Assur 0DOF linkage to node0 and node1
+
+        Args:
+            id0 (int): index of node 0
+            id1 (int): index of node 1
+
+        Returns:
+            Nd.Array: valid scaffold nodes for adding to linkage graph
+        &#34;&#34;&#34;
+        ## Get nodei and nodej trajectories
+        xi = self.paths[id0, :, :] # 2xsteps
+        xj = self.paths[id1, :, :]
+
+        l_ij = np.linalg.norm(xi - xj, axis=0).reshape(1, -1) # (1, steps)
+
+        l_ik = np.linalg.norm(xi[:, 0].reshape(1,-1) - self.grid, axis=1).reshape(-1, 1) # [1,2] - [121, 2] -&gt; (121, 1)
+        l_jk = np.linalg.norm(xj[:, 0].reshape(1,-1) - self.grid, axis=1).reshape(-1, 1) # [1,2] - [121, 2] -&gt; (121, 1)
+
+        ## Triangle inequality between node i and j trajectories
+        valid = np.logical_and.reduce((np.all(l_ik+l_jk &gt; l_ij, 1), 
+                                        np.all(l_ik+l_ij &gt; l_jk, 1),  
+                                        np.all(l_jk+l_ij &gt; l_ik, 1)))
+
+        return valid #np.ones_like(valid)
+
+    
+    def satisfy_constraints(self): 
+        &#34;&#34;&#34;Checks if linkage graph satisfies the constraints
+
+        Returns:
+            bool: satifies
+        &#34;&#34;&#34;
+            
+        if not self.constraints:
+            return True
+        
+        valid = []
+        for i, bounding_box in enumerate(self.constraints):
+            ## Get body and couple index
+            if self.is_terminal:
+                node = self.number_of_nodes()-1 if i else range(self.number_of_nodes()-1)
+            else:
+                node = range(self.number_of_nodes())
+                
+                ## If non-terminal and coupler constraints break
+                if i:
+                    return all(valid)
+            
+            ## Check that iniital state inside bounding box 
+            # TODO: this is wrong, it should consider the whole trajectory
+            if not bounding_box:
+                valid.append(True)
+            
+            xmin = np.min(self.paths[node,0,:])
+            xmax = np.max(self.paths[node,0,:])
+            
+            ymin = np.min(self.paths[node,1,:])
+            ymax = np.max(self.paths[node,1,:])
+            
+            valid.append(all([xmin&gt;bounding_box[0], 
+                                xmax&lt;bounding_box[1], 
+                                ymin&gt;bounding_box[2], 
+                                ymax&lt;bounding_box[3]]))
+                
+        return all(valid)
+        
+    
+    def get_distance(self, scale=None, shift=None):
+        &#34;&#34;&#34;Distance between the coupler trajectory and the goal
+
+        Args:
+            scale (float, optional): scaling factor for coupler trajectory. Defaults to None.
+            shift (Nd.Array, optional): shifting vector for coupler trajectory. Defaults to None.
+
+        Returns:
+            float: distance
+        &#34;&#34;&#34;
+        ## Dist
+        traj_norm = self.coupler_traj(scale=scale, shift=shift) 
+
+        total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+        
+        return total_dist
+
+    def _get_reward(self):
+        &#34;&#34;&#34;Reward for linkage graph
+
+        Returns:
+            (float, bool): reward, success
+        &#34;&#34;&#34;
+        
+        self.cycles = self.number_of_cycles()
+
+        ## Not Valid
+        if not self.is_valid():
+            self.total_dist = np.nan
+            self.reward = self.invalid_penalty
+            return self.reward, False
+        
+        ## Fails Constraints
+        if not self.satisfy_constraints(): 
+            self.total_dist = np.nan
+            self.reward = self.invalid_penalty
+            return self.reward, False
+
+        ## No goal
+        if self.goal is None:             
+            print(&#34;[Warning] _get_reward(): No goal was added&#34;)
+            return 0.0, False
+        
+        ## Invalid design
+        if self.cycles == 0:
+            self.total_dist = np.nan
+            self.reward = self.invalid_penalty
+            return self.reward, False
+        
+        ## get distance
+        self.total_dist = self.get_distance(scale=self.goal_scale, shift=self.goal_loc)
+        
+        ## Normalize distance w.r.t circle 
+        norm_distance_reward = max((self.R_circle-self.total_dist)/self.R_circle, -0.0) # 0-1
+        
+        ## set reward
+        self.reward = norm_distance_reward #max(-self.total_dist, -9.9) #(cycle_weight*cycle_reward + (1.-cycle_weight)*norm_distance_reward)*10.0
+        
+        return self.reward, (self.total_dist &lt;= self.goal_tol) 
+        
+
+    def _get_info(self):
+        &#34;&#34;&#34;linkage graph information
+
+        Returns:
+            dict: various information that might be useful
+        &#34;&#34;&#34;
+        
+        ## Only return info if terminal linkage design
+        if self.is_terminal:
+            n = self.number_of_nodes()
+            n_active = self.number_of_active_nodes()
+            
+            info = {&#39;number_of_nodes&#39;: n,
+                    &#39;number_of_active_nodes&#39;: n_active, 
+                    &#39;max_nodes&#39;:       self.max_nodes,
+                    &#39;resolution&#39;:      self.resolution,
+                    &#39;bound&#39;:           self.bound,
+                    &#39;feature_points&#39;:  self.feature_points,
+                    &#39;sample_points&#39;:   self.T,
+                    &#39;number_of_edges&#39;: self.number_of_edges(),
+                    &#39;node_positions&#39;:  self.paths[:n, :, 0],
+                    &#39;edges&#39;:           self.get_edges(),
+                    &#39;valid&#39;:           self.is_valid(),
+                    &#39;goal&#39;:            self.goal,
+                    &#39;coupler&#39;:         self.paths[n-1, :, :],
+                    &#39;reward&#39;:          self.reward, ## This includes information that is biased about desired behavior
+                    &#39;cycles&#39;:          self.cycles,
+                    &#39;distance&#39;:        self.total_dist, ## This is the actual metric of comparison
+                    }
+            
+            return info #info
+        return {}
+    
+
+    def _remove_action(self):
+        &#34;&#34;&#34;Helper function that removes previous action
+        &#34;&#34;&#34;
+        n = self.number_of_nodes()
+        self.paths[n-1, :, :] = 0.
+
+        self.adj[n-1,:] = 0
+        self.adj[:,n-1] = 0
+        
+        m = self.number_of_nodes()
+        assert((n-m)==1)
+        assert(not np.isnan(self.paths).any())
+
+
+    def dfs(self, visited, edges, node, known_joints):
+        &#34;&#34;&#34;Helper function for depth first search
+
+        Args:
+            visited (list): visited nodes
+            edges (set): set of edges
+            node (int): node index
+            known_joints (list): known joint trajectories
+        &#34;&#34;&#34;
+        
+        if node not in visited and node not in [0, 1, 2]:
+            visited.add(node)
+
+            neighbours = np.array(known_joints)[np.where(self.adj[int(node), known_joints] &gt;= 1)[0]][:2]
+            # print(node, neighbours)
+            edges.add(frozenset((node, neighbours[0])))
+            edges.add(frozenset((node, neighbours[1])))
+            for neighbour in neighbours:
+                self.dfs(visited, edges, neighbour, known_joints)
+                
+    def get_active_nodes(self):
+        &#34;&#34;&#34;Helper function to get all known nodes that contribute to coupler trajectory
+
+        Returns:
+            (list, set): node indexes that are used for coupler FK, edges that are useful for linkage graph
+        &#34;&#34;&#34;
+        ## All nodes
+        n = self.number_of_nodes()
+
+        ## Initialize variables
+        visited = set()
+        edges = set()
+        known_joints = np.arange(n)
+
+        ## Recursively trace from coupler to root nodes 
+        self.dfs(visited, edges, n-1, known_joints)
+        visited = list(visited)
+        visited.sort()
+
+        active_nodes = [0, 1, 2] + visited
+        
+        return active_nodes, edges
+    
+    def number_of_active_nodes(self):
+        &#34;&#34;&#34;Helper function returns number of active nodes
+
+        Returns:
+            int: number of active nodes in linkage graph
+        &#34;&#34;&#34;
+        return len(self.get_active_nodes()[0])
+    
+    def prune(self):
+        &#34;&#34;&#34;Prune linkage graph of unnecessary revolute joints
+        &#34;&#34;&#34;
+        
+        ## Get active nodes and edges
+        active_nodes, edges = self.get_active_nodes()
+        active_nodes.sort()
+        
+        n = len(active_nodes)
+        
+        ## update edge list
+        edges = np.array([[0, 1], [0, 2]]+ [[active_nodes.index(list(e)[0]), active_nodes.index(list(e)[1])] for e in edges])
+        
+        ## get all paths of active nodes
+        paths = self.paths[active_nodes,:,0]
+
+        ## Reset linkage graph paths and adj
+        self.paths = np.zeros_like(self.paths)
+        self.adj = np.zeros_like(self.adj)
+        
+        ## Update with only active nodes and edges
+        self.paths[:n, :, 0] = paths
+        
+        self.adj[edges[:,0], edges[:,1]] = 1
+        self.adj[edges[:,1], edges[:,0]] = 1 
+     
+        ## reinitialize linkage graph
+        self._initialize_paths()
+        
+    def active_cycles(self):
+        &#34;&#34;&#34;Returns all the active loops in the linkage graph  
+
+        Returns:
+            list: all cycles in linkage graph NOTE: this includes cycles with 3 nodes which are not valid loops
+        &#34;&#34;&#34;
+        
+        ## Get active nodes and edges
+        active_nodes, edges = self.get_active_nodes()
+        active_nodes.sort()
+        
+        n = len(active_nodes)
+        
+        edges = np.array([[0, 1], [0, 2]]+ [[active_nodes.index(list(e)[0]), active_nodes.index(list(e)[1])] for e in edges])
+        
+        ## initialize nx graph
+        graph = nx.Graph()
+        graph.add_nodes_from(range(n))
+        graph.add_edges_from(edges)
+        
+        ## Minimum cycle basis
+        return list(nx.minimum_cycle_basis(graph))
+    
+    def number_of_cycles(self):
+        &#34;&#34;&#34;Number of active linkage graph loops
+
+        Returns:
+            int: number of active linkage graph loops NOTE: this excludes loops of 3 nodes (also known as triads as they are not useful)
+        &#34;&#34;&#34;
+        cycles = [c for c in self.active_cycles() if len(c) &gt; 3]
+        
+        return len(cycles)
+        
+
+    def update_best_designs(self):
+        &#34;&#34;&#34;Update set of best designs of various linakge graph topologies
+        &#34;&#34;&#34;
+        ## Prune linkage graph
+        self.prune()
+        
+        ## If linkage graph topology not accounted for yet        
+        if self.cycles not in self.best_designs:
+            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
+            return 
+        
+        ## If linkage graph is better than current topology 
+        if self.total_dist &gt; self.best_designs[self.cycles][-1]:
+            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
+            return 
+
+    def step(self, action):
+        &#34;&#34;&#34;Update linkage graph with new action
+
+        Args:
+            action (int): index of action 
+
+        Returns:
+            (Nd.Array, float, bool, dict): Observation, Reward, Done, Info
+        &#34;&#34;&#34;
+        ## Get action from index
+        (node_id0, node_id1), scaffold_id, done = self.actions[int(action)]
+        
+        ## Is terminal action
+        self.is_terminal = done
+
+
+        ## If Action is the same as previous Terminate Episode
+        if action == self.previous_action: 
+            if self.debug:
+                print(&#34;Warning: (Action) Same Action was selected again. Note that this is considered invalid&#34;)
+                
+            obs = self.get_observation()
+            done = True 
+
+            return obs, self.invalid_penalty, done, {} 
+
+        
+        ## Check if node selection is valid 
+        n = self.number_of_nodes()
+        if node_id0 &gt;= n or node_id1 &gt;= n:
+            if self.debug:
+                print(&#34;Warning: (Nodes) Same Action was selected again. Note that this is considered invalid&#34;)
+
+            return self.get_observation(), self.invalid_penalty, True, {}
+
+        ## Valid node add to linkage
+        self.add_node(self.grid[scaffold_id, :])
+        new_node_id = self.number_of_nodes()
+        self.add_edge(node_id0, new_node_id)
+        self.add_edge(node_id1, new_node_id)
+
+        ## Update Paths
+        self.paths[new_node_id, :, :] = symbolic_kinematics(self.paths[node_id0, :, :], self.paths[node_id1, :, :], self.paths[new_node_id, :, 0])
+
+        ## If Kinematics Valid Check
+        if not self.is_valid():
+            if self.debug:
+                print(&#34;Warning: (Kinematics) Action led to kinematically infeasible design.&#34;)
+
+            self._remove_action()
+            return self.get_observation(), self.invalid_penalty, True, {}
+        
+        ## Check if finished design 
+        if self.number_of_nodes() == self.max_nodes and not done:
+            if self.debug:
+                print(&#34;Warning: (Terminal) Failed to finish design in valid number of steps.&#34;)
+
+            return self.get_observation(), self.invalid_penalty, True, {}
+
+        ## Get reward
+        reward = 0.0
+        if done:
+            reward, _ = self._get_reward()
+            ## Save all good designs during the search
+            self.update_best_designs()
+    
+        self.previous_action = action
+        
+        obs = self.get_observation()
+        info = self._get_info() 
+        
+        # Return Status
+        return obs, reward, done, info 
+    
+    def get_observation(self):
+        &#34;&#34;&#34;Observation of current linkage state
+
+        Returns:
+            Nd.Array: [X ((Node_features)*max_nodes), adj (max_nodes*max_nodes), mask (max_nodes), action_mask (number_of_actions)] flattened
+        &#34;&#34;&#34;
+        obs = []
+
+        ## Revolution joint positons 
+        idx = np.round(np.linspace(0, self.paths.shape[-1]-1, self.feature_points)).astype(int)
+        
+        ## NOTE: use_node_type DEPRECATED
+        # if self.use_node_type:
+        #     x = [[self.paths[i, 0, 0], self.paths[i, 1, 0], 1] if (i == self.number_of_nodes()-1 and self.is_terminal) else 
+        #         [self.paths[i, 0, 0], self.paths[i, 1, 0], 0] for i in range(self.max_nodes)] 
+        #     obs.append(np.asarray(sum(x, [])).astype(&#39;float32&#39;))
+
+        # else:
+        #     # x = [[self.paths[i, 0, 0], self.paths[i, 1, 0]] for i in range(self.max_nodes)]
+        
+        ## Node features
+        x = self.paths[:, :, idx].flatten().astype(&#39;float32&#39;)
+        obs.append(x)
+        
+        ## Adjacency Matrix
+        adj = self.adj.copy()
+        if self.self_loops:
+            np.fill_diagonal(adj, 1.0)
+            
+        obs.append(adj.astype(&#39;float32&#39;).flatten())
+
+        ## Node Mask 
+        n = self.number_of_nodes()
+        mask = np.zeros(self.max_nodes).astype(int)
+        mask[:n] = 1
+        obs.append(mask.astype(&#39;float32&#39;))
+
+        ## Node Action Mask
+        action_mask = np.array(self._get_action_mask())
+        obs.append(action_mask.astype(&#39;float32&#39;))
+        
+        obs = np.concatenate(obs)
+
+        return np.nan_to_num(obs, nan=0.0)
+    
+    def random_n_bar(self, edges, n):
+        &#34;&#34;&#34;Random valid n bar linakge NOTE: not really N_bar, based on edges input
+
+        Args:
+            edges (Nd.Array): set of edges Shape: (e, 2)
+            n (int): number of revolute joints
+        &#34;&#34;&#34;
+        pos_ind = range(self.grid.shape[0])
+        # s = l = 1 
+        # p = q = 0
+        
+        # ## Random Crank-Rocker N-Bar
+        # while s+l &gt; p+q:
+        node_pos_ind = self.rng.choice(pos_ind, size=n, replace=False)
+        node_pos = self.grid[node_pos_ind,:]
+            # s = np.linalg.norm(node_pos[0]-node_pos[1])
+            # q = np.linalg.norm(node_pos[0]-node_pos[2])
+            # l = np.linalg.norm(node_pos[1]-node_pos[3])
+            # p = np.linalg.norm(node_pos[2]-node_pos[3])
+        
+        
+        self.paths[:4, :, 0]=node_pos
+        self.adj[edges[:,0], edges[:,1]] = 1
+        self.adj[edges[:,1], edges[:,0]] = 1 
+        self._initialize_paths()
+
+    def get_valid_env(self):
+        &#34;&#34;&#34;Generate random valid linkage graph
+
+        Returns:
+            bool: is valid
+        &#34;&#34;&#34;
+
+        ## Basic 4-bar configuration
+        edges = np.array([[0, 1], [0, 2], [1, 3], [2, 3]])
+        self.random_n_bar(edges, 4)
+        
+        # Step 2 check validity 
+        while not self.is_valid() or not self.satisfy_constraints():
+            # If not valid save data
+            self.random_n_bar(edges, 4)
+
+
+        return self.is_valid()
+        
+        
+    def close(self):
+        &#34;&#34;&#34;Close environment
+        &#34;&#34;&#34;
+        pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>gym.core.Env</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.metadata"><code class="name">var <span class="ident">metadata</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.active_cycles"><code class="name flex">
+<span>def <span class="ident">active_cycles</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns all the active loops in the linkage graph
+</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>all cycles in linkage graph NOTE: this includes cycles with 3 nodes which are not valid loops</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def active_cycles(self):
+    &#34;&#34;&#34;Returns all the active loops in the linkage graph  
+
+    Returns:
+        list: all cycles in linkage graph NOTE: this includes cycles with 3 nodes which are not valid loops
+    &#34;&#34;&#34;
+    
+    ## Get active nodes and edges
+    active_nodes, edges = self.get_active_nodes()
+    active_nodes.sort()
+    
+    n = len(active_nodes)
+    
+    edges = np.array([[0, 1], [0, 2]]+ [[active_nodes.index(list(e)[0]), active_nodes.index(list(e)[1])] for e in edges])
+    
+    ## initialize nx graph
+    graph = nx.Graph()
+    graph.add_nodes_from(range(n))
+    graph.add_edges_from(edges)
+    
+    ## Minimum cycle basis
+    return list(nx.minimum_cycle_basis(graph))</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.add_edge"><code class="name flex">
+<span>def <span class="ident">add_edge</span></span>(<span>self, id0, id1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add edge to linkage graph</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>id0</code></strong> :&ensp;<code>int</code></dt>
+<dd>index of node 0</dd>
+<dt><strong><code>id1</code></strong> :&ensp;<code>int</code></dt>
+<dd>index of node 1</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_edge(self, id0, id1):
+    &#34;&#34;&#34;Add edge to linkage graph
+
+    Args:
+        id0 (int): index of node 0
+        id1 (int): index of node 1
+    &#34;&#34;&#34;
+    
+    self.adj[id0, id1] = 1
+    self.adj[id1, id0] = 1</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.add_node"><code class="name flex">
+<span>def <span class="ident">add_node</span></span>(<span>self, node_pos)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add node to the linkage graph</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>node_pos</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>initial position of revolute joint Shape: (2, )</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_node(self, node_pos):
+    &#34;&#34;&#34;Add node to the linkage graph
+
+    Args:
+        node_pos (Nd.Array): initial position of revolute joint Shape: (2, )
+    &#34;&#34;&#34;
+    
+    n = self.number_of_nodes()
+    
+    self.paths[n, :, 0] = node_pos</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.apply_random_action"><code class="name flex">
+<span>def <span class="ident">apply_random_action</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Applies a random valid action to the current environment</p>
+<h2 id="returns">Returns</h2>
+<p>(Nd.Array, float, bool, dict): Observation, Reward, Done, Info</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_random_action(self):
+    &#34;&#34;&#34;Applies a random valid action to the current environment
+
+    Returns:
+        (Nd.Array, float, bool, dict): Observation, Reward, Done, Info
+    &#34;&#34;&#34;
+    action_mask = self._get_action_mask()
+
+    action = self.rng.choice(self.num_actions, p=action_mask/action_mask.sum())
+    
+    return self.step(action)</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.clear_best_desings"><code class="name flex">
+<span>def <span class="ident">clear_best_desings</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Clears self.best_designs</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear_best_desings(self):
+    &#34;&#34;&#34;Clears self.best_designs
+    &#34;&#34;&#34;
+    self.best_designs = {}
+    return</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Close environment</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close(self):
+    &#34;&#34;&#34;Close environment
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.coords_to_pix"><code class="name flex">
+<span>def <span class="ident">coords_to_pix</span></span>(<span>self, x)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function for self.render converting coordinates to pixels</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>x</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>coordinates Shape: (2, n)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>pixel locations Shape: (2, n)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def coords_to_pix(self, x):
+    &#34;&#34;&#34;Helper function for self.render converting coordinates to pixels
+
+    Args:
+        x (Nd.Array): coordinates Shape: (2, n)
+
+    Returns:
+        Nd.Array: pixel locations Shape: (2, n)
+    &#34;&#34;&#34;
+    return x * self.scale + self.screen_width / 2.0</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.coupler_traj"><code class="name flex">
+<span>def <span class="ident">coupler_traj</span></span>(<span>self, normalize=True, scale=None, shift=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the coupler node trajectory</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>normalize</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Normalized curve. Defaults to True.</dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>scaling factor. Defaults to None.</dd>
+<dt><strong><code>shift</code></strong> :&ensp;<code>Nd.Array</code>, optional</dt>
+<dd>x,y shift for all points. Defaults to None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>coupler trajectory</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def coupler_traj(self, normalize=True, scale=None, shift=None):
+    &#34;&#34;&#34;Return the coupler node trajectory
+
+    Args:
+        normalize (bool, optional): Normalized curve. Defaults to True.
+        scale (float, optional): scaling factor. Defaults to None.
+        shift (Nd.Array, optional): x,y shift for all points. Defaults to None.
+
+    Returns:
+        Nd.Array: coupler trajectory
+    &#34;&#34;&#34;
+    n = self.number_of_nodes()
+    # inds = np.linspace(0, self.T-1, self.test_samples).astype(int)
+
+    if normalize: return normalize_curve(self.paths[n-1, :, :], scale=scale, shift=shift)
+    
+    return self.paths[n-1, :, :]</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.dfs"><code class="name flex">
+<span>def <span class="ident">dfs</span></span>(<span>self, visited, edges, node, known_joints)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function for depth first search</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>visited</code></strong> :&ensp;<code>list</code></dt>
+<dd>visited nodes</dd>
+<dt><strong><code>edges</code></strong> :&ensp;<code>set</code></dt>
+<dd>set of edges</dd>
+<dt><strong><code>node</code></strong> :&ensp;<code>int</code></dt>
+<dd>node index</dd>
+<dt><strong><code>known_joints</code></strong> :&ensp;<code>list</code></dt>
+<dd>known joint trajectories</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dfs(self, visited, edges, node, known_joints):
+    &#34;&#34;&#34;Helper function for depth first search
+
+    Args:
+        visited (list): visited nodes
+        edges (set): set of edges
+        node (int): node index
+        known_joints (list): known joint trajectories
+    &#34;&#34;&#34;
+    
+    if node not in visited and node not in [0, 1, 2]:
+        visited.add(node)
+
+        neighbours = np.array(known_joints)[np.where(self.adj[int(node), known_joints] &gt;= 1)[0]][:2]
+        # print(node, neighbours)
+        edges.add(frozenset((node, neighbours[0])))
+        edges.add(frozenset((node, neighbours[1])))
+        for neighbour in neighbours:
+            self.dfs(visited, edges, neighbour, known_joints)</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.get_active_nodes"><code class="name flex">
+<span>def <span class="ident">get_active_nodes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function to get all known nodes that contribute to coupler trajectory</p>
+<h2 id="returns">Returns</h2>
+<p>(list, set): node indexes that are used for coupler FK, edges that are useful for linkage graph</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_active_nodes(self):
+    &#34;&#34;&#34;Helper function to get all known nodes that contribute to coupler trajectory
+
+    Returns:
+        (list, set): node indexes that are used for coupler FK, edges that are useful for linkage graph
+    &#34;&#34;&#34;
+    ## All nodes
+    n = self.number_of_nodes()
+
+    ## Initialize variables
+    visited = set()
+    edges = set()
+    known_joints = np.arange(n)
+
+    ## Recursively trace from coupler to root nodes 
+    self.dfs(visited, edges, n-1, known_joints)
+    visited = list(visited)
+    visited.sort()
+
+    active_nodes = [0, 1, 2] + visited
+    
+    return active_nodes, edges</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.get_distance"><code class="name flex">
+<span>def <span class="ident">get_distance</span></span>(<span>self, scale=None, shift=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Distance between the coupler trajectory and the goal</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>scale</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>scaling factor for coupler trajectory. Defaults to None.</dd>
+<dt><strong><code>shift</code></strong> :&ensp;<code>Nd.Array</code>, optional</dt>
+<dd>shifting vector for coupler trajectory. Defaults to None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>distance</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_distance(self, scale=None, shift=None):
+    &#34;&#34;&#34;Distance between the coupler trajectory and the goal
+
+    Args:
+        scale (float, optional): scaling factor for coupler trajectory. Defaults to None.
+        shift (Nd.Array, optional): shifting vector for coupler trajectory. Defaults to None.
+
+    Returns:
+        float: distance
+    &#34;&#34;&#34;
+    ## Dist
+    traj_norm = self.coupler_traj(scale=scale, shift=shift) 
+
+    total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+    
+    return total_dist</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.get_edge_lengths"><code class="name flex">
+<span>def <span class="ident">get_edge_lengths</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function to return all the edge lengths</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>Lengths of each edge Shape: (e, )</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_edge_lengths(self):
+    &#34;&#34;&#34;Helper function to return all the edge lengths
+
+    Returns:
+        Nd.Array: Lengths of each edge Shape: (e, )
+    &#34;&#34;&#34;
+    
+    edges = self.get_edges()
+    lengths = np.zeros([edges.shape[0],])
+    
+    for i, e in enumerate(edges):
+        lengths[i] = self._get_dist(self.paths[e[0],:,0], self.paths[e[1], :, 0])
+
+    return lengths</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.get_edge_mask"><code class="name flex">
+<span>def <span class="ident">get_edge_mask</span></span>(<span>self, id0, id1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Valid scaffold node locations for adding to Assur 0DOF linkage to node0 and node1</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>id0</code></strong> :&ensp;<code>int</code></dt>
+<dd>index of node 0</dd>
+<dt><strong><code>id1</code></strong> :&ensp;<code>int</code></dt>
+<dd>index of node 1</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>valid scaffold nodes for adding to linkage graph</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_edge_mask(self, id0, id1):
+    &#34;&#34;&#34;Valid scaffold node locations for adding to Assur 0DOF linkage to node0 and node1
+
+    Args:
+        id0 (int): index of node 0
+        id1 (int): index of node 1
+
+    Returns:
+        Nd.Array: valid scaffold nodes for adding to linkage graph
+    &#34;&#34;&#34;
+    ## Get nodei and nodej trajectories
+    xi = self.paths[id0, :, :] # 2xsteps
+    xj = self.paths[id1, :, :]
+
+    l_ij = np.linalg.norm(xi - xj, axis=0).reshape(1, -1) # (1, steps)
+
+    l_ik = np.linalg.norm(xi[:, 0].reshape(1,-1) - self.grid, axis=1).reshape(-1, 1) # [1,2] - [121, 2] -&gt; (121, 1)
+    l_jk = np.linalg.norm(xj[:, 0].reshape(1,-1) - self.grid, axis=1).reshape(-1, 1) # [1,2] - [121, 2] -&gt; (121, 1)
+
+    ## Triangle inequality between node i and j trajectories
+    valid = np.logical_and.reduce((np.all(l_ik+l_jk &gt; l_ij, 1), 
+                                    np.all(l_ik+l_ij &gt; l_jk, 1),  
+                                    np.all(l_jk+l_ij &gt; l_ik, 1)))
+
+    return valid #np.ones_like(valid)</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.get_edges"><code class="name flex">
+<span>def <span class="ident">get_edges</span></span>(<span>self, limit=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function to return all the edges in the current linkage graph</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>limit</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>edges between nodes bellow a particular index. Defaults to None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>Array of edge index pairs Shape: (e, 2) [id0, id1]</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_edges(self, limit=None):
+    &#34;&#34;&#34;Helper function to return all the edges in the current linkage graph
+
+    Args:
+        limit (int, optional): edges between nodes bellow a particular index. Defaults to None.
+
+    Returns:
+        Nd.Array: Array of edge index pairs Shape: (e, 2) [id0, id1]
+    &#34;&#34;&#34;
+    
+    if limit is None:
+        limit = self.max_nodes
+
+    return np.array([[i, j] for i in range(self.max_nodes) for j in range(i) if self.adj[i,j]])</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.get_observation"><code class="name flex">
+<span>def <span class="ident">get_observation</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Observation of current linkage state</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>[X ((Node_features)<em>max_nodes), adj (max_nodes</em>max_nodes), mask (max_nodes), action_mask (number_of_actions)] flattened</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_observation(self):
+    &#34;&#34;&#34;Observation of current linkage state
+
+    Returns:
+        Nd.Array: [X ((Node_features)*max_nodes), adj (max_nodes*max_nodes), mask (max_nodes), action_mask (number_of_actions)] flattened
+    &#34;&#34;&#34;
+    obs = []
+
+    ## Revolution joint positons 
+    idx = np.round(np.linspace(0, self.paths.shape[-1]-1, self.feature_points)).astype(int)
+    
+    ## NOTE: use_node_type DEPRECATED
+    # if self.use_node_type:
+    #     x = [[self.paths[i, 0, 0], self.paths[i, 1, 0], 1] if (i == self.number_of_nodes()-1 and self.is_terminal) else 
+    #         [self.paths[i, 0, 0], self.paths[i, 1, 0], 0] for i in range(self.max_nodes)] 
+    #     obs.append(np.asarray(sum(x, [])).astype(&#39;float32&#39;))
+
+    # else:
+    #     # x = [[self.paths[i, 0, 0], self.paths[i, 1, 0]] for i in range(self.max_nodes)]
+    
+    ## Node features
+    x = self.paths[:, :, idx].flatten().astype(&#39;float32&#39;)
+    obs.append(x)
+    
+    ## Adjacency Matrix
+    adj = self.adj.copy()
+    if self.self_loops:
+        np.fill_diagonal(adj, 1.0)
+        
+    obs.append(adj.astype(&#39;float32&#39;).flatten())
+
+    ## Node Mask 
+    n = self.number_of_nodes()
+    mask = np.zeros(self.max_nodes).astype(int)
+    mask[:n] = 1
+    obs.append(mask.astype(&#39;float32&#39;))
+
+    ## Node Action Mask
+    action_mask = np.array(self._get_action_mask())
+    obs.append(action_mask.astype(&#39;float32&#39;))
+    
+    obs = np.concatenate(obs)
+
+    return np.nan_to_num(obs, nan=0.0)</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.get_valid_env"><code class="name flex">
+<span>def <span class="ident">get_valid_env</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate random valid linkage graph</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>is valid</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_valid_env(self):
+    &#34;&#34;&#34;Generate random valid linkage graph
+
+    Returns:
+        bool: is valid
+    &#34;&#34;&#34;
+
+    ## Basic 4-bar configuration
+    edges = np.array([[0, 1], [0, 2], [1, 3], [2, 3]])
+    self.random_n_bar(edges, 4)
+    
+    # Step 2 check validity 
+    while not self.is_valid() or not self.satisfy_constraints():
+        # If not valid save data
+        self.random_n_bar(edges, 4)
+
+
+    return self.is_valid()</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.is_valid"><code class="name flex">
+<span>def <span class="ident">is_valid</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks that linkage graph is valid</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>linkage graph is valid</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_valid(self):
+    &#34;&#34;&#34;Checks that linkage graph is valid
+
+    Returns:
+        bool: linkage graph is valid
+    &#34;&#34;&#34;
+    return (not np.isnan(self.paths).any())</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.number_of_active_nodes"><code class="name flex">
+<span>def <span class="ident">number_of_active_nodes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function returns number of active nodes</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>number of active nodes in linkage graph</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def number_of_active_nodes(self):
+    &#34;&#34;&#34;Helper function returns number of active nodes
+
+    Returns:
+        int: number of active nodes in linkage graph
+    &#34;&#34;&#34;
+    return len(self.get_active_nodes()[0])</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.number_of_cycles"><code class="name flex">
+<span>def <span class="ident">number_of_cycles</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Number of active linkage graph loops</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>number of active linkage graph loops NOTE: this excludes loops of 3 nodes (also known as triads as they are not useful)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def number_of_cycles(self):
+    &#34;&#34;&#34;Number of active linkage graph loops
+
+    Returns:
+        int: number of active linkage graph loops NOTE: this excludes loops of 3 nodes (also known as triads as they are not useful)
+    &#34;&#34;&#34;
+    cycles = [c for c in self.active_cycles() if len(c) &gt; 3]
+    
+    return len(cycles)</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.number_of_edges"><code class="name flex">
+<span>def <span class="ident">number_of_edges</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function returns the number of edges that make up the current linkage graph</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>number of edges</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def number_of_edges(self):
+    &#34;&#34;&#34;Helper function returns the number of edges that make up the current linkage graph
+
+    Returns:
+        int: number of edges
+    &#34;&#34;&#34;
+    
+    return sum(sum(self.adj))//2</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.number_of_nodes"><code class="name flex">
+<span>def <span class="ident">number_of_nodes</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function returns number of nodes currently in the linkage graph</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>number of nodes</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def number_of_nodes(self):
+    &#34;&#34;&#34;Helper function returns number of nodes currently in the linkage graph
+
+    Returns:
+        int: number of nodes
+    &#34;&#34;&#34;
+    empty_rows = np.argwhere(self.adj.sum(1) == 0)
+    if len(empty_rows) &gt; 0:
+        return empty_rows[0].item()
+    else:
+        return self.max_nodes</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.paper_plotting"><code class="name flex">
+<span>def <span class="ident">paper_plotting</span></span>(<span>self, show=False, show_goal=True, show_coupler=True, show_obj=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function for plotting figures used in paper</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>show</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>show the plot. Defaults to False.</dd>
+<dt><strong><code>show_goal</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>plot the goal on figure. Defaults to True.</dd>
+<dt><strong><code>show_coupler</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>plot the coupler curve on figure. Defaults to True.</dd>
+<dt><strong><code>show_obj</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>add objective value of linkage to figure. Defaults to True.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Matplotlib.fig</code></dt>
+<dd>the figure object</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def paper_plotting(self, show=False, show_goal=True, show_coupler=True, show_obj=True):
+    &#34;&#34;&#34;Helper function for plotting figures used in paper
+
+    Args:
+        show (bool, optional): show the plot. Defaults to False.
+        show_goal (bool, optional): plot the goal on figure. Defaults to True.
+        show_coupler (bool, optional): plot the coupler curve on figure. Defaults to True.
+        show_obj (bool, optional): add objective value of linkage to figure. Defaults to True.
+
+    Returns:
+        Matplotlib.fig: the figure object
+    &#34;&#34;&#34;
+    
+    fig, ax1 = plt.subplots(figsize=(8.5, 11))
+    coupler_idx = self.number_of_nodes()-1
+    
+    ## Plot Links and Joints
+    edges = self.get_edges()
+    for e in edges: 
+        ax1.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;-&#39;, color=&#39;0.7&#39;, linewidth=3, path_effects=[pe.Stroke(linewidth=5, foreground=&#39;k&#39;), pe.Normal()]) 
+        # plt.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;r.&#39;, label=&#34;joints&#34;)
+    
+    ## Plot special joints    
+    ax1.plot(self.paths[2, 0, 0], self.paths[2,1, 0], marker=&#39;^&#39;, color=&#39;gray&#39;, label=&#34;fixed joint&#34;, ms=15, path_effects=[pe.Stroke(linewidth=3, foreground=&#39;k&#39;), pe.Normal()])
+    ax1.plot(self.paths[0, 0, 0], self.paths[0,1, 0], marker=&#39;^&#39;, color=&#39;magenta&#39;, label=&#34;motor joint&#34;, ms=15, path_effects=[pe.Stroke(linewidth=3, foreground=&#39;k&#39;), pe.Normal()])
+    ax1.plot(self.paths[1, 0, 0], self.paths[1,1, 0], marker=&#39;o&#39;, color=&#39;lime&#39;, label=&#34;crank joint&#34;, ms=15)
+
+    ## Plot moveable revolute joints
+    fixed_ids = self._get_fixed_ids()
+    non_fixed_ids = list(set(fixed_ids) ^ set(range(coupler_idx+1)))
+    ax1.plot(self.paths[non_fixed_ids[1:], 0, 0], self.paths[non_fixed_ids[1:],1, 0], &#39;ro&#39;, label=&#34;pin joints&#34;, ms=15)
+
+    ## Plot Coupler Path 
+    if show_coupler:
+        ax1.plot(self.paths[coupler_idx, 0, :], self.paths[coupler_idx, 1,:], &#39;b-&#39;, label=&#34;coupler&#34;, linewidth=4)
+    ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], &#39;ro&#39;, label=&#34;coupler joint&#34;, markersize=15)
+
+    ## Plot Shifted Goal
+    mu = self.paths[coupler_idx, :, :].mean(1).reshape(-1, 1)
+    std = max(self.paths[coupler_idx, :, :].std(1))
+    
+    goal = (normalize_curve(self.goal)*std+mu)
+    if show_goal:
+        ax1.plot(goal[0,:], goal[1,:], &#39;y-&#39;, linewidth=4)
+    
+    ## Plot constraints    
+    if self.constraints:
+        # plt.axhline(y=0, color=&#39;red&#39;, linestyle=&#39;--&#39;, lw=5)
+
+        body_constraints, coupler_constraints = self.constraints
+        ax1.plot([body_constraints[0], body_constraints[1], body_constraints[1], body_constraints[0], body_constraints[0]], 
+                 [body_constraints[2], body_constraints[2], body_constraints[3], body_constraints[3], body_constraints[2]], &#39;r-.&#39;, lw=4)
+        
+        ax1.plot([coupler_constraints[0], coupler_constraints[1], coupler_constraints[1], coupler_constraints[0], coupler_constraints[0]], 
+                 [coupler_constraints[2], coupler_constraints[2], coupler_constraints[3], coupler_constraints[3], coupler_constraints[2]], &#39;g-.&#39;, lw=4)
+    ax1.set_axis_off()
+    
+    ## Add Objective score to figure
+    if show_obj:
+        traj_norm = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc) 
+
+        # total_dist = distance(goal, self.paths[coupler_idx, :, :], ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+        total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+        # pdb.set_trace()
+        plt.rcParams[&#39;font.size&#39;] = 40
+        text_box = AnchoredText(f&#34;obj={round(total_dist, 2)}&#34;, frameon=False, pad=0.0, borderpad=-1.0, loc=&#39;lower right&#39;)
+        # text_box = AnchoredText(f&#34;obj_MICP={round(total_dist2, 2)}, obj_GCPN={round(total_dist, 2)}&#34;, frameon=False, pad=0.0, borderpad=-1.0, loc=&#39;lower right&#39;)
+        plt.setp(text_box.patch, facecolor=&#39;white&#39;, alpha=0.5)
+
+        ax1.add_artist(text_box)
+
+
+    ax1.set_xlim([-1.7, 2.5])
+    ax1.set_ylim([-1.7, 1.7])
+    ax1.set_aspect(&#39;equal&#39;)
+
+
+    if show:
+        plt.show()
+        
+    return fig</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.plot_graph"><code class="name flex">
+<span>def <span class="ident">plot_graph</span></span>(<span>self, plot_paths=False, plot_coupler=True, filename=None, coupler_idx=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper function to visualize linkage graph</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>plot_paths</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>plot revolute joint trajectories. Defaults to False.</dd>
+<dt><strong><code>plot_coupler</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>plot coupler joint trajectory. Defaults to True.</dd>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>filename to save figure. Defaults to None.</dd>
+<dt><strong><code>coupler_idx</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>index of coupler index or other node that you want to be known as the coupler. Defaults to None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Matplotlib.fig</code></dt>
+<dd>figure</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_graph(self, plot_paths=False, plot_coupler=True, filename=None, coupler_idx=None):
+    &#34;&#34;&#34;Helper function to visualize linkage graph
+
+    Args:
+        plot_paths (bool, optional): plot revolute joint trajectories. Defaults to False.
+        plot_coupler (bool, optional): plot coupler joint trajectory. Defaults to True.
+        filename (str, optional): filename to save figure. Defaults to None.
+        coupler_idx (int, optional): index of coupler index or other node that you want to be known as the coupler. Defaults to None.
+
+    Returns:
+        Matplotlib.fig: figure 
+    &#34;&#34;&#34;
+    ## Get coupler index
+    if coupler_idx is None: 
+        coupler_idx = self.number_of_nodes()-1
+    
+    ## Initialize figure    
+    if self.goal is not None:
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+    else:
+        fig, ax1 = plt.subplots()
+    
+    ## Plot Edges
+    edges = self.get_edges(coupler_idx+1)
+    for e in edges: 
+        ax1.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;k-&#39;) 
+        # plt.plot(self.paths[e, 0, 0],self.paths[e,1, 0], &#39;r.&#39;, label=&#34;joints&#34;)
+    
+    ## Plot motor and fixed node
+    ax1.plot(self.paths[2, 0, 0], self.paths[2,1, 0], &#39;r^&#39;, label=&#34;fixed joints&#34;, ms=10)
+    ax1.plot(self.paths[0, 0, 0], self.paths[0,1, 0], &#39;m^&#39;, label=&#34;motor joints&#34;, ms=10)
+
+    ## Plot revolute joints
+    fixed_ids = self._get_fixed_ids()
+    non_fixed_ids = list(set(fixed_ids) ^ set(range(coupler_idx+1)))
+    ax1.plot(self.paths[non_fixed_ids, 0, 0], self.paths[non_fixed_ids,1, 0], &#39;ro&#39;, label=&#34;pin joints&#34;, ms=10)
+
+    ## Plot joint trajectories
+    if plot_paths:
+        ax1.plot(self.paths[:coupler_idx+1, 0, :], self.paths[:coupler_idx+1, 1,:], &#39;b.&#39;, markersize=1.0)
+
+    ## Highlight coupler trajectory
+    if plot_coupler:
+        # n = self.number_of_nodes()-1
+        ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], &#39;yo&#39;, label=&#34;coupler joint&#34;, markersize=10)
+        ax1.plot(self.paths[coupler_idx, 0, :], self.paths[coupler_idx, 1,:], &#39;y-&#39;, label=&#34;coupler&#34;, markersize=3)
+
+
+    ## Figure Formating
+    ax1.legend(loc=&#39;upper center&#39;, bbox_to_anchor=(1.0, -0.1),
+        fancybox=True, shadow=True, ncol=3)
+    # ax1 = plt.gca()
+    ax1.set_title(&#39;State Visualization&#39;)
+    ax1.set_xlim([-self.max_length, self.max_length])
+    ax1.set_ylim([-self.max_length, self.max_length])
+    ax1.set_aspect(&#39;equal&#39;)
+
+    ## Plot goal
+    if self.goal is not None:
+        ax2.plot(self.goal[0,:], self.goal[1,:], &#39;r.&#39;, ms=10)
+        coupler = self.coupler_traj()
+        ax2.plot(coupler[0,:], coupler[1,:], &#39;y.&#39;)
+        ax2.set_xlim([-self.max_length, self.max_length])
+        ax2.set_ylim([-self.max_length, self.max_length])
+        ax2.set_aspect(&#39;equal&#39;)
+
+    
+    ## Plot constraints
+    if self.constraints:
+        colors = [&#39;r--&#39;, &#39;b--&#39;]
+        for i, c in enumerate(self.constraints):
+            ax1.plot([c[0], c[1], c[1], c[0]], [c[2], c[2], c[3], c[3]], colors[i], lw=3)
+
+    ## Save figure
+    if filename is not None: 
+        if filename in os.listdir(): 
+            out = filename.split(&#34;.&#34;)
+            out[0] += (&#39;_&#39;+str(datetime.now()))
+            filename = &#39;.&#39;.join(out)
+        
+        plt.savefig(filename)
+        plt.close()
+    
+    return fig</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.prune"><code class="name flex">
+<span>def <span class="ident">prune</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Prune linkage graph of unnecessary revolute joints</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def prune(self):
+    &#34;&#34;&#34;Prune linkage graph of unnecessary revolute joints
+    &#34;&#34;&#34;
+    
+    ## Get active nodes and edges
+    active_nodes, edges = self.get_active_nodes()
+    active_nodes.sort()
+    
+    n = len(active_nodes)
+    
+    ## update edge list
+    edges = np.array([[0, 1], [0, 2]]+ [[active_nodes.index(list(e)[0]), active_nodes.index(list(e)[1])] for e in edges])
+    
+    ## get all paths of active nodes
+    paths = self.paths[active_nodes,:,0]
+
+    ## Reset linkage graph paths and adj
+    self.paths = np.zeros_like(self.paths)
+    self.adj = np.zeros_like(self.adj)
+    
+    ## Update with only active nodes and edges
+    self.paths[:n, :, 0] = paths
+    
+    self.adj[edges[:,0], edges[:,1]] = 1
+    self.adj[edges[:,1], edges[:,0]] = 1 
+ 
+    ## reinitialize linkage graph
+    self._initialize_paths()</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.random_n_bar"><code class="name flex">
+<span>def <span class="ident">random_n_bar</span></span>(<span>self, edges, n)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Random valid n bar linakge NOTE: not really N_bar, based on edges input</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>edges</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>set of edges Shape: (e, 2)</dd>
+<dt><strong><code>n</code></strong> :&ensp;<code>int</code></dt>
+<dd>number of revolute joints</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def random_n_bar(self, edges, n):
+    &#34;&#34;&#34;Random valid n bar linakge NOTE: not really N_bar, based on edges input
+
+    Args:
+        edges (Nd.Array): set of edges Shape: (e, 2)
+        n (int): number of revolute joints
+    &#34;&#34;&#34;
+    pos_ind = range(self.grid.shape[0])
+    # s = l = 1 
+    # p = q = 0
+    
+    # ## Random Crank-Rocker N-Bar
+    # while s+l &gt; p+q:
+    node_pos_ind = self.rng.choice(pos_ind, size=n, replace=False)
+    node_pos = self.grid[node_pos_ind,:]
+        # s = np.linalg.norm(node_pos[0]-node_pos[1])
+        # q = np.linalg.norm(node_pos[0]-node_pos[2])
+        # l = np.linalg.norm(node_pos[1]-node_pos[3])
+        # p = np.linalg.norm(node_pos[2]-node_pos[3])
+    
+    
+    self.paths[:4, :, 0]=node_pos
+    self.adj[edges[:,0], edges[:,1]] = 1
+    self.adj[edges[:,1], edges[:,0]] = 1 
+    self._initialize_paths()</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self, mode='human')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Render the linkage being generated</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>mode</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>visualization mode. Defaults to "human".</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>DependencyNotInstalled</code></dt>
+<dd>needs pygame</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>successful</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def render(self, mode=&#34;human&#34;):
+    &#34;&#34;&#34;Render the linkage being generated
+
+    Args:
+        mode (str, optional): visualization mode. Defaults to &#34;human&#34;.
+
+    Raises:
+        DependencyNotInstalled: needs pygame
+
+    Returns:
+        bool: successful
+    &#34;&#34;&#34;
+    try:
+        import pygame
+        from pygame import gfxdraw
+    except ImportError:
+        raise DependencyNotInstalled(
+            &#34;pygame is not installed, run `pip install gym[classic_control]`&#34;
+        )
+
+    self.screen_width = 600
+    self.screen_height = 600
+
+    design_width = self.bound * 5.0
+    self.scale = self.screen_width/ design_width 
+
+
+    self.screen = None # TODO: Fix this
+    self.clock = None # TODO: Fix me
+    
+
+    if self.screen is None:
+        pygame.init()
+        pygame.display.init()
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+    if self.clock is None:
+        self.clock = pygame.time.Clock()
+
+    self.surf = pygame.Surface((self.screen_width, self.screen_height))
+    self.surf.fill((255, 255, 255))
+    
+    path_pix = self.coords_to_pix(self.paths).astype(int)
+    
+    
+    ## Draw Links
+    for e in self.get_edges():
+        gfxdraw.line(self.surf, path_pix[e[0], 0, 0], path_pix[e[0], 1, 0], 
+                                path_pix[e[1], 0, 0], path_pix[e[1], 1, 0], [0, 0, 0])
+    
+    rad = 5
+    ## Draw Motor
+    gfxdraw.filled_circle(self.surf, path_pix[0,0,0], path_pix[0,1,0], rad, [255, 0, 255])
+    
+    ## Draw Crank Node
+    gfxdraw.filled_circle(self.surf, path_pix[1,0,0], path_pix[1,1,0], rad, [0, 255, 0])
+    
+    ## Draw Fixed Node
+    gfxdraw.filled_circle(self.surf, path_pix[2,0,0], path_pix[2,1,0], rad, [160, 160, 160])
+    
+    ## Draw Other Nodes
+    n = self.number_of_nodes()
+    for i in range(3, n):
+        gfxdraw.filled_circle(self.surf, path_pix[i,0,0], path_pix[i,1,0], rad, [255, 0, 0])
+
+    
+    ## Draw Coupler Traj
+    for i in range(self.T):
+        gfxdraw.filled_circle(self.surf, path_pix[n-1,0,i], path_pix[n-1,1,i], rad//2, [255, 0, 0])
+
+    mu = self.paths[n-1, :, :].mean(1).reshape(-1, 1)
+    std = max(self.paths[n-1, :, :].std(1))
+    # pdb.set_trace()
+    goal = (self.goal*std+mu)
+    goal_pix = self.coords_to_pix(goal).astype(int)
+    ## Draw Goal Traj
+    for i in range(self.T):
+        gfxdraw.filled_circle(self.surf, goal_pix[0,i], goal_pix[1,i], rad//2, [255, 255, 0])
+    
+
+    self.surf = pygame.transform.flip(self.surf, False, True)
+    self.screen.blit(self.surf, (0, 0))
+    if mode == &#34;human&#34;:
+        pygame.event.pump()
+        self.clock.tick(self.metadata[&#34;render_fps&#34;])
+        pygame.display.flip()
+
+    if mode == &#34;rgb_array&#34;:
+        return np.transpose(
+            np.array(pygame.surfarray.pixels3d(self.screen)), axes=(1, 0, 2)
+        )
+    else:
+        return True</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.reset"><code class="name flex">
+<span>def <span class="ident">reset</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reset the environment to a root linkage</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>observation of the linkage (x, adj, mask, action_mask) flattened</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reset(self):
+    &#34;&#34;&#34;Reset the environment to a root linkage
+
+    Returns:
+        Nd.Array: observation of the linkage (x, adj, mask, action_mask) flattened
+    &#34;&#34;&#34;
+
+    ## Reset variables
+    self.paths = np.zeros([self.max_nodes, 2, self.T])
+    self.adj = np.zeros([self.max_nodes, self.max_nodes])
+    self.edge_masks = {}
+    self.prev_mask = np.zeros(len(self.actions)) 
+    self.previous_action = None
+    self.is_terminal = False
+    
+    self.resets += 1
+    
+    ## Get root node design
+    if self.fixed_initial_state:
+        node_positions = self.init_args[&#39;node_positions&#39;]
+        edges = self.init_args[&#39;edges&#39;]
+
+        n = node_positions.shape[0]
+
+        self.paths[:n, :, 0] = node_positions
+
+        self.adj[edges[:,0], edges[:,1]] = 1
+        self.adj[edges[:,1], edges[:,0]] = 1
+
+        self._initialize_paths()
+        
+    else:
+        self.get_valid_env()
+    
+    return self.get_observation()</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.satisfy_constraints"><code class="name flex">
+<span>def <span class="ident">satisfy_constraints</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks if linkage graph satisfies the constraints</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>satifies</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def satisfy_constraints(self): 
+    &#34;&#34;&#34;Checks if linkage graph satisfies the constraints
+
+    Returns:
+        bool: satifies
+    &#34;&#34;&#34;
+        
+    if not self.constraints:
+        return True
+    
+    valid = []
+    for i, bounding_box in enumerate(self.constraints):
+        ## Get body and couple index
+        if self.is_terminal:
+            node = self.number_of_nodes()-1 if i else range(self.number_of_nodes()-1)
+        else:
+            node = range(self.number_of_nodes())
+            
+            ## If non-terminal and coupler constraints break
+            if i:
+                return all(valid)
+        
+        ## Check that iniital state inside bounding box 
+        # TODO: this is wrong, it should consider the whole trajectory
+        if not bounding_box:
+            valid.append(True)
+        
+        xmin = np.min(self.paths[node,0,:])
+        xmax = np.max(self.paths[node,0,:])
+        
+        ymin = np.min(self.paths[node,1,:])
+        ymax = np.max(self.paths[node,1,:])
+        
+        valid.append(all([xmin&gt;bounding_box[0], 
+                            xmax&lt;bounding_box[1], 
+                            ymin&gt;bounding_box[2], 
+                            ymax&lt;bounding_box[3]]))
+            
+    return all(valid)</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.seed"><code class="name flex">
+<span>def <span class="ident">seed</span></span>(<span>self, seed=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the seed for gym env</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>seed</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>seed used for gym env. Defaults to None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>the seed value</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def seed(self, seed=None):
+    &#34;&#34;&#34;Set the seed for gym env
+
+    Args:
+        seed (int, optional): seed used for gym env. Defaults to None.
+
+    Returns:
+        int: the seed value
+    &#34;&#34;&#34;
+    if self.rng_seed:
+        if self.debug:
+            print(&#34;WARNING!!!! You tried reset the random number for the environment.&#34;)
+            print(&#34;To overide the seed apply the following: \n&#34;, 
+                  &#34;env.rng_seed = seed \n&#34; ,
+                  &#34;env.rng = RandomState(MT19937(SeedSequence(seed))) \n&#34;)
+        return self.rng_seed
+    self.rng_seed = seed
+    self.rng = RandomState(MT19937(SeedSequence(seed))) 
+    
+    return seed</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.step"><code class="name flex">
+<span>def <span class="ident">step</span></span>(<span>self, action)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update linkage graph with new action</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>action</code></strong> :&ensp;<code>int</code></dt>
+<dd>index of action </dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>(Nd.Array, float, bool, dict): Observation, Reward, Done, Info</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def step(self, action):
+    &#34;&#34;&#34;Update linkage graph with new action
+
+    Args:
+        action (int): index of action 
+
+    Returns:
+        (Nd.Array, float, bool, dict): Observation, Reward, Done, Info
+    &#34;&#34;&#34;
+    ## Get action from index
+    (node_id0, node_id1), scaffold_id, done = self.actions[int(action)]
+    
+    ## Is terminal action
+    self.is_terminal = done
+
+
+    ## If Action is the same as previous Terminate Episode
+    if action == self.previous_action: 
+        if self.debug:
+            print(&#34;Warning: (Action) Same Action was selected again. Note that this is considered invalid&#34;)
+            
+        obs = self.get_observation()
+        done = True 
+
+        return obs, self.invalid_penalty, done, {} 
+
+    
+    ## Check if node selection is valid 
+    n = self.number_of_nodes()
+    if node_id0 &gt;= n or node_id1 &gt;= n:
+        if self.debug:
+            print(&#34;Warning: (Nodes) Same Action was selected again. Note that this is considered invalid&#34;)
+
+        return self.get_observation(), self.invalid_penalty, True, {}
+
+    ## Valid node add to linkage
+    self.add_node(self.grid[scaffold_id, :])
+    new_node_id = self.number_of_nodes()
+    self.add_edge(node_id0, new_node_id)
+    self.add_edge(node_id1, new_node_id)
+
+    ## Update Paths
+    self.paths[new_node_id, :, :] = symbolic_kinematics(self.paths[node_id0, :, :], self.paths[node_id1, :, :], self.paths[new_node_id, :, 0])
+
+    ## If Kinematics Valid Check
+    if not self.is_valid():
+        if self.debug:
+            print(&#34;Warning: (Kinematics) Action led to kinematically infeasible design.&#34;)
+
+        self._remove_action()
+        return self.get_observation(), self.invalid_penalty, True, {}
+    
+    ## Check if finished design 
+    if self.number_of_nodes() == self.max_nodes and not done:
+        if self.debug:
+            print(&#34;Warning: (Terminal) Failed to finish design in valid number of steps.&#34;)
+
+        return self.get_observation(), self.invalid_penalty, True, {}
+
+    ## Get reward
+    reward = 0.0
+    if done:
+        reward, _ = self._get_reward()
+        ## Save all good designs during the search
+        self.update_best_designs()
+
+    self.previous_action = action
+    
+    obs = self.get_observation()
+    info = self._get_info() 
+    
+    # Return Status
+    return obs, reward, done, info </code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.update_best_designs"><code class="name flex">
+<span>def <span class="ident">update_best_designs</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update set of best designs of various linakge graph topologies</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_best_designs(self):
+    &#34;&#34;&#34;Update set of best designs of various linakge graph topologies
+    &#34;&#34;&#34;
+    ## Prune linkage graph
+    self.prune()
+    
+    ## If linkage graph topology not accounted for yet        
+    if self.cycles not in self.best_designs:
+        self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
+        return 
+    
+    ## If linkage graph is better than current topology 
+    if self.total_dist &gt; self.best_designs[self.cycles][-1]:
+        self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
+        return </code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.update_fixed_paths"><code class="name flex">
+<span>def <span class="ident">update_fixed_paths</span></span>(<span>self, fixed_node_pos)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update self.paths for fixed revolute joints (DEPRECATED)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>fixed_node_pos</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>Vector of initial position of fixed nodes Shape: (n, 2)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_fixed_paths(self, fixed_node_pos):
+    &#34;&#34;&#34;Update self.paths for fixed revolute joints (DEPRECATED)
+
+    Args:
+        fixed_node_pos (Nd.Array): Vector of initial position of fixed nodes Shape: (n, 2)
+    &#34;&#34;&#34;
+    fixed_ids = self._get_fixed_ids()
+    self.paths[fixed_ids, :, :] = fixed_node_pos[:, :, np.newaxis]
+
+    self._update_crank_path()
+
+    # Update rest of mechanism
+    self.update_paths()</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.envs.Mech.Mech.update_paths"><code class="name flex">
+<span>def <span class="ident">update_paths</span></span>(<span>self, unknown_joints=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update self.paths</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>unknown_joints</code></strong> :&ensp;<code>list</code>, optional</dt>
+<dd>node indexes that are not known or want to be calculated. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_paths(self, unknown_joints=None):
+    &#34;&#34;&#34;Update self.paths
+
+    Args:
+        unknown_joints (list, optional): node indexes that are not known or want to be calculated. Defaults to None.
+    &#34;&#34;&#34;
+    n = self.number_of_nodes()
+    
+    if unknown_joints is None:
+        known_joints = list(np.argwhere(self.node_type == 0)[:,0])
+        known_joints.append(1) #(np.argwhere(self.adj[0,:] == 1).item()) #TODO: Fix this
+        unknown_joints = list(set(range(n)) ^ set(known_joints)) 
+    else:
+        assert isinstance(unknown_joints, list)
+        known_joints = list(set(range(n)) ^ set(unknown_joints))
+
+
+    count = 0
+    while list(set(range(n)) ^ set(known_joints)) != [] and count &lt; 100:
+
+        for i in unknown_joints[:]:
+            
+            if sum(self.adj[i, known_joints]) &gt;= 2:
+
+
+                inds = np.array(known_joints)[np.where(self.adj[i, known_joints] &gt;= 1)[0]]
+
+                # Update paths
+                self.paths[i, :, :] = symbolic_kinematics(self.paths[inds[0],:,:], self.paths[inds[1], :, :], self.paths[i, :, 0])
+                
+                unknown_joints.remove(i)
+                known_joints.append(i)
+            else:
+                pass
+        count += 1</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="gcp_holo.linkage_gym.envs" href="index.html">gcp_holo.linkage_gym.envs</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech" href="#gcp_holo.linkage_gym.envs.Mech.Mech">Mech</a></code></h4>
+<ul class="">
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.active_cycles" href="#gcp_holo.linkage_gym.envs.Mech.Mech.active_cycles">active_cycles</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.add_edge" href="#gcp_holo.linkage_gym.envs.Mech.Mech.add_edge">add_edge</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.add_node" href="#gcp_holo.linkage_gym.envs.Mech.Mech.add_node">add_node</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.apply_random_action" href="#gcp_holo.linkage_gym.envs.Mech.Mech.apply_random_action">apply_random_action</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.clear_best_desings" href="#gcp_holo.linkage_gym.envs.Mech.Mech.clear_best_desings">clear_best_desings</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.close" href="#gcp_holo.linkage_gym.envs.Mech.Mech.close">close</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.coords_to_pix" href="#gcp_holo.linkage_gym.envs.Mech.Mech.coords_to_pix">coords_to_pix</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.coupler_traj" href="#gcp_holo.linkage_gym.envs.Mech.Mech.coupler_traj">coupler_traj</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.dfs" href="#gcp_holo.linkage_gym.envs.Mech.Mech.dfs">dfs</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.get_active_nodes" href="#gcp_holo.linkage_gym.envs.Mech.Mech.get_active_nodes">get_active_nodes</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.get_distance" href="#gcp_holo.linkage_gym.envs.Mech.Mech.get_distance">get_distance</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.get_edge_lengths" href="#gcp_holo.linkage_gym.envs.Mech.Mech.get_edge_lengths">get_edge_lengths</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.get_edge_mask" href="#gcp_holo.linkage_gym.envs.Mech.Mech.get_edge_mask">get_edge_mask</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.get_edges" href="#gcp_holo.linkage_gym.envs.Mech.Mech.get_edges">get_edges</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.get_observation" href="#gcp_holo.linkage_gym.envs.Mech.Mech.get_observation">get_observation</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.get_valid_env" href="#gcp_holo.linkage_gym.envs.Mech.Mech.get_valid_env">get_valid_env</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.is_valid" href="#gcp_holo.linkage_gym.envs.Mech.Mech.is_valid">is_valid</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.metadata" href="#gcp_holo.linkage_gym.envs.Mech.Mech.metadata">metadata</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.number_of_active_nodes" href="#gcp_holo.linkage_gym.envs.Mech.Mech.number_of_active_nodes">number_of_active_nodes</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.number_of_cycles" href="#gcp_holo.linkage_gym.envs.Mech.Mech.number_of_cycles">number_of_cycles</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.number_of_edges" href="#gcp_holo.linkage_gym.envs.Mech.Mech.number_of_edges">number_of_edges</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.number_of_nodes" href="#gcp_holo.linkage_gym.envs.Mech.Mech.number_of_nodes">number_of_nodes</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.paper_plotting" href="#gcp_holo.linkage_gym.envs.Mech.Mech.paper_plotting">paper_plotting</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.plot_graph" href="#gcp_holo.linkage_gym.envs.Mech.Mech.plot_graph">plot_graph</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.prune" href="#gcp_holo.linkage_gym.envs.Mech.Mech.prune">prune</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.random_n_bar" href="#gcp_holo.linkage_gym.envs.Mech.Mech.random_n_bar">random_n_bar</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.render" href="#gcp_holo.linkage_gym.envs.Mech.Mech.render">render</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.reset" href="#gcp_holo.linkage_gym.envs.Mech.Mech.reset">reset</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.satisfy_constraints" href="#gcp_holo.linkage_gym.envs.Mech.Mech.satisfy_constraints">satisfy_constraints</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.seed" href="#gcp_holo.linkage_gym.envs.Mech.Mech.seed">seed</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.step" href="#gcp_holo.linkage_gym.envs.Mech.Mech.step">step</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.update_best_designs" href="#gcp_holo.linkage_gym.envs.Mech.Mech.update_best_designs">update_best_designs</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.update_fixed_paths" href="#gcp_holo.linkage_gym.envs.Mech.Mech.update_fixed_paths">update_fixed_paths</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.envs.Mech.Mech.update_paths" href="#gcp_holo.linkage_gym.envs.Mech.Mech.update_paths">update_paths</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

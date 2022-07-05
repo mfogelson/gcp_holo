@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>gcp_holo.linkage_gym.utils.env_utils API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>gcp_holo.linkage_gym.utils.env_utils</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from scipy.spatial.distance import cdist
+from scipy.optimize import linear_sum_assignment
+
+import numpy as np 
+
+from copy import deepcopy
+
+
+def normalize_curve(input, scale=None, shift=None):
+    &#34;&#34;&#34;normalizes input curve with shift and scale factors
+
+    Args:
+        input (Nd.Array): Shape: (n, 2)
+        scale (float, optional): scaling factor. Defaults to None.
+        shift (Nd.Array, optional): shift factor [x offset, y offset]. Defaults to None.
+
+    Returns:
+        Nd.Array: updated curve
+    &#34;&#34;&#34;
+    if input.shape[0] != 2:
+        input = input.T
+        
+    mu = np.mean(input, axis=1).reshape(-1,1)
+    std = max(np.std(input, axis=1).reshape(-1,1))
+
+
+    output = (input - mu) # Shift
+
+    output /= (std+1e-10) # Scale
+    
+    if scale is not None:
+        output*=scale
+    
+    if shift is not None: 
+        output+=shift
+
+    return output
+
+        
+def distance(curve_i, curve_j, ordered=False, distance_metric=&#39;euclidean&#39;):
+    &#34;&#34;&#34;distance between curve_i and curve_j
+
+    Args:
+        curve_i (Nd.Array): Array of x,y points that is from curve_i Shape: (n, 2)
+        curve_j (Nd.Array): Array of x,y points that is from curve_j Shape: (n, 2)
+        ordered (bool, optional): if ordering of points matters. Defaults to False.
+        distance_metric (str, optional): check scipy.cdist for various options. Defaults to &#39;euclidean&#39;.
+
+    Returns:
+        Nd.Array: Distance between all points
+    &#34;&#34;&#34;
+
+    ## Correct Shape
+    if curve_i.shape[1] != 2:
+        curve_i = curve_i.T
+        
+    if curve_j.shape[1] != 2:
+        curve_j = curve_j.T 
+    
+    ## Get distance between all sets of points
+    C = cdist(curve_i, curve_j, metric=distance_metric)
+    
+    row_ind = np.arange(curve_i.shape[0])
+    
+    if ordered:
+        row_inds = row_ind[row_ind[:,None]-np.zeros_like(row_ind)].T
+        col_inds = row_ind[row_ind[:,None]-row_ind].T 
+        
+        min_clock_wise = np.amin(C[row_inds, col_inds].sum(1))
+        argmin_clock_wise = np.argmin(C[row_inds, col_inds].sum(1))
+        
+        min_count_clock_wise = np.amin(C[row_inds, col_inds[:,::-1]].sum(1))
+        argmin_count_clock_wise = np.argmin(C[row_inds, col_inds[:,::-1]].sum(1))
+        
+        ## Check both directions of ordering
+        cw_dir = int(min_clock_wise &lt; min_count_clock_wise)
+
+        col_ind = col_inds[int(cw_dir * argmin_clock_wise + (1-cw_dir)*argmin_count_clock_wise), :]
+        # col_ind = col_inds[np.argmin(C[row_inds, col_inds].sum(1)), :]
+    else:   
+        row_ind, col_ind = linear_sum_assignment(C)
+            
+    return C[row_ind, col_ind]
+
+
+def uniquify(path):
+    import os
+    filename, extension = os.path.splitext(path)
+    counter = 1
+
+    while os.path.exists(path):
+        path = filename + &#34; (&#34; + str(counter) + &#34;)&#34; + extension
+        counter += 1
+
+    return path
+
+
+def circIntersectionVect(jointA, jointB, jointC_pos):
+    &#34;&#34;&#34;Circle Intersection Method for linkage FK 
+
+    Args:
+        jointA (Nd.Array): jointA path
+        jointB (Nd.Array): jointB path
+        jointC_pos (Nd.Array): New joint being added
+
+    Returns:
+        Nd.Array: Path of jointC
+    &#34;&#34;&#34;
+    _, N = jointA.shape
+    lengthA = np.linalg.norm(jointA[:,0] - jointC_pos)
+    lengthB = np.linalg.norm(jointB[:,0] - jointC_pos)
+
+    d = np.linalg.norm(jointB-jointA, axis=0).reshape(1,N) # (1, N)
+
+    a = np.divide(lengthA**2 - lengthB**2 + np.power(d,2), 2.0*d)
+
+    
+    h = np.sqrt(lengthA**2-np.power(a,2))
+
+    P2 = jointA + np.divide(np.multiply(a, (jointB - jointA)),d)
+
+
+    sol1x = P2[0,:] + np.divide(np.multiply(h, (jointB[1,:].reshape(1,N)- jointA[1,:].reshape(1,N))), d) 
+    sol1y = P2[1,:] - np.divide(np.multiply(h, (jointB[0,:].reshape(1,N)- jointA[0,:].reshape(1,N))), d)
+
+    sol1 = np.vstack([sol1x, sol1y])
+
+    sol2x = P2[0,:] - np.divide(np.multiply(h, (jointB[1,:].reshape(1,N)- jointA[1,:].reshape(1,N))), d) 
+    sol2y = P2[1,:] + np.divide(np.multiply(h, (jointB[0,:].reshape(1,N)- jointA[0,:].reshape(1,N))), d)
+
+    sol2 = np.vstack([sol2x, sol2y])
+    
+    if np.linalg.norm(sol1[:,0]-jointC_pos)&lt;1e-4:
+        return sol1
+    elif np.linalg.norm(sol2[:,0]-jointC_pos)&lt;1e-4:
+        return sol2
+    else:
+        print(f&#34;Error: Neither solution fit initial position, sol1 : {sol1[:,0]}, sol2: {sol2[:,0]}, orig: {jointC_pos} &#34;)
+        sol1[:] = np.nan
+        return sol1
+        # pdb.set_trace()
+
+    # return sol1, sol2
+
+def symbolic_kinematics(xi, xj, xk0):
+    &#34;&#34;&#34;Symbolic Kinematics implementation
+
+    Args:
+        xi (Nd.Array): Path of revolute joint xi Shape: (2, n)
+        xj (Nd.Array): Path of revolute joint xj Shape: (2, n)
+        xk0 (Nd.Array): Initial position of new point xk Shape: (2,)
+
+    Returns:
+        Nd.Array: Path of revolute joint xk Shape: (2,n)
+    &#34;&#34;&#34;
+
+    _, N = xi.shape
+    l_ij = np.linalg.norm(xj-xi, axis=0).squeeze() # (N, )
+    l_ik = np.linalg.norm(xi[:,0] - xk0) # float
+    l_jk = np.linalg.norm(xj[:, 0] - xk0) # float
+
+    ## Triangle inequality ##
+    valid = np.logical_and.reduce((np.all(l_ik+l_jk &gt; l_ij), 
+                                np.all(l_ik+l_ij &gt; l_jk),  
+                                np.all(l_jk+l_ij &gt; l_ik), 
+                                np.all(l_ij &gt; 0), 
+                                np.all(l_ik &gt; 0)))  
+    
+    if not valid:
+        return np.full_like(xi, np.nan)
+
+    f = l_ik / l_ij # (N, )
+
+    t = (l_ij**2 + (l_ik**2 - l_jk**2))/(2*l_ij*l_ik) # (N, )
+    R = np.array([[t, -np.sqrt(1.-t**2)], [np.sqrt(1.-t**2), t]]) # (2, 2, N)
+    Q = (R*f).T # (N, 2, 2)
+
+    diff = xj-xi # ()
+    diff = diff[np.newaxis, :,:].T
+    xk = np.matmul(Q,diff).T.squeeze() + xi
+    
+    ## found solution path
+    if np.linalg.norm(xk[:,0]-xk0) &lt; 1e-3:
+        return xk
+    
+    ## flip orientation
+    R = np.array([[t, np.sqrt(1.-t**2)], [-np.sqrt(1.-t**2), t]]) # (2, 2, N)
+    Q = (R*f).T # (N, 2, 2)
+    xk = np.matmul(Q,diff).T.squeeze() + xi
+    
+    ## found solution path
+    if np.linalg.norm(xk[:,0]-xk0) &lt; 1e-3:
+        return xk
+    
+    ## Passes through singularity 
+    return np.full_like(xi, np.nan)
+
+    </code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="gcp_holo.linkage_gym.utils.env_utils.circIntersectionVect"><code class="name flex">
+<span>def <span class="ident">circIntersectionVect</span></span>(<span>jointA, jointB, jointC_pos)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Circle Intersection Method for linkage FK </p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>jointA</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>jointA path</dd>
+<dt><strong><code>jointB</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>jointB path</dd>
+<dt><strong><code>jointC_pos</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>New joint being added</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>Path of jointC</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def circIntersectionVect(jointA, jointB, jointC_pos):
+    &#34;&#34;&#34;Circle Intersection Method for linkage FK 
+
+    Args:
+        jointA (Nd.Array): jointA path
+        jointB (Nd.Array): jointB path
+        jointC_pos (Nd.Array): New joint being added
+
+    Returns:
+        Nd.Array: Path of jointC
+    &#34;&#34;&#34;
+    _, N = jointA.shape
+    lengthA = np.linalg.norm(jointA[:,0] - jointC_pos)
+    lengthB = np.linalg.norm(jointB[:,0] - jointC_pos)
+
+    d = np.linalg.norm(jointB-jointA, axis=0).reshape(1,N) # (1, N)
+
+    a = np.divide(lengthA**2 - lengthB**2 + np.power(d,2), 2.0*d)
+
+    
+    h = np.sqrt(lengthA**2-np.power(a,2))
+
+    P2 = jointA + np.divide(np.multiply(a, (jointB - jointA)),d)
+
+
+    sol1x = P2[0,:] + np.divide(np.multiply(h, (jointB[1,:].reshape(1,N)- jointA[1,:].reshape(1,N))), d) 
+    sol1y = P2[1,:] - np.divide(np.multiply(h, (jointB[0,:].reshape(1,N)- jointA[0,:].reshape(1,N))), d)
+
+    sol1 = np.vstack([sol1x, sol1y])
+
+    sol2x = P2[0,:] - np.divide(np.multiply(h, (jointB[1,:].reshape(1,N)- jointA[1,:].reshape(1,N))), d) 
+    sol2y = P2[1,:] + np.divide(np.multiply(h, (jointB[0,:].reshape(1,N)- jointA[0,:].reshape(1,N))), d)
+
+    sol2 = np.vstack([sol2x, sol2y])
+    
+    if np.linalg.norm(sol1[:,0]-jointC_pos)&lt;1e-4:
+        return sol1
+    elif np.linalg.norm(sol2[:,0]-jointC_pos)&lt;1e-4:
+        return sol2
+    else:
+        print(f&#34;Error: Neither solution fit initial position, sol1 : {sol1[:,0]}, sol2: {sol2[:,0]}, orig: {jointC_pos} &#34;)
+        sol1[:] = np.nan
+        return sol1
+        # pdb.set_trace()
+
+    # return sol1, sol2</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.utils.env_utils.distance"><code class="name flex">
+<span>def <span class="ident">distance</span></span>(<span>curve_i, curve_j, ordered=False, distance_metric='euclidean')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>distance between curve_i and curve_j</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>curve_i</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>Array of x,y points that is from curve_i Shape: (n, 2)</dd>
+<dt><strong><code>curve_j</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>Array of x,y points that is from curve_j Shape: (n, 2)</dd>
+<dt><strong><code>ordered</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>if ordering of points matters. Defaults to False.</dd>
+<dt><strong><code>distance_metric</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>check scipy.cdist for various options. Defaults to 'euclidean'.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>Distance between all points</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def distance(curve_i, curve_j, ordered=False, distance_metric=&#39;euclidean&#39;):
+    &#34;&#34;&#34;distance between curve_i and curve_j
+
+    Args:
+        curve_i (Nd.Array): Array of x,y points that is from curve_i Shape: (n, 2)
+        curve_j (Nd.Array): Array of x,y points that is from curve_j Shape: (n, 2)
+        ordered (bool, optional): if ordering of points matters. Defaults to False.
+        distance_metric (str, optional): check scipy.cdist for various options. Defaults to &#39;euclidean&#39;.
+
+    Returns:
+        Nd.Array: Distance between all points
+    &#34;&#34;&#34;
+
+    ## Correct Shape
+    if curve_i.shape[1] != 2:
+        curve_i = curve_i.T
+        
+    if curve_j.shape[1] != 2:
+        curve_j = curve_j.T 
+    
+    ## Get distance between all sets of points
+    C = cdist(curve_i, curve_j, metric=distance_metric)
+    
+    row_ind = np.arange(curve_i.shape[0])
+    
+    if ordered:
+        row_inds = row_ind[row_ind[:,None]-np.zeros_like(row_ind)].T
+        col_inds = row_ind[row_ind[:,None]-row_ind].T 
+        
+        min_clock_wise = np.amin(C[row_inds, col_inds].sum(1))
+        argmin_clock_wise = np.argmin(C[row_inds, col_inds].sum(1))
+        
+        min_count_clock_wise = np.amin(C[row_inds, col_inds[:,::-1]].sum(1))
+        argmin_count_clock_wise = np.argmin(C[row_inds, col_inds[:,::-1]].sum(1))
+        
+        ## Check both directions of ordering
+        cw_dir = int(min_clock_wise &lt; min_count_clock_wise)
+
+        col_ind = col_inds[int(cw_dir * argmin_clock_wise + (1-cw_dir)*argmin_count_clock_wise), :]
+        # col_ind = col_inds[np.argmin(C[row_inds, col_inds].sum(1)), :]
+    else:   
+        row_ind, col_ind = linear_sum_assignment(C)
+            
+    return C[row_ind, col_ind]</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.utils.env_utils.normalize_curve"><code class="name flex">
+<span>def <span class="ident">normalize_curve</span></span>(<span>input, scale=None, shift=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>normalizes input curve with shift and scale factors</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>input</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>Shape: (n, 2)</dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>float</code>, optional</dt>
+<dd>scaling factor. Defaults to None.</dd>
+<dt><strong><code>shift</code></strong> :&ensp;<code>Nd.Array</code>, optional</dt>
+<dd>shift factor [x offset, y offset]. Defaults to None.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>updated curve</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def normalize_curve(input, scale=None, shift=None):
+    &#34;&#34;&#34;normalizes input curve with shift and scale factors
+
+    Args:
+        input (Nd.Array): Shape: (n, 2)
+        scale (float, optional): scaling factor. Defaults to None.
+        shift (Nd.Array, optional): shift factor [x offset, y offset]. Defaults to None.
+
+    Returns:
+        Nd.Array: updated curve
+    &#34;&#34;&#34;
+    if input.shape[0] != 2:
+        input = input.T
+        
+    mu = np.mean(input, axis=1).reshape(-1,1)
+    std = max(np.std(input, axis=1).reshape(-1,1))
+
+
+    output = (input - mu) # Shift
+
+    output /= (std+1e-10) # Scale
+    
+    if scale is not None:
+        output*=scale
+    
+    if shift is not None: 
+        output+=shift
+
+    return output</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.utils.env_utils.symbolic_kinematics"><code class="name flex">
+<span>def <span class="ident">symbolic_kinematics</span></span>(<span>xi, xj, xk0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Symbolic Kinematics implementation</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>xi</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>Path of revolute joint xi Shape: (2, n)</dd>
+<dt><strong><code>xj</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>Path of revolute joint xj Shape: (2, n)</dd>
+<dt><strong><code>xk0</code></strong> :&ensp;<code>Nd.Array</code></dt>
+<dd>Initial position of new point xk Shape: (2,)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Nd.Array</code></dt>
+<dd>Path of revolute joint xk Shape: (2,n)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def symbolic_kinematics(xi, xj, xk0):
+    &#34;&#34;&#34;Symbolic Kinematics implementation
+
+    Args:
+        xi (Nd.Array): Path of revolute joint xi Shape: (2, n)
+        xj (Nd.Array): Path of revolute joint xj Shape: (2, n)
+        xk0 (Nd.Array): Initial position of new point xk Shape: (2,)
+
+    Returns:
+        Nd.Array: Path of revolute joint xk Shape: (2,n)
+    &#34;&#34;&#34;
+
+    _, N = xi.shape
+    l_ij = np.linalg.norm(xj-xi, axis=0).squeeze() # (N, )
+    l_ik = np.linalg.norm(xi[:,0] - xk0) # float
+    l_jk = np.linalg.norm(xj[:, 0] - xk0) # float
+
+    ## Triangle inequality ##
+    valid = np.logical_and.reduce((np.all(l_ik+l_jk &gt; l_ij), 
+                                np.all(l_ik+l_ij &gt; l_jk),  
+                                np.all(l_jk+l_ij &gt; l_ik), 
+                                np.all(l_ij &gt; 0), 
+                                np.all(l_ik &gt; 0)))  
+    
+    if not valid:
+        return np.full_like(xi, np.nan)
+
+    f = l_ik / l_ij # (N, )
+
+    t = (l_ij**2 + (l_ik**2 - l_jk**2))/(2*l_ij*l_ik) # (N, )
+    R = np.array([[t, -np.sqrt(1.-t**2)], [np.sqrt(1.-t**2), t]]) # (2, 2, N)
+    Q = (R*f).T # (N, 2, 2)
+
+    diff = xj-xi # ()
+    diff = diff[np.newaxis, :,:].T
+    xk = np.matmul(Q,diff).T.squeeze() + xi
+    
+    ## found solution path
+    if np.linalg.norm(xk[:,0]-xk0) &lt; 1e-3:
+        return xk
+    
+    ## flip orientation
+    R = np.array([[t, np.sqrt(1.-t**2)], [-np.sqrt(1.-t**2), t]]) # (2, 2, N)
+    Q = (R*f).T # (N, 2, 2)
+    xk = np.matmul(Q,diff).T.squeeze() + xi
+    
+    ## found solution path
+    if np.linalg.norm(xk[:,0]-xk0) &lt; 1e-3:
+        return xk
+    
+    ## Passes through singularity 
+    return np.full_like(xi, np.nan)</code></pre>
+</details>
+</dd>
+<dt id="gcp_holo.linkage_gym.utils.env_utils.uniquify"><code class="name flex">
+<span>def <span class="ident">uniquify</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def uniquify(path):
+    import os
+    filename, extension = os.path.splitext(path)
+    counter = 1
+
+    while os.path.exists(path):
+        path = filename + &#34; (&#34; + str(counter) + &#34;)&#34; + extension
+        counter += 1
+
+    return path</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="gcp_holo.linkage_gym.utils" href="index.html">gcp_holo.linkage_gym.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="gcp_holo.linkage_gym.utils.env_utils.circIntersectionVect" href="#gcp_holo.linkage_gym.utils.env_utils.circIntersectionVect">circIntersectionVect</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.utils.env_utils.distance" href="#gcp_holo.linkage_gym.utils.env_utils.distance">distance</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.utils.env_utils.normalize_curve" href="#gcp_holo.linkage_gym.utils.env_utils.normalize_curve">normalize_curve</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.utils.env_utils.symbolic_kinematics" href="#gcp_holo.linkage_gym.utils.env_utils.symbolic_kinematics">symbolic_kinematics</a></code></li>
+<li><code><a title="gcp_holo.linkage_gym.utils.env_utils.uniquify" href="#gcp_holo.linkage_gym.utils.env_utils.uniquify">uniquify</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
