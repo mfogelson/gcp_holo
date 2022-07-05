@@ -197,7 +197,6 @@ python train.py
 │   ├── a2c.py
 │   ├── dqn.py
 │   ├── gcpn.py
-│   ├── gcpn.pyc
 │   ├── __init__.py
 │   └── random_search.py
 ├── README.md
