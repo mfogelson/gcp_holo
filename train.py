@@ -20,7 +20,7 @@ from models.a2c import CustomActorCriticPolicy
 from models.dqn import CustomDQN, CustomDQNPolicy
 from models.gcpn import GNN
 from models.random_search import random_search
-from utils.utils import evaluate_policy
+from utils.utils import evaluate_policy, cmaes
 # from stable_baselines3.common.evaluation import evaluate_policy
 
 
@@ -332,6 +332,7 @@ def main(args):
         elif isinstance(best_designs, dict):
             node_info = best_designs.values()
         
+        best_cmaes = {}
         ## Plot Best Designs
         for node_positions, edges, _ in node_info:
             env_kwargs['node_positions'] = node_positions
@@ -354,13 +355,27 @@ def main(args):
             wandb.log({'best_designs': wandb.Image(fig)})
             
             plt.close(fig)
-            # fig.savefig('test_fig.png')
-        
+
+            
+            if args.cmaes: 
+                cma_env = cmaes(tmp_env, sigma=0.000055, tolfun=0.00001)
+                cma_env._get_reward()
+                n = cma_env.number_of_nodes()
+                best_cmaes[number_of_cycles] = [cma_env.paths[:n,:,0], cma_env.get_edges(), cma_eng.goal, cma_env.total_dist]
+                
+                fig = tmp_env.paper_plotting()
+                fig.suptitle(f'Algo: {args.model} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
+                
+                ## Log images
+                wandb.log({'best_designs_cmaes': wandb.Image(fig)})
+                plt.close(fig)
+
+                    
         ## Log average reward
         if rewards: 
             for k, v in rewards.items():
                 wandb.log({
-                        'Reward Best Designs': v, 'Number of Nodes': k})
+                        'Reward Best Designs': v, 'Number of Loops': k})
                         # 'Standard Deviation Reward Best Designs': np.std(list(rewards.values())),
                         # 'Median Reward Best Designs': np.median(list(rewards.values())),})
         
@@ -368,73 +383,74 @@ def main(args):
         if best_designs:
             
             pickle.dump(best_dict, open(uniquify(design_dir+f'best_designs_{run.id}.pkl'), 'wb'))
+            
+        if best_cmaes:
+            pickle.dump(best_cmaes, open(uniquify(design_dir+f'best_designs_cmaes_{run.id}.pkl'), 'wb'))
         
         run.finish()
         # time.sleep(1)
 
-def trace(frame, event, arg):
-    # print("%s, %s:%d" % (event, frame.f_code.co_filename, frame.f_lineno))
-    return trace
-
 if __name__ == "__main__":
     # Initialize the parser
-    parser = argparse.ArgumentParser()
-
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    
     # Add parameters positional/optional 
     # default_path = 'data/training_seeds.pkl'
     
     ## Env Args
-    parser.add_argument('--max_nodes',           default=11,                      type=int,             help="number of design steps for each agent")
-    parser.add_argument('--resolution',          default=11,                      type=int,             help="design resolution")
-    parser.add_argument('--bound',               default=1.0,                     type=float,           help="[x,y] value range for revolute joints")
-    parser.add_argument('--sample_points',       default=20,                      type=int,             help="number of sample points from FK")
-    parser.add_argument('--feature_points',      default=1,                       type=int,             help="number of feature poinys for GNN")
-    parser.add_argument('--goal_filename',       default='jansen_traj',           type=str,             help="Goal filename")
-    parser.add_argument('--goal_path',           default='data/other_curves',     type=str,             help="path to goal file")
-    parser.add_argument('--use_self_loops',      default=False,                   action='store_true',  help="Add self loops in adj matrix")
-    parser.add_argument('--normalize',           default=True,                    action='store_true',  help="normalize trajectory for feature vector")
-    parser.add_argument('--use_node_type',       default=False,                   action='store_true',  help="use node type id for feature vector")
-    parser.add_argument('--fixed_initial_state', default=True,                    action='store_true',  help="use same initial state for all training")
-    parser.add_argument('--seed',                default=123,             type=int,             help="Random seed for numpy and gym")
-    parser.add_argument('--ordered',             default=True,          action='store_true',  help="Get minimum ordered distance")
-    parser.add_argument('--body_constraints',    default=None,            type=float, nargs='+',  help="Non-coupler [xmin, xmax, ymin, ymax]")
-    parser.add_argument('--coupler_constraints', default=None,            type=float, nargs='+',  help="coupler [xmin, xmax, ymin, ymax]")
+    parser.add_argument('--max_nodes',           default=11,                      type=int,             help="Maximum number of revolute joints on linkage graph\n (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--resolution',          default=11,                      type=int,             help="Resolution of scaffold nodes (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--bound',               default=1.0,                     type=float,           help="Bound for linkage graph design [-bound, bound] (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--sample_points',       default=20,                      type=int,             help="Numbder of points to sample the trajectories of revolute joints (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--feature_points',      default=1,                       type=int,             help="Number of feature points for node vector used in GNN (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--goal_filename',       default='jansen_traj',           type=str,             help="Goal filename (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--goal_path',           default='data/other_curves',     type=str,             help="Path to goal file (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--use_self_loops',      default=False,                   action='store_true',  help="Add self-loops in adj matrix (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--normalize',           default=False,                   action='store_true',  help="Normalize trajectory for feature vector (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--use_node_type',       default=False,                   action='store_true',  help="Use node type id for feature vector (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--fixed_initial_state', default=True,                    action='store_true',  help="Use same initial design state for all training (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--seed',                default=123,                     type=int,             help="Random seed for numpy and gym (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--ordered',             default=True,                    action='store_true',  help="Get minimum ordered distance (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--body_constraints',    default=None,                    type=float, nargs='+',help="Constraint on Non-coupler revolute joints[xmin, xmax, ymin, ymax] (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--coupler_constraints', default=None,                    type=float, nargs='+',help="Constraint on Coupler joint [xmin, xmax, ymin, ymax] (default: %(default)s, type: %(type)s)")
 
     ## Feature Extractor Args
-    parser.add_argument('--use_gnn',             default=True,          action='store_true',  help="use GNN embedding")
-    parser.add_argument('--batch_normalize',     default=True,         action='store_true',  help="use batch norm")
+    parser.add_argument('--use_gnn',             default=True,          action='store_true',  help="Use GNN feature embedding (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--batch_normalize',     default=True,         action='store_true',   help="Use batch normalization in GNN (default: %(default)s, type: %(type)s)")
     
     ## Model Args
-    parser.add_argument('--model',               default="PPO",         type=str,             help="which model type to use Models=[DQN, A2C, PPO]")
-    parser.add_argument('--n_envs',              default=1,             type=int,             help="number of parallel environments to run NOTE: only valid for A2C or PPO")
-    parser.add_argument('--checkpoint',          default=None,          type=str,             help='A previous model checkpoint')
-    parser.add_argument('--update_freq',         default=1000,          type=int,             help="how often to update the model via PPO")
-    parser.add_argument('--opt_iter',            default=1,             type=int,             help="how many gradient steps per update")
-    parser.add_argument('--eps_clip',            default=0.2,           type=float,           help="PPO epsilon clipping")
-    parser.add_argument('--ent_coef',            default=0.01,           type=float,           help="PPO epsilon clipping")
+    parser.add_argument('--model',               default="PPO",         type=str,             help="Select which model type to use Models=[DQN, A2C, PPO, random] (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--n_envs',              default=1,             type=int,             help="Number of parallel environments to run (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--checkpoint',          default=None,          type=str,             help='Load a previous model checkpoint (default: %(default)s, type: %(type)s)')
+    parser.add_argument('--update_freq',         default=1000,          type=int,             help="How often to update the model (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--opt_iter',            default=1,             type=int,             help="How many gradient steps per update (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--eps_clip',            default=0.2,           type=float,           help="PPO epsilon clipping (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--ent_coef',            default=0.01,           type=float,          help="PPO epsilon clipping (default: %(default)s, type: %(type)s)")
 
-    parser.add_argument('--gamma',               default=0.99,          type=float,           help="Discount factor")
-    parser.add_argument('--lr',                  default=0.0001,       type=float,           help="Learning rate")
-    parser.add_argument('--batch_size',          default=1000,          type=int,             help="Batch Size for Dataloader")
-    parser.add_argument('--buffer_size',         default=1000000,          type=int,             help="Batch Size for Dataloader")
+    parser.add_argument('--gamma',               default=0.99,          type=float,           help="Discount factor (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--lr',                  default=0.0001,       type=float,            help="Learning rate (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--batch_size',          default=1000,          type=int,             help="Batch Size for Dataloader (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--buffer_size',         default=1000000,          type=int,          help="Buffer size for DQN (default: %(default)s, type: %(type)s)")
 
     ## Training Args
-    parser.add_argument('--steps',               default=50000,         type=int,             help='The number of epochs to train')
-    parser.add_argument('--num_trials',          default=1,             type=int,             help="How many times to run a training of the model")
+    parser.add_argument('--steps',               default=50000,         type=int,             help='The number of steps to train (default: %(default)s, type: %(type)s)')
+    parser.add_argument('--num_trials',          default=1,             type=int,             help="How many times to run a training of the model (default: %(default)s, type: %(type)s)")
     
     ## Evaluation Args
-    parser.add_argument('--n_eval_episodes',     default=100,         type=int,             help='The number of epochs to train')
-    parser.add_argument('--m_evals',             default=1,             type=int,             help="How many times to run a training of the model")
+    parser.add_argument('--n_eval_episodes',     default=100,         type=int,               help='The number of epochs to evaluate the model (default: %(default)s, type: %(type)s)')
+    parser.add_argument('--m_evals',             default=1,           type=int,               help="How many times to run the evaluation with varying seeds (default: %(default)s, type: %(type)s)")
     
     ## Other Args
-    parser.add_argument('--log_freq',         default=1000,             type=int,             help="how often to log to document")
-    parser.add_argument('--save_freq',        default=10000,            type=int,             help="how often to save instances of model, buffer and render")
-    parser.add_argument('--wandb_mode',       default="online",         type=str,             help="use weights and biases to log information Modes=[online, offline, disabled]")
-    parser.add_argument('--wandb_project',    default="linkage_sb4",         type=str,             help="use weights and biases to log information Modes=[online, offline, disabled]")
+    parser.add_argument('--log_freq',         default=1000,             type=int,             help="How often to log training values (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--save_freq',        default=10000,            type=int,             help="How often to save instances of model, buffer and render (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--wandb_mode',       default="online",         type=str,             help="use weights and biases to log information Modes=[online, offline, disabled] (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--wandb_project',    default="linkage_sb4",         type=str,        help="Set weights and biases project name (default: %(default)s, type: %(type)s)")
 
     parser.add_argument('--verbose',          default=0,                type=int,             help="verbose from sb3")
-    parser.add_argument('--cuda',             default='cpu',         type=str,             help="Which GPU to use [0, 1, 2, 3]")
-    parser.add_argument('--no_train',         default=False,         action='store_true',             help="If you don't want to train")
+    parser.add_argument('--cuda',             default='cpu',         type=str,                help="Which GPU to use [cpu, cuda:0, cuda:1, cuda:2, cuda:3] (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--no_train',         default=False,         action='store_true',     help="If you don't want to train (default: %(default)s, type: %(type)s)")
+    
+    parser.add_argument('--cmaes',            default=False,         action='store_true',     help="Further optimize best designs found with CMA-ES node optimization (default: %(default)s, type: %(type)s)")
 
     
     # Parse the arguments
