@@ -1101,14 +1101,15 @@ class Mech(gym.Env):
         self.prune()
         
         ## If linkage graph topology not accounted for yet        
-        if self.cycles not in self.best_designs:
-            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
-            return 
-        
-        ## If linkage graph is better than current topology 
-        if self.total_dist > self.best_designs[self.cycles][-1]:
-            self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
-            return 
+        if self.cycles > 0:
+            if self.cycles not in self.best_designs:
+                self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
+                return 
+            
+            ## If linkage graph is better than current topology 
+            if self.total_dist > self.best_designs[self.cycles][-1]:
+                self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
+                return 
 
     def step(self, action):
         """Update linkage graph with new action

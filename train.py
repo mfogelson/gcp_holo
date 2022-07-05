@@ -100,7 +100,7 @@ def main(args):
         
         # If PPO A2C or DQN can use multiple envs while training
         if args.model in ['PPO', 'A2C', 'DQN']:
-            env = make_vec_env(Mech, n_envs=args.n_envs, env_kwargs=env_kwargs, seed=args.seed) # NOTE: For faster training use SubProcVecEnv 
+            env = make_vec_env(Mech, n_envs=args.n_envs, env_kwargs=env_kwargs, seed=args.seed, vec_env_cls=SubprocVecEnv, vec_env_kwargs={'start_method': 'fork'}) # NOTE: For faster training use SubProcVecEnv 
         else:
             env = []
             for i in range(args.n_envs):
@@ -349,6 +349,7 @@ def main(args):
             # pdb.set_trace()
 
             fig = tmp_env.paper_plotting()
+            plt.rcParams['font.size'] = 10
             fig.suptitle(f'Algo: {args.model} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
             
             ## Log images
@@ -361,9 +362,10 @@ def main(args):
                 cma_env = cmaes(tmp_env, sigma=0.000055, tolfun=0.00001)
                 cma_env._get_reward()
                 n = cma_env.number_of_nodes()
-                best_cmaes[number_of_cycles] = [cma_env.paths[:n,:,0], cma_env.get_edges(), cma_eng.goal, cma_env.total_dist]
+                best_cmaes[number_of_cycles] = [cma_env.paths[:n,:,0], cma_env.get_edges(), cma_env.goal, cma_env.total_dist]
                 
                 fig = tmp_env.paper_plotting()
+                plt.rcParams['font.size'] = 10
                 fig.suptitle(f'Algo: {args.model} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
                 
                 ## Log images
