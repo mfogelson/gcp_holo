@@ -27,7 +27,7 @@ from utils.utils import evaluate_policy, cmaes
 from stable_baselines3 import A2C, PPO  # , HER, PPO1, PPO2, TRPO
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
-from stable_baselines3.common.callbacks import CheckpointCallback
+from stable_baselines3.common.callbacks import CheckpointCallback, BaseCallback
 
 from datetime import datetime
 
@@ -37,32 +37,32 @@ import warnings
 #     warnings.warn("invalid", RuntimeWarning)
 
 @timebudget
-def main(args):
-    # pdb.set_trace()
-    # args.body_constraints = [-3., 3., 0., 3.]
-    # args.coupler_constraints = [-3., 3., -3., 0.]
+def main(parameters):
+
+    # parameters["body_constraints = [-3., 3., 0., 3.]
+    # parameters["coupler_constraints = [-3., 3., -3., 0.]
     now = datetime.now().strftime("%m_%d_%Y_%HD:%M:%S")
     day = datetime.now().strftime("%m_%d_%Y") 
     
     ## Use WANDB for logging
-    os.environ["WANDB_MODE"] = args.wandb_mode
+    os.environ["WANDB_MODE"] = parameters["wandb_mode"]
 
     ## Learn model N times
-    for trial in range(args.num_trials):
+    for trial in range(parameters["num_trials"]):
         ## Initialize WANBD for Logging
-        run = wandb.init(project=args.wandb_project, 
+        run = wandb.init(project=parameters["wandb_project"], 
                entity='mfogelson',
                sync_tensorboard=True,
                )
         
         ## Adds all of the arguments as config variables
-        wandb.config.update(args) 
+        wandb.config.update(parameters) 
 
         ## Log / eval / save location
-        tb_log_dir = f"./logs/{args.goal_filename}/{args.model}/{day}/{run.id}"
-        eval_dir = f"./evaluations/{args.goal_filename}/{args.model}/{day}/"
-        save_dir = f"./trained/{args.goal_filename}/{args.model}/{day}/"
-        design_dir = f"./designs/{args.goal_filename}/{args.model}/{day}/"
+        tb_log_dir = f"./logs/{parameters['goal_filename']}/{parameters['model']}/{day}/{run.id}"
+        eval_dir = f"./evaluations/{parameters['goal_filename']}/{parameters['model']}/{day}/"
+        save_dir = f"./trained/{parameters['goal_filename']}/{parameters['model']}/{day}/"
+        design_dir = f"./designs/{parameters['goal_filename']}/{parameters['model']}/{day}/"
         
         if not os.path.isdir(tb_log_dir):
             os.makedirs(tb_log_dir, exist_ok=True)
@@ -77,51 +77,56 @@ def main(args):
             os.makedirs(design_dir, exist_ok=True)
 
         ## Load Goal information
-        goal_curve = pickle.load(open(f'{args.goal_path}/{args.goal_filename}.pkl', 'rb')) # NOTE: sometimes ordering needs to be reversed add [:,::-1]
+        goal_curve = pickle.load(open(f'{parameters["goal_path"]}/{parameters["goal_filename"]}.pkl', 'rb')) # NOTE: sometimes ordering needs to be reversed add [:,::-1]
             
-        idx = np.round(np.linspace(0, goal_curve.shape[1] - 1, args.sample_points)).astype(int)
+        idx = np.round(np.linspace(0, goal_curve.shape[1] - 1, parameters["sample_points"])).astype(int)
         goal = normalize_curve(goal_curve[:,idx]) #R@normalize_curve(goal_curve[:,::-1][:,idx])
         goal[:, -1] = goal[:, 0]
+    
         
         ## Initialize Gym ENV
-        env_kwargs = {"max_nodes":args.max_nodes, 
-                        "bound":args.bound, 
-                        "resolution":args.resolution, 
-                        "sample_points":args.sample_points,
-                        "feature_points": args.feature_points, 
+        env_kwargs = {"max_nodes":parameters["max_nodes"], 
+                        "bound":parameters["bound"], 
+                        "resolution":parameters["resolution"], 
+                        "sample_points":parameters["sample_points"],
+                        "feature_points": parameters["feature_points"], 
                         "goal":goal, 
-                        "normalize":args.normalize, 
-                        # "seed": args.seed+trial, 
-                        "fixed_initial_state": args.fixed_initial_state, 
-                        "ordered_distance": args.ordered, 
-                        "constraints": [], #[args.body_constraints, args.coupler_constraints], 
-                        "self_loops": args.use_self_loops, 
-                        "use_node_type": args.use_node_type,}
+                        "normalize":parameters["normalize"], 
+                        # "seed": parameters["seed+trial, 
+                        "fixed_initial_state": parameters["fixed_initial_state"], 
+                        "ordered_distance": parameters["ordered"], 
+                        "constraints": [], #[parameters["body_constraints, parameters["coupler_constraints], 
+                        "self_loops": parameters["use_self_loops"], 
+                        "use_node_type": parameters["use_node_type"],
+                        "min_nodes": 6, 
+                        "debug": False}
         
         # If PPO A2C or DQN can use multiple envs while training
-        if args.model in ['PPO', 'A2C', 'DQN']:
-            env = make_vec_env(Mech, n_envs=args.n_envs, env_kwargs=env_kwargs, seed=args.seed, vec_env_cls=SubprocVecEnv, vec_env_kwargs={'start_method': 'fork'}) # NOTE: For faster training use SubProcVecEnv 
+        if parameters["model"] in ['PPO', 'A2C', 'DQN']:
+            env = make_vec_env(Mech, n_envs=parameters["n_envs"], env_kwargs=env_kwargs, seed=parameters["seed"], vec_env_cls=SubprocVecEnv, vec_env_kwargs={'start_method': 'fork'}) # NOTE: For faster training use SubProcVecEnv 
+            # import pdb
+            # pdb.set_trace()
         else:
             env = []
-            for i in range(args.n_envs):
-                env_kwargs['seed'] = i+args.seed
+            for i in range(parameters["n_envs"]):
+                env_kwargs['seed'] = i+parameters["seed"]
                 env.append(Mech(**env_kwargs))
                         
         ## GNN Args
         gnn_kwargs = {
-                "max_nodes": args.max_nodes,
-                "num_features": 2*args.feature_points+int(args.use_node_type),
+                "max_nodes": parameters["max_nodes"],
+                "num_features": 2*parameters["feature_points"]+int(parameters["use_node_type"]),
                 "hidden_channels":64, 
                 "out_channels":64, 
                 "normalize":False, 
-                "batch_normalization":args.batch_normalize, 
+                "batch_normalization":parameters["batch_normalize"], 
                 "lin":True, 
                 "add_loop":False}
         
         ## Policy Architecture
         dqn_arch = [64, 256, 1024, 4096]
         ppo_arch = [64, dict(vf=[32], pi=[256, 1024, 4096])] ## NOTE: Not used
-        if args.model == "DQN":
+        if parameters["model"] == "DQN":
             policy_kwargs = dict(
                 features_extractor_class=GNN,
                 features_extractor_kwargs=gnn_kwargs,
@@ -135,19 +140,19 @@ def main(args):
             )
             
         ## Initialize Model
-        if args.model == "DQN":
-            assert args.save_freq > args.update_freq//args.n_envs
+        if parameters["model"] == "DQN":
+            assert parameters["save_freq"] > parameters["update_freq"]//parameters["n_envs"]
             
             model = CustomDQN(policy=CustomDQNPolicy,
                     env=env,
-                    learning_rate=args.lr,
-                    buffer_size=args.buffer_size,  # 1e6
+                    learning_rate=parameters["lr"],
+                    buffer_size=parameters["buffer_size"],  # 1e6
                     learning_starts=1,
-                    batch_size=args.batch_size,
+                    batch_size=parameters["batch_size"],
                     tau=1.0, # the soft update coefficient (“Polyak update”, between 0 and 1)
-                    gamma=args.gamma,
-                    train_freq=(args.update_freq//args.n_envs, "step"),
-                    gradient_steps=args.opt_iter,
+                    gamma=parameters["gamma"],
+                    train_freq=(parameters["update_freq"]//parameters["n_envs"], "step"),
+                    gradient_steps=parameters["opt_iter"],
                     replay_buffer_class=None,
                     replay_buffer_kwargs=None,
                     optimize_memory_usage=False,
@@ -159,24 +164,24 @@ def main(args):
                     tensorboard_log=tb_log_dir,
                     create_eval_env=False,
                     policy_kwargs=policy_kwargs,
-                    verbose=args.verbose,
-                    seed=args.seed+trial,
-                    device=args.cuda,
+                    verbose=parameters["verbose"],
+                    seed=parameters["seed+trial"],
+                    device=parameters["cuda"],
                     _init_setup_model=True)
             
-        elif args.model == "PPO":
+        elif parameters["model"] == "PPO":
             model = PPO(policy=CustomActorCriticPolicy, 
                         env=env, 
-                        learning_rate=linear_schedule(args.lr), 
-                        n_steps=args.update_freq//args.n_envs, 
-                        batch_size=args.batch_size, 
-                        n_epochs=args.opt_iter, 
-                        gamma=args.gamma, 
+                        learning_rate= linear_schedule(parameters["lr"]), 
+                        n_steps=parameters["update_freq"]//parameters["n_envs"], 
+                        batch_size=parameters["batch_size"], 
+                        n_epochs=parameters["opt_iter"], 
+                        gamma=parameters["gamma"], 
                         gae_lambda=0.95,
-                        clip_range=args.eps_clip, 
+                        clip_range=parameters["eps_clip"], 
                         clip_range_vf=None, 
                         # normalize_advantage=True, 
-                        ent_coef=args.ent_coef,
+                        ent_coef=parameters["ent_coef"],
                         vf_coef=0.5, 
                         max_grad_norm=0.5, 
                         use_sde=False, 
@@ -185,17 +190,17 @@ def main(args):
                         tensorboard_log=tb_log_dir, 
                         create_eval_env=False, 
                         policy_kwargs=policy_kwargs,
-                        verbose=args.verbose, 
-                        seed=args.seed+trial, 
-                        device=args.cuda, 
+                        verbose=parameters["verbose"], 
+                        seed=parameters["seed"]+trial, 
+                        device=parameters["cuda"], 
                         _init_setup_model=True)
             
-        elif args.model == "A2C":
+        elif parameters["model"] == "A2C":
             model = A2C(policy=CustomActorCriticPolicy,
                         env=env,
-                        learning_rate=args.lr,
-                        n_steps=args.update_freq//args.n_envs,
-                        gamma=args.gamma,
+                        learning_rate=parameters["lr"],
+                        n_steps=parameters["update_freq"]//parameters["n_envs"],
+                        gamma=parameters["gamma"],
                         gae_lambda=0.95,
                         ent_coef=0.01,
                         vf_coef=0.5,
@@ -208,21 +213,21 @@ def main(args):
                         tensorboard_log=tb_log_dir,
                         create_eval_env=False,
                         policy_kwargs=policy_kwargs,
-                        verbose=args.verbose,
-                        seed=args.seed+trial,
-                        device=args.cuda,
+                        verbose=parameters["verbose"],
+                        seed=parameters["seed"]+trial,
+                        device=parameters["cuda"],
                         _init_setup_model=True)
              
-        elif args.model == "random":
+        elif parameters["model"] == "random":
             print("Starting random search ...")
             evaluation_rewards = []
             evaluation_designs = []
-            # for _ in range(args.m_evals):
+            # for _ in range(parameters["m_evals):
             output = []
             # for e in env:
-            #     output.append(random_search(e, args.n_eval_episodes))
-            with multiprocessing.Pool(max(args.n_envs, os.cpu_count()//2)) as p:
-                output = p.starmap(random_search, zip(env, repeat(args.n_eval_episodes)))
+            #     output.append(random_search(e, parameters["n_eval_episodes))
+            with multiprocessing.Pool(max(parameters["n_envs"], os.cpu_count()//2)) as p:
+                output = p.starmap(random_search, zip(env, repeat(parameters["n_eval_episodes"])))
             
             print("Finished random search...")
                 # p.close()
@@ -252,49 +257,97 @@ def main(args):
             evaluation_rewards.append(rewards)
             evaluation_designs.append(designs)
             
-            pickle.dump([evaluation_rewards, evaluation_designs], open(f"evaluations/evaluation_{args.model}_{args.goal_filename}_{args.n_eval_episodes*args.n_envs}_{args.m_evals}_{run.id}.pkl", 'wb'))
+            pickle.dump([evaluation_rewards, evaluation_designs], open(f"evaluations/evaluation_{parameters['model']}_{parameters['goal_filename']}_{parameters['n_eval_episodes']*parameters['n_envs']}_{parameters['m_evals']}_{run.id}.pkl", 'wb'))
                 
                 
-        # elif args.model == "mcts":
-        #     mcts_search(env, timesteps=args.steps)
+        # elif parameters["model == "mcts":
+        #     mcts_search(env, timesteps=parameters["steps)
             
-        # elif args.model == "SA":
-        #     simulated_annealing(env, args.steps)
+        # elif parameters["model == "SA":
+        #     simulated_annealing(env, parameters["steps)
         
         
-        train = not args.no_train ## TODO
+        train = not parameters["no_train"] ## TODO
         print(f"Training set to: {train}")
         ## Load old checkpoint
-        if args.checkpoint:
+        if parameters["checkpoint"]:
             print('Loading Checkpoint ...')
-            model = model.load(args.checkpoint)
+            model = model.load(parameters["checkpoint"])
             # train = False
         
         ## Learn
-        if args.model in ["DQN", 'A2C', 'PPO']:    
+        if parameters["model"] in ["DQN", 'A2C', 'PPO']:    
 
             if train:
                 print("Starting Training...")
+                
+                # class MutationCallback(BaseCallback):
+                #     """
+                #     Callback for saving a model every ``save_freq`` calls
+                #     to ``env.step()``.
+
+                #     .. warning::
+
+                #     When using multiple environments, each call to  ``env.step()``
+                #     will effectively correspond to ``n_envs`` steps.
+                #     To account for that, you can use ``save_freq = max(save_freq // n_envs, 1)``
+
+                #     :param save_freq:
+                #     :param save_path: Path to the folder where the model will be saved.
+                #     :param name_prefix: Common prefix to the saved models
+                #     :param verbose:
+                #     """
+
+                #     def __init__(self, mutate_freq: int, percent_mutate: float = 0.9, verbose: int = 0):
+                #         super(MutationCallback, self).__init__(verbose)
+                #         self.mutate_freq = mutate_freq
+                #         self.percent_mutate = percent_mutate
+
+                #     def _on_step(self) -> bool:
+                #         import pdb 
+                #         if self.n_calls % self.mutate_freq == 0:
+                #             pdb.set_trace()
+
+                #             best_designs = self.training_env.get_attr('best_designs')
+                #             best_design_per_env = [max(design_reward.values()) for design_reward in best_designs if design_reward]
+                #             n = int(len(best_designs)*self.percent_mutate)
+                #             best_env_inds = np.argpartition(best_design_per_env, -n)[-n:]
+                            
+                #             design_types = self.training_env.get_attr("design_type")
+                #             if all(design_types[best_env_inds] == 0):
+                #                 # Make everything crank rockers
+                #                 raise NotImplemented
+                #             elif all(design_types[best_env_inds] == 1):
+                #                 # make everything double crank
+                #                 raise NotImplemented
+
+                #             else:
+                #                 # randomly initialize 
+                #                 raise NotImplemented
+
+                            
+                            
+                #         return True
                 # Save a checkpoint 
-                callback = CheckpointCallback(save_freq=args.save_freq//args.n_envs, save_path=save_dir, name_prefix=f'{now}_{args.model}_model_{args.goal_filename}')
-                    
-                model.learn(args.steps, log_interval=5, reset_num_timesteps=False, callback=callback) 
+                callback = CheckpointCallback(save_freq=parameters["save_freq"]//parameters["n_envs"], save_path=save_dir, name_prefix=f'{now}_{parameters["model"]}_model_{parameters["goal_filename"]}')
+
+                model.learn(parameters["steps"], log_interval=5, reset_num_timesteps=False, callback=callback) 
                 
                 print("Finished Training...")
                  
                 print("Saving Model...")
-                model.save(save_dir + f'{now}_{args.model}_model_{args.goal_filename}_final.zip')
+                model.save(save_dir + f'{now}_{parameters["model"]}_model_{parameters["goal_filename"]}_final.zip')
             
             
             ## Evaluate Model
             evaluation_rewards = []
             evaluation_designs = []
-            for i in range(args.m_evals):
+            for i in range(parameters["m_evals"]):
                 ## Initialize model seed
-                model.set_random_seed(seed=i+args.seed)
+                model.set_random_seed(seed=i+parameters["seed"])
                 
                 print("Evaluating Model...")
-                rewards, lengths, designs = evaluate_policy(model, env, n_eval_episodes=args.n_eval_episodes, deterministic=False, render=False, return_episode_rewards=True) ## TODO: update
+                rewards, lengths, designs = evaluate_policy(model, env, n_eval_episodes=parameters["n_eval_episodes"], deterministic=False, render=False, return_episode_rewards=True) ## TODO: update
                 
                 wandb.log({
                     'eval/mean_episode_rew': np.mean((rewards)),
@@ -306,11 +359,12 @@ def main(args):
                 evaluation_rewards.append(rewards)
                 evaluation_designs.append(designs)
             print("Saving Evaluation Designs...")
-            pickle.dump([evaluation_rewards, evaluation_designs], open(eval_dir + f"{now}_{args.model}_{args.goal_filename}_{args.n_eval_episodes}_{args.m_evals}_{run.id}.pkl", 'wb'))
+            ## TODO toggle this feature
+            # pickle.dump([evaluation_rewards, evaluation_designs], open(eval_dir + f"{now}_{parameters['model']}_{parameters['goal_filename']}_{parameters['n_eval_episodes']}_{parameters['m_evals']}_{run.id}.pkl", 'wb'))
                 
 
         ## Extract Best Designs 
-        if args.model in ["PPO", "A2C", "DQN"]: best_designs = env.get_attr('best_designs')
+        if parameters["model"] in ["PPO", "A2C", "DQN"]: best_designs = env.get_attr('best_designs')
 
         if isinstance(best_designs, list):
         #     pdb.set_trace()
@@ -334,6 +388,7 @@ def main(args):
         
         best_cmaes = {}
         ## Plot Best Designs
+        figs = []
         for node_positions, edges, _ in node_info:
             env_kwargs['node_positions'] = node_positions
             env_kwargs['edges'] = edges
@@ -350,26 +405,27 @@ def main(args):
 
             fig = tmp_env.paper_plotting()
             plt.rcParams['font.size'] = 10
-            fig.suptitle(f'Algo: {args.model} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
+            fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
             
             ## Log images
             wandb.log({'best_designs': wandb.Image(fig)})
-            
+            figs.append(fig)
             plt.close(fig)
 
             
-            if args.cmaes: 
+            if parameters["cmaes"]: 
                 cma_env = cmaes(tmp_env, sigma=0.000055, tolfun=0.00001)
-                cma_env._get_reward()
+                reward = cma_env._get_reward()
                 n = cma_env.number_of_nodes()
                 best_cmaes[number_of_cycles] = [cma_env.paths[:n,:,0], cma_env.get_edges(), cma_env.goal, cma_env.total_dist]
                 
-                fig = tmp_env.paper_plotting()
+                fig = cma_env.paper_plotting()
                 plt.rcParams['font.size'] = 10
-                fig.suptitle(f'Algo: {args.model} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
+                fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
                 
                 ## Log images
                 wandb.log({'best_designs_cmaes': wandb.Image(fig)})
+                figs.append(fig)
                 plt.close(fig)
 
                     
@@ -390,6 +446,8 @@ def main(args):
             pickle.dump(best_cmaes, open(uniquify(design_dir+f'best_designs_cmaes_{run.id}.pkl'), 'wb'))
         
         run.finish()
+
+        return env_kwargs, best_dict, best_cmaes
         # time.sleep(1)
 
 if __name__ == "__main__":
@@ -449,22 +507,25 @@ if __name__ == "__main__":
     parser.add_argument('--wandb_project',    default="linkage_sb4",         type=str,        help="Set weights and biases project name (default: %(default)s, type: %(type)s)")
 
     parser.add_argument('--verbose',          default=0,                type=int,             help="verbose from sb3")
-    parser.add_argument('--cuda',             default='cpu',         type=str,                help="Which GPU to use [cpu, cuda:0, cuda:1, cuda:2, cuda:3] (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--cuda',             default='cuda:1',         type=str,                help="Which GPU to use [cpu, cuda:0, cuda:1, cuda:2, cuda:3] (default: %(default)s, type: %(type)s)")
     parser.add_argument('--no_train',         default=False,         action='store_true',     help="If you don't want to train (default: %(default)s, type: %(type)s)")
     
-    parser.add_argument('--cmaes',            default=False,         action='store_true',     help="Further optimize best designs found with CMA-ES node optimization (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--cmaes',            default=True,         action='store_true',     help="Further optimize best designs found with CMA-ES node optimization (default: %(default)s, type: %(type)s)")
 
     
     # Parse the arguments
     args = parser.parse_args()
+    
+    print(list(vars(args).keys()))
+    print(list(vars(args).values()))
     # pdb.set_trace()
     # Display Args
     print(args)
     
     
-    # path = f"./trained/{args.goal_filename}/{args.model}/06_15_2022/"
-    # args.checkpoint = path+os.listdir(path)[0]
-    # print("CHECKPOINT LOCATION: ", args.checkpoint)
+    # path = f"./trained/{parameters["goal_filename}/{parameters["model}/06_15_2022/"
+    # parameters["checkpoint = path+os.listdir(path)[0]
+    # print("CHECKPOINT LOCATION: ", parameters["checkpoint)
     
     # sys.settrace(trace)
-    main(args)
+    main(vars(args))

@@ -172,6 +172,9 @@ def symbolic_kinematics(xi, xj, xk0):
     f = l_ik / l_ij # (N, )
 
     t = (l_ij**2 + (l_ik**2 - l_jk**2))/(2*l_ij*l_ik) # (N, )
+    if any(1.-t**2 < 0.0):
+        return np.full_like(xi, np.nan)
+    
     R = np.array([[t, -np.sqrt(1.-t**2)], [np.sqrt(1.-t**2), t]]) # (2, 2, N)
     Q = (R*f).T # (N, 2, 2)
 

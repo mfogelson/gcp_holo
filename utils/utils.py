@@ -45,6 +45,9 @@ def func(input, env):
     ## Update env
     env.paths[:input.shape[0], :, 0] = input
     env._initialize_paths()
+
+    if env._get_reward()[0] == 0.0:
+        return 1.0    
     
     return -np.nan_to_num(env._get_reward()[0], nan=-1e10)
 

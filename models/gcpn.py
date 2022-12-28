@@ -65,8 +65,8 @@ class GNN(BaseFeaturesExtractor):
         
         ## extract information from observation input
         x = observations[:, :shape_x] #['x']
-        adj = observations[:, shape_x+1:shape_x+1+shape_adj] #['adj']
-        mask = observations[:, shape_x+shape_adj+2:shape_x+2+shape_adj+shape_mask] #['mask']
+        adj = observations[:, shape_x:shape_x+shape_adj] #['adj']
+        mask = observations[:, shape_x+shape_adj:shape_x+shape_adj+shape_mask] #['mask']
         
         if len(x.size()) > 1:
             batch_size, _ = x.size()
@@ -74,8 +74,8 @@ class GNN(BaseFeaturesExtractor):
             batch_size = 1
 
         ## Reshape for model
-        x = x.reshape(batch_size, self.max_nodes, -1) # B, nodes, features
-        adj = adj.reshape(batch_size, self.max_nodes, self.max_nodes)
+        x = x.view(batch_size, self.max_nodes, -1) # B, nodes, features
+        adj = adj.view(batch_size, self.max_nodes, self.max_nodes)
 
 
         ## Forward pass

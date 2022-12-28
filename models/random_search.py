@@ -15,6 +15,7 @@ def random_search(env, episodes=100):
     rewards = []
     designs = []
     lengths = []
+    dist = []
     
     ## run for episodes
     for _ in range(episodes):
@@ -23,13 +24,15 @@ def random_search(env, episodes=100):
         l = 0
         while not done:
            obs, reward, done, info = env.apply_random_action()
+           dis = env.total_dist
            l += 1
         
         ## Update lists
+        dist.append(dis)
         rewards.append(reward)
         designs.append(info)
         lengths.append(l)
         
             
-    return env.best_designs, rewards, designs, lengths
+    return env.best_designs, rewards, designs, lengths, dist
 
