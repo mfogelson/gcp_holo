@@ -126,7 +126,7 @@ class Mech(gym.Env):
             self.R_point = distance(goal, point, self.ordered, self.distance_metric).sum()*(np.pi*2./self.T)
         # self.R_circle, _, _, _ = new_dist(goal, circle)
         # self.R_point, _, _, _ = new_dist(goal, point)
-        self.goal_tol = 0.0 ## Hyperparameter
+        self.goal_tol = 1e-6 ## Hyperparameter
         self.invalid_penalty = -1.0
         
         self.total_dist = None
@@ -218,17 +218,15 @@ class Mech(gym.Env):
 
         for comb in node_combinations:
             ## Only if valid scaffold nodes not explored
-            if comb in self.edge_masks:
-                continue
-            
-            ## Get valid scaffold node ids
-            valid = self.get_edge_mask(comb[0], comb[1])
-            
-            ## Cache for future designs
-            self.edge_masks[comb] = valid
+            if comb not in self.edge_masks:
+                ## Get valid scaffold node ids
+                valid = self.get_edge_mask(comb[0], comb[1])
+                
+                ## Cache for future designs
+                self.edge_masks[comb] = valid
             
             ## Update actions_mask
-            for v in self.scaffold_ids[valid]:
+            for v in self.scaffold_ids[self.edge_masks[comb]]:
                 ## If no constraints on coupler or body positions
                 if self.constraints:
                      ## Check if scaffold node is in constraint TODO: this is wrong since it is trajectory and node position...
@@ -243,13 +241,19 @@ class Mech(gym.Env):
                                                                                     scaffold_y < y_max)
                 else:
                     ## Max number of actions
-                    if n < self.max_nodes-1:
-                        self.prev_mask[self.actions_hash[(comb, v, 0)]] = 1
+                    # if n < self.max_nodes-1:
+                    self.prev_mask[self.actions_hash[(comb, v, 0)]] = 1
                     
                     ## Min number of actions
-                    if n > self.min_nodes:
-                        self.prev_mask[self.actions_hash[(comb, v, 1)]] = 1
+                    # if n > self.min_nodes:
+                    self.prev_mask[self.actions_hash[(comb, v, 1)]] = 1
         ## 
+        if n < self.min_nodes-1:
+            self.prev_mask[self.term_actions_keys] = 0
+            
+        if n == self.max_nodes-1:
+            self.prev_mask[self.non_term_actions_keys] = 0
+            
         if self.previous_action:
             self.prev_mask[self.previous_action] = 0
     
@@ -263,6 +267,12 @@ class Mech(gym.Env):
         """
         action_mask = self._get_action_mask()
 
+        if action_mask.sum() == 0.0:
+            obs = self.get_observation()
+            done = True 
+
+            return obs, self.invalid_penalty, done, {} 
+            
         action = self.rng.choice(self.num_actions, p=action_mask/action_mask.sum())
         
         return self.step(action)
@@ -537,6 +547,12 @@ class Mech(gym.Env):
         fig, ax1 = plt.subplots(figsize=(8.5, 11))
         coupler_idx = self.number_of_nodes()-1
         
+        ax1.plot(self.grid[:,0], self.grid[:,1], 'k.', ms=4)
+
+        if self.previous_action:
+            ax1.plot(self.grid[self.edge_masks[self.actions[self.previous_action][0]],0], self.grid[self.edge_masks[self.actions[self.previous_action][0]],1], 'go', ms=4)
+            ax1.plot(self.grid[~self.edge_masks[self.actions[self.previous_action][0]],0], self.grid[~self.edge_masks[self.actions[self.previous_action][0]],1], 'rx', ms=4)
+
         ## Plot Links and Joints
         edges = self.get_edges()
         for e in edges: 
@@ -551,12 +567,14 @@ class Mech(gym.Env):
         ## Plot moveable revolute joints
         fixed_ids = self._get_fixed_ids()
         non_fixed_ids = list(set(fixed_ids) ^ set(range(coupler_idx+1)))
+        # for n in non_fixed_ids[1:]:
+        #     ax1.plot(self.paths[n, 0, :], self.paths[n,1, :], 'b-', label="pin path", ms=4)
         ax1.plot(self.paths[non_fixed_ids[1:], 0, 0], self.paths[non_fixed_ids[1:],1, 0], 'ro', label="pin joints", ms=15)
 
         ## Plot Coupler Path 
         if show_coupler:
             ax1.plot(self.paths[coupler_idx, 0, :], self.paths[coupler_idx, 1,:], 'b-', label="coupler", linewidth=4)
-        ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], 'ro', label="coupler joint", markersize=15)
+        # ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], 'yo', label="coupler joint", markersize=15)
 
         ## Plot Shifted Goal
         mu = self.paths[coupler_idx, :, :].mean(1).reshape(-1, 1)
@@ -1120,6 +1138,10 @@ class Mech(gym.Env):
         Returns:
             (Nd.Array, float, bool, dict): Observation, Reward, Done, Info
         """
+        if self.debug:
+            if self.prev_mask[int(action)] == 0:
+                print(sum(self.prev_mask))
+                print("selected an action that was deemed invalid")
         ## Get action from index
         (node_id0, node_id1), scaffold_id, done = self.actions[int(action)]
         
@@ -1173,7 +1195,9 @@ class Mech(gym.Env):
         ## Get reward
         reward = 0.0
         if done:
-            reward, _ = self._get_reward()
+            reward, solved = self._get_reward()
+            if solved:
+                print("Found exact solution...stop search")
             ## Save all good designs during the search
             self.update_best_designs()
     
@@ -1230,7 +1254,7 @@ class Mech(gym.Env):
 
         return np.nan_to_num(obs, nan=0.0)
     
-    def random_n_bar(self, edges, n):
+    def random_4_bar(self, edges, bar_type=None):
         """Random valid n bar linakge NOTE: not really N_bar, based on edges input
 
         Args:
@@ -1243,8 +1267,35 @@ class Mech(gym.Env):
         
         # ## Random Crank-Rocker N-Bar
         # while s+l > p+q:
-        node_pos_ind = self.rng.choice(pos_ind, size=n, replace=False)
+        node_pos_ind = self.rng.choice(pos_ind, size=4, replace=False)
         node_pos = self.grid[node_pos_ind,:]
+        
+        lengths = [np.linalg.norm(node_pos[0,:]- node_pos[1,:]), np.linalg.norm(node_pos[1,:]- node_pos[3,:]), np.linalg.norm(node_pos[3,:]- node_pos[2,:]), np.linalg.norm(node_pos[2,:]- node_pos[0,:])]
+        if all(lengths[0] < lengths[1:]):
+            if bar_type == 1:
+                return False
+            ## Crank Rocker
+            if any(lengths[1] < [lengths[2], lengths[3]]):
+                return False
+
+            if (lengths[0]+lengths[1] > lengths[2]+lengths[3]):
+                # print("not valid")
+                return False
+            
+            self.base_type = 0
+        elif all(lengths[0] > lengths[1:]):
+            if bar_type == 0:
+                return False
+            ## Double Rocker
+            if any(lengths[3] > [lengths[1], lengths[2]]):
+                return False
+            if (lengths[0]+lengths[3] > lengths[1]+lengths[2]):
+                # print("not valid")
+                return False
+            # print("valid double rocker")
+            self.base_type = 1
+        else:
+            return False
             # s = np.linalg.norm(node_pos[0]-node_pos[1])
             # q = np.linalg.norm(node_pos[0]-node_pos[2])
             # l = np.linalg.norm(node_pos[1]-node_pos[3])
@@ -1255,8 +1306,9 @@ class Mech(gym.Env):
         self.adj[edges[:,0], edges[:,1]] = 1
         self.adj[edges[:,1], edges[:,0]] = 1 
         self._initialize_paths()
+        return True
 
-    def get_valid_env(self):
+    def get_valid_env(self, bar_type=None):
         """Generate random valid linkage graph
 
         Returns:
@@ -1265,12 +1317,13 @@ class Mech(gym.Env):
 
         ## Basic 4-bar configuration
         edges = np.array([[0, 1], [0, 2], [1, 3], [2, 3]])
-        self.random_n_bar(edges, 4)
+        self.random_4_bar(edges, bar_type)
         
+        valid = False
         # Step 2 check validity 
-        while not self.is_valid() or not self.satisfy_constraints():
+        while not self.is_valid() or not self.satisfy_constraints() or not valid:
             # If not valid save data
-            self.random_n_bar(edges, 4)
+            valid = self.random_4_bar(edges, bar_type)
 
 
         return self.is_valid()
