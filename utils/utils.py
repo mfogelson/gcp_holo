@@ -9,6 +9,8 @@ import numpy as np
 from stable_baselines3.common import base_class
 from stable_baselines3.common.vec_env import DummyVecEnv, VecEnv, VecMonitor, is_vecenv_wrapped
 from copy import deepcopy
+from timebudget import timebudget
+
 
 def linear_schedule(initial_value: float):
     """
@@ -80,8 +82,33 @@ def cmaes(env, tolfun=0.001, sigma=0.00001):
 
     return opt_env
 
-
+def evaluate_policy_simple(model, env, episodes):
+    rewards = []
+    designs = []
+    lengths = []
+    dist = []
+    
+    ## run for episodes
+    for _ in range(episodes):
+        env.reset()
+        done = False
+        l = 0
+        while not done:
+            actions, _ = model.predict(observations, state=None, deterministic=False)
+            observations, rewards, dones, infos = env.step(actions)
+            dis = env.total_dist
+            l += 1
+        
+        ## Update lists
+        dist.append(dis)
+        rewards.append(reward)
+        designs.append(info)
+        lengths.append(l)
+        
+            
+    return env.best_designs, rewards, designs, lengths, dist
 ## slightly modified by Mitch
+@timebudget
 def evaluate_policy(
     model: "base_class.BaseAlgorithm",
     env: Union[gym.Env, VecEnv],
@@ -156,6 +183,7 @@ def evaluate_policy(
     current_lengths = np.zeros(n_envs, dtype="int")
     observations = env.reset()
     states = None
+
     # episode_starts = np.ones((env.num_envs,), dtype=bool)
     while (episode_counts < episode_count_targets).any():
         actions, states = model.predict(observations, state=states, deterministic=deterministic)
@@ -163,41 +191,68 @@ def evaluate_policy(
         observations, rewards, dones, infos = env.step(actions)
         current_rewards += rewards
         current_lengths += 1
-        for i in range(n_envs):
-            if episode_counts[i] < episode_count_targets[i]:
 
-                # unpack values so that the callback can access the local variables
-                reward = rewards[i]
-                done = dones[i]
-                info = infos[i]
-                # episode_starts[i] = done
+        environment_stopping_criteria = (episode_counts < episode_count_targets)
+        
+        # valid = np.logical_and(environment_stopping_criteria, dones)
+        tmp_rewards = []
+        tmp_length = []
+        tmp_info = []
+        for esc, d, r, l, i in zip(environment_stopping_criteria, dones, current_rewards, current_lengths, infos):
+            if esc and d:
+                tmp_rewards.append(r)
+                tmp_length.append(l)
+                tmp_info.append(i)
+        
+        episode_rewards += tmp_rewards #list(current_rewards[valid])
+        episode_lengths += tmp_length #list(current_lengths[valid])
+        # # import pdb
+        # # pdb.set_trace()
+        episode_info += tmp_info #[i for i, v in zip(infos, valid) if v]
+        
+        current_lengths *= (1-dones)
+        current_rewards *= (1-dones)
+        
+        
+        episode_counts += dones
+        
+        
+       
+        # for i in range(n_envs):
+        #     if episode_counts[i] < episode_count_targets[i]:
 
-                if callback is not None:
-                    callback(locals(), globals())
+        #         # unpack values so that the callback can access the local variables
+        #         reward = rewards[i]
+        #         done = dones[i]
+        #         info = infos[i]
+        #         # episode_starts[i] = done
 
-                if dones[i]:
-                    episode_info.append(info)
-                    if is_monitor_wrapped:
-                        # Atari wrapper can send a "done" signal when
-                        # the agent loses a life, but it does not correspond
-                        # to the true end of episode
-                        if "episode" in info.keys():
-                            # Do not trust "done" with episode endings.
-                            # Monitor wrapper includes "episode" key in info if environment
-                            # has been wrapped with it. Use those rewards instead.
-                            episode_rewards.append(info["episode"]["r"])
-                            episode_lengths.append(info["episode"]["l"])
-                            # Only increment at the real end of an episode
-                            episode_counts[i] += 1
-                    else:
-                        episode_rewards.append(current_rewards[i])
-                        episode_lengths.append(current_lengths[i])
+        #         if callback is not None:
+        #             callback(locals(), globals())
+
+        #         if dones[i]:
+        #             episode_info.append(info)
+        #             if is_monitor_wrapped:
+        #                 # Atari wrapper can send a "done" signal when
+        #                 # the agent loses a life, but it does not correspond
+        #                 # to the true end of episode
+        #                 if "episode" in info.keys():
+        #                     # Do not trust "done" with episode endings.
+        #                     # Monitor wrapper includes "episode" key in info if environment
+        #                     # has been wrapped with it. Use those rewards instead.
+        #                     episode_rewards.append(info["episode"]["r"])
+        #                     episode_lengths.append(info["episode"]["l"])
+        #                     # Only increment at the real end of an episode
+        #                     episode_counts[i] += 1
+        #             else:
+        #                 episode_rewards.append(current_rewards[i])
+        #                 episode_lengths.append(current_lengths[i])
                         
-                        ## TODO: Add saving actual design too
-                        # episode_paths.append(env)
-                        episode_counts[i] += 1
-                    current_rewards[i] = 0
-                    current_lengths[i] = 0
+        #                 ## TODO: Add saving actual design too
+        #                 # episode_paths.append(env)
+        #                 episode_counts[i] += 1
+        #             current_rewards[i] = 0
+        #             current_lengths[i] = 0
 
         if render:
             env.render()

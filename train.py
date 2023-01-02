@@ -30,6 +30,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback, BaseCallback
 
 from datetime import datetime
+import time
 
 import warnings
 # warnings.simplefilter("ignore")
@@ -218,7 +219,7 @@ def main(parameters):
                         device=parameters["cuda"],
                         _init_setup_model=True)
              
-        elif parameters["model"] == "random":
+        elif parameters["model"] in ["random", "Random"]:
             print("Starting random search ...")
             evaluation_rewards = []
             evaluation_designs = []
@@ -226,10 +227,11 @@ def main(parameters):
             output = []
             # for e in env:
             #     output.append(random_search(e, parameters["n_eval_episodes))
+            st = time.time()
             with multiprocessing.Pool(max(parameters["n_envs"], os.cpu_count()//2)) as p:
                 output = p.starmap(random_search, zip(env, repeat(parameters["n_eval_episodes"])))
             
-            print("Finished random search...")
+            print(f"Finished random search...{time.time()-st}")
                 # p.close()
             
             best_designs = []
@@ -246,6 +248,9 @@ def main(parameters):
             rewards = sum(rewards, [])
             designs = sum(designs, [])
             lengths = sum(lengths, [])
+            
+            # import pdb
+            # pdb.set_trace()
 
             wandb.log({
                     'eval/mean_episode_rew': np.mean((rewards)),
@@ -256,8 +261,76 @@ def main(parameters):
                     'eval/median_episode_lengths': np.median((lengths)),})
             evaluation_rewards.append(rewards)
             evaluation_designs.append(designs)
+
+            best_dict = {}
+            rewards = {}
+            for o in best_designs:
+                for k, v in o.items():
+                    if k not in best_dict:
+                        best_dict[k] = v
+                        rewards[k] = v[-1]
+                        continue
+                    
+                    if v[-1] > best_dict[k][-1]:
+                        best_dict[k] = v
+                        rewards[k] = v[-1]
+
+            # node_info = [list(o.values()) for o in best_designs]
+            node_info = best_dict.values() # sum(node_info, [])
+
+                
+            ## Log average reward
+            if rewards: 
+                for k, v in rewards.items():
+                    wandb.log({
+                            'Reward Best Designs': v, 'Number of Loops': k})
             
-            pickle.dump([evaluation_rewards, evaluation_designs], open(f"evaluations/evaluation_{parameters['model']}_{parameters['goal_filename']}_{parameters['n_eval_episodes']*parameters['n_envs']}_{parameters['m_evals']}_{run.id}.pkl", 'wb'))
+            best_cmaes = {}
+            ## Plot Best Designs
+            figs = []
+            for node_positions, edges, _ in node_info:
+                env_kwargs['node_positions'] = node_positions
+                env_kwargs['edges'] = edges
+                tmp_env = Mech(**env_kwargs)
+                tmp_env.is_terminal = True
+                
+                reward = tmp_env._get_reward()
+                # rewards.append(reward[0])
+                
+                number_of_cycles = tmp_env.number_of_cycles()
+                # number_of_cycles_.append(number_of_cycles)
+                
+                # pdb.set_trace()
+
+                fig = tmp_env.paper_plotting()
+                plt.rcParams['font.size'] = 10
+                fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
+                
+                ## Log images
+                wandb.log({'best_designs': wandb.Image(fig)})
+                figs.append(fig)
+                plt.close(fig)
+
+                
+            #     if parameters["cmaes"]: 
+            #         cma_env = cmaes(tmp_env, sigma=0.000055, tolfun=0.00001)
+            #         reward = cma_env._get_reward()
+            #         n = cma_env.number_of_nodes()
+            #         best_cmaes[number_of_cycles] = [cma_env.paths[:n,:,0], cma_env.get_edges(), cma_env.goal, cma_env.total_dist]
+                    
+            #         fig = cma_env.paper_plotting()
+            #         plt.rcParams['font.size'] = 10
+            #         fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
+                    
+            #         ## Log images
+            #         wandb.log({'best_designs_cmaes': wandb.Image(fig)})
+            #         figs.append(fig)
+            #         plt.close(fig)
+
+                        
+            
+            
+            # pickle.dump([evaluation_rewards, evaluation_designs], open(f"evaluations/evaluation_{parameters['model']}_{parameters['goal_filename']}_{parameters['n_eval_episodes']*parameters['n_envs']}_{parameters['m_evals']}_{run.id}.pkl", 'wb'))
                 
                 
         # elif parameters["model == "mcts":
@@ -358,93 +431,93 @@ def main(parameters):
                     'eval/median_episode_lengths': np.median((lengths)),})
                 evaluation_rewards.append(rewards)
                 evaluation_designs.append(designs)
-            print("Saving Evaluation Designs...")
-            ## TODO toggle this feature
-            # pickle.dump([evaluation_rewards, evaluation_designs], open(eval_dir + f"{now}_{parameters['model']}_{parameters['goal_filename']}_{parameters['n_eval_episodes']}_{parameters['m_evals']}_{run.id}.pkl", 'wb'))
+                print("Saving Evaluation Designs...")
+                ## TODO toggle this feature
+                # pickle.dump([evaluation_rewards, evaluation_designs], open(eval_dir + f"{now}_{parameters['model']}_{parameters['goal_filename']}_{parameters['n_eval_episodes']}_{parameters['m_evals']}_{run.id}.pkl", 'wb'))
                 
 
-        ## Extract Best Designs 
-        if parameters["model"] in ["PPO", "A2C", "DQN"]: best_designs = env.get_attr('best_designs')
+                ## Extract Best Designs 
+                if parameters["model"] in ["PPO", "A2C", "DQN"]: best_designs = env.get_attr('best_designs')
 
-        if isinstance(best_designs, list):
-        #     pdb.set_trace()
-            best_dict = {}
-            rewards = {}
-            for o in best_designs:
-                for k, v in o.items():
-                    if k not in best_dict:
-                        best_dict[k] = v
-                        rewards[k] = v[-1]
-                        continue
+                if isinstance(best_designs, list):
+                #     pdb.set_trace()
+                    best_dict = {}
+                    rewards = {}
+                    for o in best_designs:
+                        for k, v in o.items():
+                            if k not in best_dict:
+                                best_dict[k] = v
+                                rewards[k] = v[-1]
+                                continue
+                            
+                            if v[-1] > best_dict[k][-1]:
+                                best_dict[k] = v
+                                rewards[k] = v[-1]
+
+                    # node_info = [list(o.values()) for o in best_designs]
+                    node_info = best_dict.values() # sum(node_info, [])
+                elif isinstance(best_designs, dict):
+                    node_info = best_designs.values()
+                
+                best_cmaes = {}
+                ## Plot Best Designs
+                figs = []
+                for node_positions, edges, _ in node_info:
+                    env_kwargs['node_positions'] = node_positions
+                    env_kwargs['edges'] = edges
+                    tmp_env = Mech(**env_kwargs)
+                    tmp_env.is_terminal = True
                     
-                    if v[-1] > best_dict[k][-1]:
-                        best_dict[k] = v
-                        rewards[k] = v[-1]
+                    reward = tmp_env._get_reward()
+                    # rewards.append(reward[0])
+                    
+                    number_of_cycles = tmp_env.number_of_cycles()
+                    # number_of_cycles_.append(number_of_cycles)
+                    
+                    # pdb.set_trace()
 
-            # node_info = [list(o.values()) for o in best_designs]
-            node_info = best_dict.values() # sum(node_info, [])
-        elif isinstance(best_designs, dict):
-            node_info = best_designs.values()
-        
-        best_cmaes = {}
-        ## Plot Best Designs
-        figs = []
-        for node_positions, edges, _ in node_info:
-            env_kwargs['node_positions'] = node_positions
-            env_kwargs['edges'] = edges
-            tmp_env = Mech(**env_kwargs)
-            tmp_env.is_terminal = True
-            
-            reward = tmp_env._get_reward()
-            # rewards.append(reward[0])
-            
-            number_of_cycles = tmp_env.number_of_cycles()
-            # number_of_cycles_.append(number_of_cycles)
-            
-            # pdb.set_trace()
-
-            fig = tmp_env.paper_plotting()
-            plt.rcParams['font.size'] = 10
-            fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
-            
-            ## Log images
-            wandb.log({'best_designs': wandb.Image(fig)})
-            figs.append(fig)
-            plt.close(fig)
-
-            
-            if parameters["cmaes"]: 
-                cma_env = cmaes(tmp_env, sigma=0.000055, tolfun=0.00001)
-                reward = cma_env._get_reward()
-                n = cma_env.number_of_nodes()
-                best_cmaes[number_of_cycles] = [cma_env.paths[:n,:,0], cma_env.get_edges(), cma_env.goal, cma_env.total_dist]
-                
-                fig = cma_env.paper_plotting()
-                plt.rcParams['font.size'] = 10
-                fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
-                
-                ## Log images
-                wandb.log({'best_designs_cmaes': wandb.Image(fig)})
-                figs.append(fig)
-                plt.close(fig)
+                    fig = tmp_env.paper_plotting()
+                    plt.rcParams['font.size'] = 10
+                    fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
+                    
+                    ## Log images
+                    wandb.log({'best_designs': wandb.Image(fig)})
+                    figs.append(fig)
+                    plt.close(fig)
 
                     
-        ## Log average reward
-        if rewards: 
-            for k, v in rewards.items():
-                wandb.log({
-                        'Reward Best Designs': v, 'Number of Loops': k})
-                        # 'Standard Deviation Reward Best Designs': np.std(list(rewards.values())),
-                        # 'Median Reward Best Designs': np.median(list(rewards.values())),})
+                    if parameters["cmaes"]: 
+                        cma_env = cmaes(tmp_env, sigma=0.000055, tolfun=0.00001)
+                        reward = cma_env._get_reward()
+                        n = cma_env.number_of_nodes()
+                        best_cmaes[number_of_cycles] = [cma_env.paths[:n,:,0], cma_env.get_edges(), cma_env.goal, cma_env.total_dist]
+                        
+                        fig = cma_env.paper_plotting()
+                        plt.rcParams['font.size'] = 10
+                        fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
+                        
+                        ## Log images
+                        wandb.log({'best_designs_cmaes': wandb.Image(fig)})
+                        figs.append(fig)
+                        plt.close(fig)
+
+                            
+                ## Log average reward
+                if rewards: 
+                    for k, v in rewards.items():
+                        wandb.log({
+                                'Reward Best Designs': v, 'Number of Loops': k})
+                                # 'Standard Deviation Reward Best Designs': np.std(list(rewards.values())),
+                                # 'Median Reward Best Designs': np.median(list(rewards.values())),})
         
-        ## Save Designs
-        if best_designs:
-            
-            pickle.dump(best_dict, open(uniquify(design_dir+f'best_designs_{run.id}.pkl'), 'wb'))
-            
-        if best_cmaes:
-            pickle.dump(best_cmaes, open(uniquify(design_dir+f'best_designs_cmaes_{run.id}.pkl'), 'wb'))
-        
+                ## Save Designs
+                if best_designs:
+                    
+                    pickle.dump(best_dict, open(uniquify(design_dir+f'best_designs_{run.id}.pkl'), 'wb'))
+                    
+                if best_cmaes:
+                    pickle.dump(best_cmaes, open(uniquify(design_dir+f'best_designs_cmaes_{run.id}.pkl'), 'wb'))
+                
         run.finish()
 
         return env_kwargs, best_dict, best_cmaes
@@ -468,7 +541,7 @@ if __name__ == "__main__":
     parser.add_argument('--use_self_loops',      default=False,                   action='store_true',  help="Add self-loops in adj matrix (default: %(default)s, type: %(type)s)")
     parser.add_argument('--normalize',           default=False,                   action='store_true',  help="Normalize trajectory for feature vector (default: %(default)s, type: %(type)s)")
     parser.add_argument('--use_node_type',       default=False,                   action='store_true',  help="Use node type id for feature vector (default: %(default)s, type: %(type)s)")
-    parser.add_argument('--fixed_initial_state', default=True,                    action='store_true',  help="Use same initial design state for all training (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--fixed_initial_state', default=False,                    action='store_true',  help="Use same initial design state for all training (default: %(default)s, type: %(type)s)")
     parser.add_argument('--seed',                default=123,                     type=int,             help="Random seed for numpy and gym (default: %(default)s, type: %(type)s)")
     parser.add_argument('--ordered',             default=True,                    action='store_true',  help="Get minimum ordered distance (default: %(default)s, type: %(type)s)")
     parser.add_argument('--body_constraints',    default=None,                    type=float, nargs='+',help="Constraint on Non-coupler revolute joints[xmin, xmax, ymin, ymax] (default: %(default)s, type: %(type)s)")
@@ -510,7 +583,7 @@ if __name__ == "__main__":
     parser.add_argument('--cuda',             default='cuda:1',         type=str,                help="Which GPU to use [cpu, cuda:0, cuda:1, cuda:2, cuda:3] (default: %(default)s, type: %(type)s)")
     parser.add_argument('--no_train',         default=False,         action='store_true',     help="If you don't want to train (default: %(default)s, type: %(type)s)")
     
-    parser.add_argument('--cmaes',            default=True,         action='store_true',     help="Further optimize best designs found with CMA-ES node optimization (default: %(default)s, type: %(type)s)")
+    parser.add_argument('--cmaes',            default=False,         action='store_true',     help="Further optimize best designs found with CMA-ES node optimization (default: %(default)s, type: %(type)s)")
 
     
     # Parse the arguments

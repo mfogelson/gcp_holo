@@ -1,5 +1,10 @@
 # GCP-HOLO
+![Linkage Gif](building_linkage.gif)
+
 GCP-HOLO is a RL based tree search method for generating high-order linkage graphs that satisfy the path synthesis problem
+
+## Gradio Interface
+
 
 ## Requirements
 * python>=3.8.0
