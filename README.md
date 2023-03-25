@@ -3,7 +3,10 @@
 
 GCP-HOLO is a RL based tree search method for generating high-order linkage graphs that satisfy the path synthesis problem
 
-## Gradio Interface
+[Full Paper](https://asmedigitalcollection.asme.org/mechanicaldesign/article/doi/10.1115/1.4062147/1160180/GCP-HOLO-Generating-High-Order-Linkage-Graphs-for)
+
+## Gradio Interface (In-Progress)
+![Gradio Interface](images/Gradio6.png)
 
 
 ## Requirements
@@ -32,9 +35,15 @@ GCP-HOLO is a RL based tree search method for generating high-order linkage grap
 
 **NOTE**: No automatic installation due to various computer requirements, please check Cuda and torch versions. Highly recommended to use a conda environment or venv for using the project.
 
-## Quick start 
+## Example 
+Quick Start (Uses Default Args):
 ```
-python train.py
+python train.py 
+```
+
+Example of various inputs that can be changed:
+```
+python train.py --steps 400000  --n_envs 100 --opt_iter 10 --batch_size 5000 --n_eval_episodes 100000 --cuda cuda:0 --cmaes --save_freq 1000000 
 ```
 
 ## Advanced
@@ -211,3 +220,12 @@ python train.py
     └── utils.py
 ```
 
+## Citation 
+```
+@article{fogelson2023gcp,
+  title={GCP-HOLO: Generating High-Order Linkage Graphs for Path Synthesis},
+  author={Fogelson, Mitchell B. and Tucker, Conrad and Cagan, Jonathan},
+  journal={Journal of Mechanical Design},
+  year={2023},
+  publisher={American Society of Mechanical Engineers}
+}
