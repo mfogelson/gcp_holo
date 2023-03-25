@@ -5,22 +5,20 @@ from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 
 
 class GNN(BaseFeaturesExtractor):
-    """GNN adopted from Zhao et. al "Robogrammar"
+    """
+    Graph Convolution network: adopted from Zhao et. al "Robogrammar"
+        Args:
+                observation_space (gym.observation): The observation space of the gym environment
+                max_nodes (int): maximum number of nodes for linkage graph
+                num_features (int): number of points in the trajectory to describe the node features
+                hidden_channels (int, optional): hidden channels for the Dense SAGE convolutions. Defaults to 64.
+                out_channels (int, optional): number of output features. Defaults to 64.
+                normalize (bool, optional): normalization used in Dense SAGE. Defaults to False.
+                batch_normalization (bool, optional): Batch Normalization used. Defaults to False.
+                lin (bool, optional): Add linear layer to the end. Defaults to True.
+                add_loop (bool, optional): Add self loops. Defaults to False.
     """
     def __init__(self, observation_space, max_nodes, num_features, hidden_channels=64, out_channels=64, normalize=False, batch_normalization=False, lin=True, add_loop=False):
-        """Graph Convolution network
-
-        Args:
-            observation_space (gym.observation): The observation space of the gym environment
-            max_nodes (int): maximum number of nodes for linkage graph
-            num_features (int): number of points in the trajectory to describe the node features
-            hidden_channels (int, optional): hidden channels for the Dense SAGE convolutions. Defaults to 64.
-            out_channels (int, optional): number of output features. Defaults to 64.
-            normalize (bool, optional): normalization used in Dense SAGE. Defaults to False.
-            batch_normalization (bool, optional): Batch Normalization used. Defaults to False.
-            lin (bool, optional): Add linear layer to the end. Defaults to True.
-            add_loop (bool, optional): Add self loops. Defaults to False.
-        """
         super(GNN, self).__init__(observation_space, features_dim=1)
 
         self.max_nodes = max_nodes #observation_space['mask'].shape[0]
