@@ -7,8 +7,8 @@ Welcome to GCP-HOLO's documentation!
 ====================================
 .. admonition:: Important
 
-   This is important information that you should pay attention to.
-   
+   This is documentation is still a work in progress. Please reachout with any problems or missing information. 
+
 .. date:: 2023-03-26
 The GCP-HOLO documentation describes a method for 1DOF path synthesis of high order linkage graphs. GCP-HOLO stands for Graph Convolution Policy for High Order Linkage Optimization. We define high order linkage graphs as more than 3 active loops, although GCP-HOLO can generate linkages with less number of loops, other methods will perform better. 
 

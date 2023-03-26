@@ -1,7 +1,9 @@
 Train
 =====
 
-This script is used to train a reinforcement learning model for the linkage gym environment.
+The `train.py` script uses the `argparse` module to parse command-line arguments. This module provides a way to define a set of command-line options and arguments that can be passed to the script when it is run. The `argparse` module automatically generates a help message that describes the available options and arguments, which can be displayed by running the script with the --help option.
+
+The `train.py` script includes many command-line options that control various aspects of the training process, such as the learning rate, batch size, number of epochs, and optimizer. Before running the example, users should look through the available options and their default values to ensure that the training process is configured correctly for their use.
 
 Usage
 -----
