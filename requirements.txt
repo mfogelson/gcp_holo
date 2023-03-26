@@ -152,7 +152,7 @@ terminado==0.13.1
 testpath==0.5.0
 threadpoolctl==3.0.0
 timebudget==0.7.1
-torch==1.9.0+cu111
+torch==1.9.0
 torch-cluster==1.5.9
 torch-geometric==2.0.3
 torch-scatter==2.0.9
@@ -160,7 +160,7 @@ torch-sparse==0.6.12
 torch-spline-conv==1.2.1
 torch-tb-profiler==0.4.0
 torchaudio==0.9.0
-torchvision==0.10.0+cu111
+torchvision==0.10.0
 tornado 
 tqdm==4.62.3
 traitlets 
