@@ -105,8 +105,7 @@ def main(parameters):
         # If PPO A2C or DQN can use multiple envs while training
         if parameters["model"] in ['PPO', 'A2C', 'DQN']:
             env = make_vec_env(Mech, n_envs=parameters["n_envs"], env_kwargs=env_kwargs, seed=parameters["seed"], vec_env_cls=SubprocVecEnv, vec_env_kwargs={'start_method': 'fork'}) # NOTE: For faster training use SubProcVecEnv 
-            # import pdb
-            # pdb.set_trace()
+            
         else:
             env = []
             for i in range(parameters["n_envs"]):
@@ -249,9 +248,6 @@ def main(parameters):
             designs = sum(designs, [])
             lengths = sum(lengths, [])
             
-            # import pdb
-            # pdb.set_trace()
-
             wandb.log({
                     'eval/mean_episode_rew': np.mean((rewards)),
                     'eval/std_episode_rew': np.std((rewards)),
