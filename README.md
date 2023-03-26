@@ -9,7 +9,7 @@ GCP-HOLO is a RL based tree search method for generating high-order linkage grap
 
 ## Contents
 1. [Documentation](#Documentation)
-2. [Gradio Interface (In-Progress)](#gradio-interfrace)
+2. [Gradio Interface](#gradio-interfrace)
 3. [Requirements](#requirements)
 4. [Example](#example)
 5. [Citation](#citation)
@@ -21,7 +21,8 @@ GCP-HOLO is a RL based tree search method for generating high-order linkage grap
 
 **NOTE**: This is still in-progress to provide cleaner and more usable documentation
 
-## Gradio Interface (In-Progress)
+## Gradio Interface 
+### (In-Progress)
 <p align="center">
 <img src="images/Gradio6.png" alt="Gradio Interface" />
 </p>
@@ -249,6 +250,7 @@ python train.py --goal_filename klann_traj --goal_filepath data/other_curves
   year={2023},
   publisher={American Society of Mechanical Engineers}
 }
+```
 
 ## Liscense 
 GCP-HOLO is freely available for academic or non-profit organizations' noncommercial research only. Please check [the license file](LISCENSE) for further details.
