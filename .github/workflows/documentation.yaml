@@ -4,10 +4,13 @@ on:
     branches:
       - main
       - dev
+      - gh-pages
   pull_request:
     branches:
       - main
       - dev
+      - gh-pages
+
   workflow_dispatch:
 permissions:
   contents: write
