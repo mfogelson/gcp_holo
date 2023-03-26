@@ -1,4 +1,4 @@
-# GCP-HOLO
+# GCP-HOLO: Generating High Order Linakge Graphs for Path Synthesis
 <p align="center">
 <img src="building_linkage.gif" alt="Linkage Gif" />
 </p>
