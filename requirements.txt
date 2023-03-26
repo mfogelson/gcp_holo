@@ -153,7 +153,6 @@ testpath==0.5.0
 threadpoolctl==3.0.0
 timebudget==0.7.1
 torch==1.9.0
-torch-cluster
 torch-geometric
 torch-scatter
 torch-sparse
