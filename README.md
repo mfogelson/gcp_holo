@@ -3,7 +3,7 @@
 <img src="building_linkage.gif" alt="Linkage Gif" />
 </p>
 
-GCP-HOLO is a RL based tree search method for generating high-order linkage graphs that satisfy the path synthesis problem
+GCP-HOLO is a RL based method to learn a stochastic search direction for generating constraint satisfying high-order linkage graphs for the inverse design of linkages
 
 [Full Paper](https://asmedigitalcollection.asme.org/mechanicaldesign/article/doi/10.1115/1.4062147/1160180/GCP-HOLO-Generating-High-Order-Linkage-Graphs-for)
 
