@@ -1,17 +1,31 @@
 # GCP-HOLO
-![Linkage Gif](building_linkage.gif)
+<p align="center">
+<img src="building_linkage.gif" alt="Linkage Gif" />
+</p>
 
 GCP-HOLO is a RL based tree search method for generating high-order linkage graphs that satisfy the path synthesis problem
 
 [Full Paper](https://asmedigitalcollection.asme.org/mechanicaldesign/article/doi/10.1115/1.4062147/1160180/GCP-HOLO-Generating-High-Order-Linkage-Graphs-for)
+
+## Contents
+1. [Documentation](#Documentation)
+2. [Gradio Interface](#gradio-interface)
+3. [Requirements](#requirements)
+4. [Example](#example)
+5. [Citation](#citation)
+6. [License](#license)
+
 
 ## Documentation
 [Project Page](https://mfogelson.github.io/gcp_holo/index.html)
 
 **NOTE**: This is still in-progress to provide cleaner and more usable documentation
 
-## Gradio Interface (In-Progress)
-![Gradio Interface](images/Gradio6.png)
+## Gradio Interface
+### (In-Progress)
+<p align="center">
+<img src="images/Gradio6.png" alt="Gradio Interface" />
+</p>
 
 
 ## Requirements
@@ -24,7 +38,7 @@ GCP-HOLO is a RL based tree search method for generating high-order linkage grap
 * cma==3.1.0
 * wandb (optional for logging can be commented out if not desired)
 
-## Other packages used
+### Other packages used
 * argparse
 * multiprocessing
 * pickle
@@ -50,10 +64,10 @@ python train.py
 
 Example of various inputs that can be changed:
 ```
-python train.py --steps 400000  --n_envs 100 --opt_iter 10 --batch_size 5000 --n_eval_episodes 100000 --cuda cuda:0 --cmaes --save_freq 1000000 
+python train.py --goal_filename klann_traj --goal_filepath data/other_curves
 ```
 
-## Advanced
+## Advanced Training Options
 ```
   -h, --help                        show this help message and exit
 
@@ -227,7 +241,8 @@ python train.py --steps 400000  --n_envs 100 --opt_iter 10 --batch_size 5000 --n
     └── utils.py
 ```
 
-## Citation 
+## Citation
+
 ```
 @article{fogelson2023gcp,
   title={GCP-HOLO: Generating High-Order Linkage Graphs for Path Synthesis},
@@ -236,3 +251,7 @@ python train.py --steps 400000  --n_envs 100 --opt_iter 10 --batch_size 5000 --n
   year={2023},
   publisher={American Society of Mechanical Engineers}
 }
+```
+
+## Liscense
+GCP-HOLO is freely available for academic or non-profit organizations' noncommercial research only. Please check [the license file](LISCENSE) for further details.
