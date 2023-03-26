@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.utils &mdash; GCP-HOLO 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> GCP-HOLO
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../train.html">Train</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech.html">Mech Gym Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../linkage_gym.utils.html">Environment Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gradio.html">Gradio Interface</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">GCP-HOLO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>utils.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">cma</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">gym</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">stable_baselines3.common</span> <span class="kn">import</span> <span class="n">base_class</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.vec_env</span> <span class="kn">import</span> <span class="n">DummyVecEnv</span><span class="p">,</span> <span class="n">VecEnv</span><span class="p">,</span> <span class="n">VecMonitor</span><span class="p">,</span> <span class="n">is_vecenv_wrapped</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">timebudget</span> <span class="kn">import</span> <span class="n">timebudget</span>
+
+
+<div class="viewcode-block" id="linear_schedule"><a class="viewcode-back" href="../../utils.html#utils.utils.linear_schedule">[docs]</a><span class="k">def</span> <span class="nf">linear_schedule</span><span class="p">(</span><span class="n">initial_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Linear learning rate schedule.</span>
+
+<span class="sd">    :param initial_value: Initial learning rate.</span>
+<span class="sd">    :return: schedule that computes</span>
+<span class="sd">      current learning rate depending on remaining progress</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">progress_remaining</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Progress will decrease from 1 (beginning) to 0.</span>
+
+<span class="sd">        :param progress_remaining:</span>
+<span class="sd">        :return: current learning rate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">progress_remaining</span> <span class="o">*</span> <span class="n">initial_value</span>
+
+    <span class="k">return</span> <span class="n">func</span></div>
+
+
+<div class="viewcode-block" id="func"><a class="viewcode-back" href="../../utils.html#utils.utils.func">[docs]</a><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;cma-es objective function</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input (Nd.Array): new node positions</span>
+<span class="sd">        env (gym.env): _description_</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: reward</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    
+    <span class="c1">## Update env</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">paths</span><span class="p">[:</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">input</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">_initialize_paths</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">env</span><span class="o">.</span><span class="n">_get_reward</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">1.0</span>    
+    
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">_get_reward</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="n">nan</span><span class="o">=-</span><span class="mf">1e10</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cmaes"><a class="viewcode-back" href="../../utils.html#utils.utils.cmaes">[docs]</a><span class="k">def</span> <span class="nf">cmaes</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">tolfun</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;cma</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        env (gym.env): linkage_gym</span>
+<span class="sd">        tolfun (float, optional): objective function tolerance. Defaults to 0.001.</span>
+<span class="sd">        sigma (float, optional): distribution variance. Defaults to 0.00001.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        gym.env: optimized environment </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">## create a copy of the input</span>
+    <span class="n">opt_env</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+    <span class="n">opt_env</span><span class="o">.</span><span class="n">init_args</span><span class="p">[</span><span class="s1">&#39;edges&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_edges</span><span class="p">()</span>
+    
+    <span class="c1">## run cma-es</span>
+    <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bounds&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0001</span><span class="p">,</span> <span class="mf">1.0001</span><span class="p">],</span> <span class="s1">&#39;tolfun&#39;</span><span class="p">:</span> <span class="n">tolfun</span><span class="p">}</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">opt_env</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+    <span class="n">es</span> <span class="o">=</span> <span class="n">cma</span><span class="o">.</span><span class="n">CMAEvolutionStrategy</span><span class="p">(</span><span class="n">opt_env</span><span class="o">.</span><span class="n">paths</span><span class="p">[:</span><span class="n">n</span><span class="p">,:,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">inopts</span><span class="o">=</span><span class="n">opts</span><span class="p">)</span>
+    <span class="n">es</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">opt_env</span><span class="p">]);</span> 
+    
+    <span class="c1">## updated environment</span>
+    <span class="n">opt_env</span><span class="o">.</span><span class="n">paths</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">xbest</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">opt_env</span><span class="o">.</span><span class="n">_initialize_paths</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">opt_env</span></div>
+
+<div class="viewcode-block" id="evaluate_policy_simple"><a class="viewcode-back" href="../../utils.html#utils.utils.evaluate_policy_simple">[docs]</a><span class="k">def</span> <span class="nf">evaluate_policy_simple</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">episodes</span><span class="p">):</span>
+    <span class="n">rewards</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">designs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">lengths</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="c1">## run for episodes</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">episodes</span><span class="p">):</span>
+        <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+            <span class="n">actions</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deterministic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">observations</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span> <span class="n">dones</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+            <span class="n">dis</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">total_dist</span>
+            <span class="n">l</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="c1">## Update lists</span>
+        <span class="n">dist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dis</span><span class="p">)</span>
+        <span class="n">rewards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reward</span><span class="p">)</span>
+        <span class="n">designs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">lengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+        
+            
+    <span class="k">return</span> <span class="n">env</span><span class="o">.</span><span class="n">best_designs</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span> <span class="n">designs</span><span class="p">,</span> <span class="n">lengths</span><span class="p">,</span> <span class="n">dist</span></div>
+<span class="c1">## slightly modified by Mitch</span>
+<div class="viewcode-block" id="evaluate_policy"><a class="viewcode-back" href="../../utils.html#utils.utils.evaluate_policy">[docs]</a><span class="nd">@timebudget</span>
+<span class="k">def</span> <span class="nf">evaluate_policy</span><span class="p">(</span>
+    <span class="n">model</span><span class="p">:</span> <span class="s2">&quot;base_class.BaseAlgorithm&quot;</span><span class="p">,</span>
+    <span class="n">env</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">gym</span><span class="o">.</span><span class="n">Env</span><span class="p">,</span> <span class="n">VecEnv</span><span class="p">],</span>
+    <span class="n">n_eval_episodes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">deterministic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">render</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">callback</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">reward_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_episode_rewards</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">warn</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Runs policy for ``n_eval_episodes`` episodes and returns average reward.</span>
+<span class="sd">    If a vector env is passed in, this divides the episodes to evaluate onto the</span>
+<span class="sd">    different elements of the vector env. This static division of work is done to</span>
+<span class="sd">    remove bias. See https://github.com/DLR-RM/stable-baselines3/issues/402 for more</span>
+<span class="sd">    details and discussion.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        If environment has not been wrapped with ``Monitor`` wrapper, reward and</span>
+<span class="sd">        episode lengths are counted as it appears with ``env.step`` calls. If</span>
+<span class="sd">        the environment contains wrappers that modify rewards or episode lengths</span>
+<span class="sd">        (e.g. reward scaling, early episode reset), these will affect the evaluation</span>
+<span class="sd">        results as well. You can avoid this by wrapping environment with ``Monitor``</span>
+<span class="sd">        wrapper before anything else.</span>
+
+<span class="sd">    :param model: The RL agent you want to evaluate.</span>
+<span class="sd">    :param env: The gym environment or ``VecEnv`` environment.</span>
+<span class="sd">    :param n_eval_episodes: Number of episode to evaluate the agent</span>
+<span class="sd">    :param deterministic: Whether to use deterministic or stochastic actions</span>
+<span class="sd">    :param render: Whether to render the environment or not</span>
+<span class="sd">    :param callback: callback function to do additional checks,</span>
+<span class="sd">        called after each step. Gets locals() and globals() passed as parameters.</span>
+<span class="sd">    :param reward_threshold: Minimum expected reward per episode,</span>
+<span class="sd">        this will raise an error if the performance is not met</span>
+<span class="sd">    :param return_episode_rewards: If True, a list of rewards and episode lengths</span>
+<span class="sd">        per episode will be returned instead of the mean.</span>
+<span class="sd">    :param warn: If True (default), warns user about lack of a Monitor wrapper in the</span>
+<span class="sd">        evaluation environment.</span>
+<span class="sd">    :return: Mean reward per episode, std of reward per episode.</span>
+<span class="sd">        Returns ([float], [int]) when ``return_episode_rewards`` is True, first</span>
+<span class="sd">        list containing per-episode rewards and second containing per-episode lengths</span>
+<span class="sd">        (in number of steps).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">is_monitor_wrapped</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># Avoid circular import</span>
+    <span class="kn">from</span> <span class="nn">stable_baselines3.common.monitor</span> <span class="kn">import</span> <span class="n">Monitor</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">VecEnv</span><span class="p">):</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="n">DummyVecEnv</span><span class="p">([</span><span class="k">lambda</span><span class="p">:</span> <span class="n">env</span><span class="p">])</span>
+
+    <span class="n">is_monitor_wrapped</span> <span class="o">=</span> <span class="n">is_vecenv_wrapped</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">VecMonitor</span><span class="p">)</span> <span class="ow">or</span> <span class="n">env</span><span class="o">.</span><span class="n">env_is_wrapped</span><span class="p">(</span><span class="n">Monitor</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_monitor_wrapped</span> <span class="ow">and</span> <span class="n">warn</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;Evaluation environment is not wrapped with a ``Monitor`` wrapper. &quot;</span>
+            <span class="s2">&quot;This may result in reporting modified episode lengths and rewards, if other wrappers happen to modify these. &quot;</span>
+            <span class="s2">&quot;Consider wrapping environment first with ``Monitor`` wrapper.&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">n_envs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">num_envs</span>
+    <span class="n">episode_rewards</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">episode_lengths</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">episode_info</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">episode_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_envs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
+    <span class="c1"># Divides episodes among different sub environments in the vector as evenly as possible</span>
+    <span class="n">episode_count_targets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">n_eval_episodes</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">//</span> <span class="n">n_envs</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_envs</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
+
+    <span class="n">current_rewards</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_envs</span><span class="p">)</span>
+    <span class="n">current_lengths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_envs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
+    <span class="n">observations</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># episode_starts = np.ones((env.num_envs,), dtype=bool)</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">episode_counts</span> <span class="o">&lt;</span> <span class="n">episode_count_targets</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="n">actions</span><span class="p">,</span> <span class="n">states</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">observations</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">states</span><span class="p">,</span> <span class="n">deterministic</span><span class="o">=</span><span class="n">deterministic</span><span class="p">)</span>
+
+        <span class="n">observations</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span> <span class="n">dones</span><span class="p">,</span> <span class="n">infos</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+        <span class="n">current_rewards</span> <span class="o">+=</span> <span class="n">rewards</span>
+        <span class="n">current_lengths</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">environment_stopping_criteria</span> <span class="o">=</span> <span class="p">(</span><span class="n">episode_counts</span> <span class="o">&lt;</span> <span class="n">episode_count_targets</span><span class="p">)</span>
+        
+        <span class="c1"># valid = np.logical_and(environment_stopping_criteria, dones)</span>
+        <span class="n">tmp_rewards</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tmp_length</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">tmp_info</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">esc</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">environment_stopping_criteria</span><span class="p">,</span> <span class="n">dones</span><span class="p">,</span> <span class="n">current_rewards</span><span class="p">,</span> <span class="n">current_lengths</span><span class="p">,</span> <span class="n">infos</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">esc</span> <span class="ow">and</span> <span class="n">d</span><span class="p">:</span>
+                <span class="n">tmp_rewards</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                <span class="n">tmp_length</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+                <span class="n">tmp_info</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        
+        <span class="n">episode_rewards</span> <span class="o">+=</span> <span class="n">tmp_rewards</span> <span class="c1">#list(current_rewards[valid])</span>
+        <span class="n">episode_lengths</span> <span class="o">+=</span> <span class="n">tmp_length</span> <span class="c1">#list(current_lengths[valid])</span>
+        <span class="c1"># # import pdb</span>
+        <span class="c1"># # pdb.set_trace()</span>
+        <span class="n">episode_info</span> <span class="o">+=</span> <span class="n">tmp_info</span> <span class="c1">#[i for i, v in zip(infos, valid) if v]</span>
+        
+        <span class="n">current_lengths</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">dones</span><span class="p">)</span>
+        <span class="n">current_rewards</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">dones</span><span class="p">)</span>
+        
+        
+        <span class="n">episode_counts</span> <span class="o">+=</span> <span class="n">dones</span>
+        
+        
+       
+        <span class="c1"># for i in range(n_envs):</span>
+        <span class="c1">#     if episode_counts[i] &lt; episode_count_targets[i]:</span>
+
+        <span class="c1">#         # unpack values so that the callback can access the local variables</span>
+        <span class="c1">#         reward = rewards[i]</span>
+        <span class="c1">#         done = dones[i]</span>
+        <span class="c1">#         info = infos[i]</span>
+        <span class="c1">#         # episode_starts[i] = done</span>
+
+        <span class="c1">#         if callback is not None:</span>
+        <span class="c1">#             callback(locals(), globals())</span>
+
+        <span class="c1">#         if dones[i]:</span>
+        <span class="c1">#             episode_info.append(info)</span>
+        <span class="c1">#             if is_monitor_wrapped:</span>
+        <span class="c1">#                 # Atari wrapper can send a &quot;done&quot; signal when</span>
+        <span class="c1">#                 # the agent loses a life, but it does not correspond</span>
+        <span class="c1">#                 # to the true end of episode</span>
+        <span class="c1">#                 if &quot;episode&quot; in info.keys():</span>
+        <span class="c1">#                     # Do not trust &quot;done&quot; with episode endings.</span>
+        <span class="c1">#                     # Monitor wrapper includes &quot;episode&quot; key in info if environment</span>
+        <span class="c1">#                     # has been wrapped with it. Use those rewards instead.</span>
+        <span class="c1">#                     episode_rewards.append(info[&quot;episode&quot;][&quot;r&quot;])</span>
+        <span class="c1">#                     episode_lengths.append(info[&quot;episode&quot;][&quot;l&quot;])</span>
+        <span class="c1">#                     # Only increment at the real end of an episode</span>
+        <span class="c1">#                     episode_counts[i] += 1</span>
+        <span class="c1">#             else:</span>
+        <span class="c1">#                 episode_rewards.append(current_rewards[i])</span>
+        <span class="c1">#                 episode_lengths.append(current_lengths[i])</span>
+                        
+        <span class="c1">#                 ## TODO: Add saving actual design too</span>
+        <span class="c1">#                 # episode_paths.append(env)</span>
+        <span class="c1">#                 episode_counts[i] += 1</span>
+        <span class="c1">#             current_rewards[i] = 0</span>
+        <span class="c1">#             current_lengths[i] = 0</span>
+
+        <span class="k">if</span> <span class="n">render</span><span class="p">:</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+    <span class="n">mean_reward</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">episode_rewards</span><span class="p">)</span>
+    <span class="n">std_reward</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">episode_rewards</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">reward_threshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">mean_reward</span> <span class="o">&gt;</span> <span class="n">reward_threshold</span><span class="p">,</span> <span class="s2">&quot;Mean reward below threshold: &quot;</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mean_reward</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> &lt; </span><span class="si">{</span><span class="n">reward_threshold</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">return_episode_rewards</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">episode_rewards</span><span class="p">,</span> <span class="n">episode_lengths</span><span class="p">,</span> <span class="n">episode_info</span>
+    <span class="k">return</span> <span class="n">mean_reward</span><span class="p">,</span> <span class="n">std_reward</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mitchell Fogelson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

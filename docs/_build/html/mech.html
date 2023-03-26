@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mech Gym Environment &mdash; GCP-HOLO 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Environment Utils" href="linkage_gym.utils.html" />
+    <link rel="prev" title="Train" href="train.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GCP-HOLO
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="train.html">Train</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Mech Gym Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-linkage_gym.envs.Mech">Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="linkage_gym.utils.html">Environment Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradio.html">Gradio Interface</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GCP-HOLO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Mech Gym Environment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/mech.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mech-gym-environment">
+<h1>Mech Gym Environment<a class="headerlink" href="#mech-gym-environment" title="Permalink to this headline"></a></h1>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">Mech</span></code> follows the <cite>gym.Env</cite> interface.</p>
+<p>This is the Mechanism gym environment which contains the design of a single mechanism.</p>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<p>Create an instance of the Mechanism environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>Mech<span class="o">(</span>**env_kwargs<span class="o">)</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">env_kwargs</span></code> is a dictionary of keyword arguments to pass to the environment. The following keyword arguments are supported:</p>
+</section>
+<section id="module-linkage_gym.envs.Mech">
+<span id="methods"></span><h2>Methods<a class="headerlink" href="#module-linkage_gym.envs.Mech" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">linkage_gym.envs.Mech.</span></span><span class="sig-name descname"><span class="pre">Mech</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bound</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolution</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_positions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">goal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_loops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_node_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_initial_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordered_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_nodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sqeuclidean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">gym.core.Env</span></code></p>
+<p>Custom Environment that follows gym interface</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.active_cycles">
+<span class="sig-name descname"><span class="pre">active_cycles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.active_cycles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.active_cycles" title="Permalink to this definition"></a></dt>
+<dd><p>Returns all the active loops in the linkage graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>all cycles in linkage graph NOTE: this includes cycles with 3 nodes which are not valid loops</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.add_edge">
+<span class="sig-name descname"><span class="pre">add_edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.add_edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.add_edge" title="Permalink to this definition"></a></dt>
+<dd><p>Add edge to linkage graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id0</strong> (<em>int</em>) – index of node 0</p></li>
+<li><p><strong>id1</strong> (<em>int</em>) – index of node 1</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.add_node">
+<span class="sig-name descname"><span class="pre">add_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node_pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.add_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.add_node" title="Permalink to this definition"></a></dt>
+<dd><p>Add node to the linkage graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_pos</strong> (<em>Nd.Array</em>) – initial position of revolute joint Shape: (2, )</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.apply_random_action">
+<span class="sig-name descname"><span class="pre">apply_random_action</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.apply_random_action"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.apply_random_action" title="Permalink to this definition"></a></dt>
+<dd><p>Applies a random valid action to the current environment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Observation, Reward, Done, Info</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(Nd.Array, float, bool, dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.clear_best_desings">
+<span class="sig-name descname"><span class="pre">clear_best_desings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.clear_best_desings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.clear_best_desings" title="Permalink to this definition"></a></dt>
+<dd><p>Clears self.best_designs</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.close" title="Permalink to this definition"></a></dt>
+<dd><p>Close environment</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.coords_to_pix">
+<span class="sig-name descname"><span class="pre">coords_to_pix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.coords_to_pix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.coords_to_pix" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function for self.render converting coordinates to pixels</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>Nd.Array</em>) – coordinates Shape: (2, n)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pixel locations Shape: (2, n)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.coupler_traj">
+<span class="sig-name descname"><span class="pre">coupler_traj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.coupler_traj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.coupler_traj" title="Permalink to this definition"></a></dt>
+<dd><p>Return the coupler node trajectory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>optional</em>) – Normalized curve. Defaults to True.</p></li>
+<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – scaling factor. Defaults to None.</p></li>
+<li><p><strong>shift</strong> (<em>Nd.Array</em><em>, </em><em>optional</em>) – x,y shift for all points. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>coupler trajectory</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.dfs">
+<span class="sig-name descname"><span class="pre">dfs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visited</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_joints</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.dfs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.dfs" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function for depth first search</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>visited</strong> (<em>list</em>) – visited nodes</p></li>
+<li><p><strong>edges</strong> (<em>set</em>) – set of edges</p></li>
+<li><p><strong>node</strong> (<em>int</em>) – node index</p></li>
+<li><p><strong>known_joints</strong> (<em>list</em>) – known joint trajectories</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.get_active_nodes">
+<span class="sig-name descname"><span class="pre">get_active_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.get_active_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.get_active_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function to get all known nodes that contribute to coupler trajectory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>node indexes that are used for coupler FK, edges that are useful for linkage graph</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(list, set)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.get_distance">
+<span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.get_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.get_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Distance between the coupler trajectory and the goal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – scaling factor for coupler trajectory. Defaults to None.</p></li>
+<li><p><strong>shift</strong> (<em>Nd.Array</em><em>, </em><em>optional</em>) – shifting vector for coupler trajectory. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>distance</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.get_edge_lengths">
+<span class="sig-name descname"><span class="pre">get_edge_lengths</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.get_edge_lengths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.get_edge_lengths" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function to return all the edge lengths</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Lengths of each edge Shape: (e, )</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.get_edge_mask">
+<span class="sig-name descname"><span class="pre">get_edge_mask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.get_edge_mask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.get_edge_mask" title="Permalink to this definition"></a></dt>
+<dd><p>Valid scaffold node locations for adding to Assur 0DOF linkage to node0 and node1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id0</strong> (<em>int</em>) – index of node 0</p></li>
+<li><p><strong>id1</strong> (<em>int</em>) – index of node 1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>valid scaffold nodes for adding to linkage graph</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.get_edges">
+<span class="sig-name descname"><span class="pre">get_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.get_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.get_edges" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function to return all the edges in the current linkage graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>limit</strong> (<em>int</em><em>, </em><em>optional</em>) – edges between nodes bellow a particular index. Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of edge index pairs Shape: (e, 2) [id0, id1]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.get_observation">
+<span class="sig-name descname"><span class="pre">get_observation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.get_observation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.get_observation" title="Permalink to this definition"></a></dt>
+<dd><p>Observation of current linkage state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>[X ((Node_features)*max_nodes), adj (max_nodes*max_nodes), mask (max_nodes), action_mask (number_of_actions)] flattened</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.get_valid_env">
+<span class="sig-name descname"><span class="pre">get_valid_env</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bar_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.get_valid_env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.get_valid_env" title="Permalink to this definition"></a></dt>
+<dd><p>Generate random valid linkage graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>is valid</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.is_valid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.is_valid" title="Permalink to this definition"></a></dt>
+<dd><p>Checks that linkage graph is valid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>linkage graph is valid</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'render_fps':</span> <span class="pre">2,</span> <span class="pre">'render_modes':</span> <span class="pre">['human',</span> <span class="pre">'rgb_array']}</span></em><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.metadata" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.number_of_active_nodes">
+<span class="sig-name descname"><span class="pre">number_of_active_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.number_of_active_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.number_of_active_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function returns number of active nodes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>number of active nodes in linkage graph</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.number_of_cycles">
+<span class="sig-name descname"><span class="pre">number_of_cycles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.number_of_cycles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.number_of_cycles" title="Permalink to this definition"></a></dt>
+<dd><p>Number of active linkage graph loops</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>number of active linkage graph loops NOTE: this excludes loops of 3 nodes (also known as triads as they are not useful)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.number_of_edges">
+<span class="sig-name descname"><span class="pre">number_of_edges</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.number_of_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.number_of_edges" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function returns the number of edges that make up the current linkage graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>number of edges</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.number_of_nodes">
+<span class="sig-name descname"><span class="pre">number_of_nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.number_of_nodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.number_of_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function returns number of nodes currently in the linkage graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>number of nodes</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.paper_plotting">
+<span class="sig-name descname"><span class="pre">paper_plotting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_goal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_coupler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.paper_plotting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.paper_plotting" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function for plotting figures used in paper</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>show</strong> (<em>bool</em><em>, </em><em>optional</em>) – show the plot. Defaults to False.</p></li>
+<li><p><strong>show_goal</strong> (<em>bool</em><em>, </em><em>optional</em>) – plot the goal on figure. Defaults to True.</p></li>
+<li><p><strong>show_coupler</strong> (<em>bool</em><em>, </em><em>optional</em>) – plot the coupler curve on figure. Defaults to True.</p></li>
+<li><p><strong>show_obj</strong> (<em>bool</em><em>, </em><em>optional</em>) – add objective value of linkage to figure. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the figure object</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Matplotlib.fig</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.plot_graph">
+<span class="sig-name descname"><span class="pre">plot_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_paths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_coupler</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coupler_idx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.plot_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.plot_graph" title="Permalink to this definition"></a></dt>
+<dd><p>Helper function to visualize linkage graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot_paths</strong> (<em>bool</em><em>, </em><em>optional</em>) – plot revolute joint trajectories. Defaults to False.</p></li>
+<li><p><strong>plot_coupler</strong> (<em>bool</em><em>, </em><em>optional</em>) – plot coupler joint trajectory. Defaults to True.</p></li>
+<li><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – filename to save figure. Defaults to None.</p></li>
+<li><p><strong>coupler_idx</strong> (<em>int</em><em>, </em><em>optional</em>) – index of coupler index or other node that you want to be known as the coupler. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>figure</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Matplotlib.fig</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.prune">
+<span class="sig-name descname"><span class="pre">prune</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.prune"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.prune" title="Permalink to this definition"></a></dt>
+<dd><p>Prune linkage graph of unnecessary revolute joints</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.random_4_bar">
+<span class="sig-name descname"><span class="pre">random_4_bar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bar_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.random_4_bar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.random_4_bar" title="Permalink to this definition"></a></dt>
+<dd><p>Random valid n bar linakge NOTE: not really N_bar, based on edges input</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>edges</strong> (<em>Nd.Array</em>) – set of edges Shape: (e, 2)</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – number of revolute joints</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'human'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.render" title="Permalink to this definition"></a></dt>
+<dd><p>Render the linkage being generated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – visualization mode. Defaults to “human”.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>DependencyNotInstalled</strong> – needs pygame</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>successful</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.reset" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the environment to a root linkage</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>observation of the linkage (x, adj, mask, action_mask) flattened</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.satisfy_constraints">
+<span class="sig-name descname"><span class="pre">satisfy_constraints</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.satisfy_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.satisfy_constraints" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if linkage graph satisfies the constraints</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>satifies</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.seed">
+<span class="sig-name descname"><span class="pre">seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.seed" title="Permalink to this definition"></a></dt>
+<dd><p>Set the seed for gym env</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – seed used for gym env. Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the seed value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.step">
+<span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.step" title="Permalink to this definition"></a></dt>
+<dd><p>Update linkage graph with new action</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>action</strong> (<em>int</em>) – index of action</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Observation, Reward, Done, Info</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(Nd.Array, float, bool, dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.update_best_designs">
+<span class="sig-name descname"><span class="pre">update_best_designs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.update_best_designs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.update_best_designs" title="Permalink to this definition"></a></dt>
+<dd><p>Update set of best designs of various linakge graph topologies</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.update_fixed_paths">
+<span class="sig-name descname"><span class="pre">update_fixed_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fixed_node_pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.update_fixed_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.update_fixed_paths" title="Permalink to this definition"></a></dt>
+<dd><p>Update self.paths for fixed revolute joints (DEPRECATED)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fixed_node_pos</strong> (<em>Nd.Array</em>) – Vector of initial position of fixed nodes Shape: (n, 2)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="linkage_gym.envs.Mech.Mech.update_paths">
+<span class="sig-name descname"><span class="pre">update_paths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unknown_joints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/envs/Mech.html#Mech.update_paths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.envs.Mech.Mech.update_paths" title="Permalink to this definition"></a></dt>
+<dd><p>Update self.paths</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unknown_joints</strong> (<em>list</em><em>, </em><em>optional</em>) – node indexes that are not known or want to be calculated. Defaults to None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="train.html" class="btn btn-neutral float-left" title="Train" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="linkage_gym.utils.html" class="btn btn-neutral float-right" title="Environment Utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mitchell Fogelson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

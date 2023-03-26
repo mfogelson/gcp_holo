@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Environment Utils &mdash; GCP-HOLO 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Models" href="models.html" />
+    <link rel="prev" title="Mech Gym Environment" href="mech.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GCP-HOLO
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="train.html">Train</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mech.html">Mech Gym Environment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Environment Utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-linkage_gym.utils.env_utils">env_utils methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradio.html">Gradio Interface</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GCP-HOLO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Environment Utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/linkage_gym.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="environment-utils">
+<h1>Environment Utils<a class="headerlink" href="#environment-utils" title="Permalink to this headline"></a></h1>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<p>This module contains a set of utility functions for the Mech environment.</p>
+</section>
+<section id="module-linkage_gym.utils.env_utils">
+<span id="env-utils-methods"></span><h2>env_utils methods<a class="headerlink" href="#module-linkage_gym.utils.env_utils" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="linkage_gym.utils.env_utils.circIntersectionVect">
+<span class="sig-prename descclassname"><span class="pre">linkage_gym.utils.env_utils.</span></span><span class="sig-name descname"><span class="pre">circIntersectionVect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jointA</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jointB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jointC_pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/utils/env_utils.html#circIntersectionVect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.utils.env_utils.circIntersectionVect" title="Permalink to this definition"></a></dt>
+<dd><p>Circle Intersection Method for linkage FK</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>jointA</strong> (<em>Nd.Array</em>) – jointA path</p></li>
+<li><p><strong>jointB</strong> (<em>Nd.Array</em>) – jointB path</p></li>
+<li><p><strong>jointC_pos</strong> (<em>Nd.Array</em>) – New joint being added</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Path of jointC</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="linkage_gym.utils.env_utils.distance">
+<span class="sig-prename descclassname"><span class="pre">linkage_gym.utils.env_utils.</span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curve_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curve_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordered</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'euclidean'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/utils/env_utils.html#distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.utils.env_utils.distance" title="Permalink to this definition"></a></dt>
+<dd><p>distance between curve_i and curve_j</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>curve_i</strong> (<em>Nd.Array</em>) – Array of x,y points that is from curve_i Shape: (n, 2)</p></li>
+<li><p><strong>curve_j</strong> (<em>Nd.Array</em>) – Array of x,y points that is from curve_j Shape: (n, 2)</p></li>
+<li><p><strong>ordered</strong> (<em>bool</em><em>, </em><em>optional</em>) – if ordering of points matters. Defaults to False.</p></li>
+<li><p><strong>distance_metric</strong> (<em>str</em><em>, </em><em>optional</em>) – check scipy.cdist for various options. Defaults to ‘euclidean’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Distance between all points</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="linkage_gym.utils.env_utils.normalize_curve">
+<span class="sig-prename descclassname"><span class="pre">linkage_gym.utils.env_utils.</span></span><span class="sig-name descname"><span class="pre">normalize_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/utils/env_utils.html#normalize_curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.utils.env_utils.normalize_curve" title="Permalink to this definition"></a></dt>
+<dd><p>normalizes input curve with shift and scale factors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>Nd.Array</em>) – Shape: (n, 2)</p></li>
+<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – scaling factor. Defaults to None.</p></li>
+<li><p><strong>shift</strong> (<em>Nd.Array</em><em>, </em><em>optional</em>) – shift factor [x offset, y offset]. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>updated curve</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="linkage_gym.utils.env_utils.symbolic_kinematics">
+<span class="sig-prename descclassname"><span class="pre">linkage_gym.utils.env_utils.</span></span><span class="sig-name descname"><span class="pre">symbolic_kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xk0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/utils/env_utils.html#symbolic_kinematics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.utils.env_utils.symbolic_kinematics" title="Permalink to this definition"></a></dt>
+<dd><p>Symbolic Kinematics implementation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xi</strong> (<em>Nd.Array</em>) – Path of revolute joint xi Shape: (2, n)</p></li>
+<li><p><strong>xj</strong> (<em>Nd.Array</em>) – Path of revolute joint xj Shape: (2, n)</p></li>
+<li><p><strong>xk0</strong> (<em>Nd.Array</em>) – Initial position of new point xk Shape: (2,)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Path of revolute joint xk Shape: (2,n)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nd.Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="linkage_gym.utils.env_utils.uniquify">
+<span class="sig-prename descclassname"><span class="pre">linkage_gym.utils.env_utils.</span></span><span class="sig-name descname"><span class="pre">uniquify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/linkage_gym/utils/env_utils.html#uniquify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#linkage_gym.utils.env_utils.uniquify" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mech.html" class="btn btn-neutral float-left" title="Mech Gym Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="models.html" class="btn btn-neutral float-right" title="Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mitchell Fogelson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

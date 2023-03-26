@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Train &mdash; GCP-HOLO 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Mech Gym Environment" href="mech.html" />
+    <link rel="prev" title="Welcome to GCP-HOLO’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> GCP-HOLO
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Train</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#options">Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mech.html">Mech Gym Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linkage_gym.utils.html">Environment Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradio.html">Gradio Interface</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GCP-HOLO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Train</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/train.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="train">
+<h1>Train<a class="headerlink" href="#train" title="Permalink to this headline"></a></h1>
+<p>This script is used to train a reinforcement learning model for the linkage gym environment.</p>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<p>The script can be run with the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python train.py &lt;options&gt;
+</pre></div>
+</div>
+</section>
+<section id="options">
+<h2>Options<a class="headerlink" href="#options" title="Permalink to this headline"></a></h2>
+<p>The following command-line options are available:</p>
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-h">
+<span id="cmdoption-train-py-h"></span><span id="cmdoption-train.py-help"></span><span id="cmdoption-train-py-help"></span><span class="sig-name descname"><span class="pre">-h</span></span><span class="sig-prename descclassname"></span><span class="sig-prename descclassname"><span class="pre">,</span> </span><span class="sig-name descname"><span class="pre">--help</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-h" title="Permalink to this definition"></a></dt>
+<dd><p>Show the help message and exit.</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-max_nodes">
+<span id="cmdoption-train-py-max-nodes"></span><span class="sig-name descname"><span class="pre">--max_nodes</span></span><span class="sig-prename descclassname"> <span class="pre">MAX_NODES</span></span><a class="headerlink" href="#cmdoption-train.py-max_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum number of revolute joints on linkage graph (default: 11, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-resolution">
+<span id="cmdoption-train-py-resolution"></span><span class="sig-name descname"><span class="pre">--resolution</span></span><span class="sig-prename descclassname"> <span class="pre">RESOLUTION</span></span><a class="headerlink" href="#cmdoption-train.py-resolution" title="Permalink to this definition"></a></dt>
+<dd><p>Resolution of scaffold nodes (default: 11, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-bound">
+<span id="cmdoption-train-py-bound"></span><span class="sig-name descname"><span class="pre">--bound</span></span><span class="sig-prename descclassname"> <span class="pre">BOUND</span></span><a class="headerlink" href="#cmdoption-train.py-bound" title="Permalink to this definition"></a></dt>
+<dd><p>Bound for linkage graph design [-bound, bound] (default: 1.0, type: float)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-sample_points">
+<span id="cmdoption-train-py-sample-points"></span><span class="sig-name descname"><span class="pre">--sample_points</span></span><span class="sig-prename descclassname"> <span class="pre">SAMPLE_POINTS</span></span><a class="headerlink" href="#cmdoption-train.py-sample_points" title="Permalink to this definition"></a></dt>
+<dd><p>Number of points to sample the trajectories of revolute joints (default: 20, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-feature_points">
+<span id="cmdoption-train-py-feature-points"></span><span class="sig-name descname"><span class="pre">--feature_points</span></span><span class="sig-prename descclassname"> <span class="pre">FEATURE_POINTS</span></span><a class="headerlink" href="#cmdoption-train.py-feature_points" title="Permalink to this definition"></a></dt>
+<dd><p>Number of feature points for node vector used in GNN (default: 1, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-goal_filename">
+<span id="cmdoption-train-py-goal-filename"></span><span class="sig-name descname"><span class="pre">--goal_filename</span></span><span class="sig-prename descclassname"> <span class="pre">GOAL_FILENAME</span></span><a class="headerlink" href="#cmdoption-train.py-goal_filename" title="Permalink to this definition"></a></dt>
+<dd><p>Goal filename (default: jansen_traj, type: str)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-goal_path">
+<span id="cmdoption-train-py-goal-path"></span><span class="sig-name descname"><span class="pre">--goal_path</span></span><span class="sig-prename descclassname"> <span class="pre">GOAL_PATH</span></span><a class="headerlink" href="#cmdoption-train.py-goal_path" title="Permalink to this definition"></a></dt>
+<dd><p>Path to goal file (default: data/other_curves, type: str)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-use_self_loops">
+<span id="cmdoption-train-py-use-self-loops"></span><span class="sig-name descname"><span class="pre">--use_self_loops</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-use_self_loops" title="Permalink to this definition"></a></dt>
+<dd><p>Add self-loops in adj matrix (default: False, type: None)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-normalize">
+<span id="cmdoption-train-py-normalize"></span><span class="sig-name descname"><span class="pre">--normalize</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-normalize" title="Permalink to this definition"></a></dt>
+<dd><p>Normalize trajectory for feature vector (default: False, type: None)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-use_node_type">
+<span id="cmdoption-train-py-use-node-type"></span><span class="sig-name descname"><span class="pre">--use_node_type</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-use_node_type" title="Permalink to this definition"></a></dt>
+<dd><p>Use node type id for feature vector (default: False, type: None)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-fixed_initial_state">
+<span id="cmdoption-train-py-fixed-initial-state"></span><span class="sig-name descname"><span class="pre">--fixed_initial_state</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-fixed_initial_state" title="Permalink to this definition"></a></dt>
+<dd><p>Use same initial design state for all training (default: True, type: None)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-seed">
+<span id="cmdoption-train-py-seed"></span><span class="sig-name descname"><span class="pre">--seed</span></span><span class="sig-prename descclassname"> <span class="pre">SEED</span></span><a class="headerlink" href="#cmdoption-train.py-seed" title="Permalink to this definition"></a></dt>
+<dd><p>Random seed for numpy and gym (default: 123, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-ordered">
+<span id="cmdoption-train-py-ordered"></span><span class="sig-name descname"><span class="pre">--ordered</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-ordered" title="Permalink to this definition"></a></dt>
+<dd><p>Get minimum ordered distance (default: True, type: None)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-body_constraints">
+<span id="cmdoption-train-py-body-constraints"></span><span class="sig-name descname"><span class="pre">--body_constraints</span></span><span class="sig-prename descclassname"> <span class="pre">BODY_CONSTRAINTS</span></span><a class="headerlink" href="#cmdoption-train.py-body_constraints" title="Permalink to this definition"></a></dt>
+<dd><p>Constraint on Non-coupler revolute joints[xmin, xmax, ymin, ymax] (default: None, type: float)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-coupler_constraints">
+<span id="cmdoption-train-py-coupler-constraints"></span><span class="sig-name descname"><span class="pre">--coupler_constraints</span></span><span class="sig-prename descclassname"> <span class="pre">COUPLER_CONSTRAINTS</span></span><a class="headerlink" href="#cmdoption-train.py-coupler_constraints" title="Permalink to this definition"></a></dt>
+<dd><p>Constraint on Coupler joint [xmin, xmax, ymin, ymax] (default: None, type: float)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-use_gnn">
+<span id="cmdoption-train-py-use-gnn"></span><span class="sig-name descname"><span class="pre">--use_gnn</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-use_gnn" title="Permalink to this definition"></a></dt>
+<dd><p>Use GNN feature embedding (default: True, type: None)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-batch_normalize">
+<span id="cmdoption-train-py-batch-normalize"></span><span class="sig-name descname"><span class="pre">--batch_normalize</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-batch_normalize" title="Permalink to this definition"></a></dt>
+<dd><p>Use batch normalization in GNN (default: True, type: None)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-model">
+<span id="cmdoption-train-py-model"></span><span class="sig-name descname"><span class="pre">--model</span></span><span class="sig-prename descclassname"> <span class="pre">MODEL</span></span><a class="headerlink" href="#cmdoption-train.py-model" title="Permalink to this definition"></a></dt>
+<dd><p>Select which model type to use Models=[DQN, A2C, PPO, random] (default: PPO, type: str)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-n_envs">
+<span id="cmdoption-train-py-n-envs"></span><span class="sig-name descname"><span class="pre">--n_envs</span></span><span class="sig-prename descclassname"> <span class="pre">N_ENVS</span></span><a class="headerlink" href="#cmdoption-train.py-n_envs" title="Permalink to this definition"></a></dt>
+<dd><p>Number of parallel environments to run (default: 1, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-checkpoint">
+<span id="cmdoption-train-py-checkpoint"></span><span class="sig-name descname"><span class="pre">--checkpoint</span></span><span class="sig-prename descclassname"> <span class="pre">CHECKPOINT</span></span><a class="headerlink" href="#cmdoption-train.py-checkpoint" title="Permalink to this definition"></a></dt>
+<dd><p>Load a previous model checkpoint (default: None, type: str)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-update_freq">
+<span id="cmdoption-train-py-update-freq"></span><span class="sig-name descname"><span class="pre">--update_freq</span></span><span class="sig-prename descclassname"> <span class="pre">UPDATE_FREQ</span></span><a class="headerlink" href="#cmdoption-train.py-update_freq" title="Permalink to this definition"></a></dt>
+<dd><p>How often to update the model (default: 1000, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-opt_iter">
+<span id="cmdoption-train-py-opt-iter"></span><span class="sig-name descname"><span class="pre">--opt_iter</span></span><span class="sig-prename descclassname"> <span class="pre">OPT_ITER</span></span><a class="headerlink" href="#cmdoption-train.py-opt_iter" title="Permalink to this definition"></a></dt>
+<dd><p>How many gradient steps per update (default: 1, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-eps_clip">
+<span id="cmdoption-train-py-eps-clip"></span><span class="sig-name descname"><span class="pre">--eps_clip</span></span><span class="sig-prename descclassname"> <span class="pre">EPS_CLIP</span></span><a class="headerlink" href="#cmdoption-train.py-eps_clip" title="Permalink to this definition"></a></dt>
+<dd><p>PPO epsilon clipping (default: 0.2, type: float)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-ent_coef">
+<span id="cmdoption-train-py-ent-coef"></span><span class="sig-name descname"><span class="pre">--ent_coef</span></span><span class="sig-prename descclassname"> <span class="pre">ENT_COEF</span></span><a class="headerlink" href="#cmdoption-train.py-ent_coef" title="Permalink to this definition"></a></dt>
+<dd><p>PPO epsilon clipping (default: 0.01, type: float)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-gamma">
+<span id="cmdoption-train-py-gamma"></span><span class="sig-name descname"><span class="pre">--gamma</span></span><span class="sig-prename descclassname"> <span class="pre">GAMMA</span></span><a class="headerlink" href="#cmdoption-train.py-gamma" title="Permalink to this definition"></a></dt>
+<dd><p>Discount factor (default: 0.99, type: float)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-lr">
+<span id="cmdoption-train-py-lr"></span><span class="sig-name descname"><span class="pre">--lr</span></span><span class="sig-prename descclassname"> <span class="pre">LR</span></span><a class="headerlink" href="#cmdoption-train.py-lr" title="Permalink to this definition"></a></dt>
+<dd><p>Learning rate (default: 0.0001, type: float)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-batch_size">
+<span id="cmdoption-train-py-batch-size"></span><span class="sig-name descname"><span class="pre">--batch_size</span></span><span class="sig-prename descclassname"> <span class="pre">BATCH_SIZE</span></span><a class="headerlink" href="#cmdoption-train.py-batch_size" title="Permalink to this definition"></a></dt>
+<dd><p>Batch Size for Dataloader (default: 1000, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-buffer_size">
+<span id="cmdoption-train-py-buffer-size"></span><span class="sig-name descname"><span class="pre">--buffer_size</span></span><span class="sig-prename descclassname"> <span class="pre">BUFFER_SIZE</span></span><a class="headerlink" href="#cmdoption-train.py-buffer_size" title="Permalink to this definition"></a></dt>
+<dd><p>Buffer size for DQN (default: 1000000, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-steps">
+<span id="cmdoption-train-py-steps"></span><span class="sig-name descname"><span class="pre">--steps</span></span><span class="sig-prename descclassname"> <span class="pre">STEPS</span></span><a class="headerlink" href="#cmdoption-train.py-steps" title="Permalink to this definition"></a></dt>
+<dd><p>The number of steps to train (default: 50000, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-num_trials">
+<span id="cmdoption-train-py-num-trials"></span><span class="sig-name descname"><span class="pre">--num_trials</span></span><span class="sig-prename descclassname"> <span class="pre">NUM_TRIALS</span></span><a class="headerlink" href="#cmdoption-train.py-num_trials" title="Permalink to this definition"></a></dt>
+<dd><p>How many times to run a training of the model (default: 1, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-n_eval_episodes">
+<span id="cmdoption-train-py-n-eval-episodes"></span><span class="sig-name descname"><span class="pre">--n_eval_episodes</span></span><span class="sig-prename descclassname"> <span class="pre">N_EVAL_EPISODES</span></span><a class="headerlink" href="#cmdoption-train.py-n_eval_episodes" title="Permalink to this definition"></a></dt>
+<dd><p>The number of epochs to evaluate the model (default: 100, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-m_evals">
+<span id="cmdoption-train-py-m-evals"></span><span class="sig-name descname"><span class="pre">--m_evals</span></span><span class="sig-prename descclassname"> <span class="pre">M_EVALS</span></span><a class="headerlink" href="#cmdoption-train.py-m_evals" title="Permalink to this definition"></a></dt>
+<dd><p>How many times to run the evaluation with varying seeds (default: 1, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-log_freq">
+<span id="cmdoption-train-py-log-freq"></span><span class="sig-name descname"><span class="pre">--log_freq</span></span><span class="sig-prename descclassname"> <span class="pre">LOG_FREQ</span></span><a class="headerlink" href="#cmdoption-train.py-log_freq" title="Permalink to this definition"></a></dt>
+<dd><p>How often to log training values (default: 1000, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-save_freq">
+<span id="cmdoption-train-py-save-freq"></span><span class="sig-name descname"><span class="pre">--save_freq</span></span><span class="sig-prename descclassname"> <span class="pre">SAVE_FREQ</span></span><a class="headerlink" href="#cmdoption-train.py-save_freq" title="Permalink to this definition"></a></dt>
+<dd><p>How often to save instances of model, buffer and render (default: 10000, type: int)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-wandb_mode">
+<span id="cmdoption-train-py-wandb-mode"></span><span class="sig-name descname"><span class="pre">--wandb_mode</span></span><span class="sig-prename descclassname"> <span class="pre">WANDB_MODE</span></span><a class="headerlink" href="#cmdoption-train.py-wandb_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Use weights and biases to log information Modes=[online, offline, disabled] (default: online, type: str)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-wandb_project">
+<span id="cmdoption-train-py-wandb-project"></span><span class="sig-name descname"><span class="pre">--wandb_project</span></span><span class="sig-prename descclassname"> <span class="pre">WANDB_PROJECT</span></span><a class="headerlink" href="#cmdoption-train.py-wandb_project" title="Permalink to this definition"></a></dt>
+<dd><p>Set weights and biases project name (default: linkage_sb4, type: str)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-verbose">
+<span id="cmdoption-train-py-verbose"></span><span class="sig-name descname"><span class="pre">--verbose</span></span><span class="sig-prename descclassname"> <span class="pre">VERBOSE</span></span><a class="headerlink" href="#cmdoption-train.py-verbose" title="Permalink to this definition"></a></dt>
+<dd><p>Verbose from sb3 (default: 0)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-cuda">
+<span id="cmdoption-train-py-cuda"></span><span class="sig-name descname"><span class="pre">--cuda</span></span><span class="sig-prename descclassname"> <span class="pre">CUDA</span></span><a class="headerlink" href="#cmdoption-train.py-cuda" title="Permalink to this definition"></a></dt>
+<dd><p>Which GPU to use [cpu, cuda:0, cuda:1, cuda:2, cuda:3] (default: cpu, type: str)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-no_train">
+<span id="cmdoption-train-py-no-train"></span><span class="sig-name descname"><span class="pre">--no_train</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-no_train" title="Permalink to this definition"></a></dt>
+<dd><p>If you don’t want to train (default: False, type: None)</p>
+</dd></dl>
+
+<dl class="std option">
+<dt class="sig sig-object std" id="cmdoption-train.py-cmaes">
+<span id="cmdoption-train-py-cmaes"></span><span class="sig-name descname"><span class="pre">--cmaes</span></span><span class="sig-prename descclassname"></span><a class="headerlink" href="#cmdoption-train.py-cmaes" title="Permalink to this definition"></a></dt>
+<dd><p>Further optimize best designs found with CMA-ES node optimization (default: False, type: None)</p>
+</dd></dl>
+
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline"></a></h2>
+<p>To train an A2C model for the Mech-v0 environment for 100 epochs with a batch size of 32 and a learning rate of 0.001, you can run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python train.py --model a2c --env Mech-v0 --epochs <span class="m">100</span> --batch-size <span class="m">32</span> --learning-rate <span class="m">0</span>.001
+</pre></div>
+</div>
+<p>This will train the model and save the trained weights to the default output directory.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to GCP-HOLO’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mech.html" class="btn btn-neutral float-right" title="Mech Gym Environment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mitchell Fogelson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
