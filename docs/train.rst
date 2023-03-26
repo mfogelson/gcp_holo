@@ -186,10 +186,10 @@ The following command-line options are available:
 Example
 -------
 
-To train an A2C model for the Mech-v0 environment for 100 epochs with a batch size of 32 and a learning rate of 0.001, you can run:
+To train a PPO model on the Jansen Linkage trajectory for 100 epochs on the GPU with a learning rate of 0.001, you can run:
 
 .. code-block:: bash
 
-   python train.py --model a2c --env Mech-v0 --epochs 100 --batch-size 32 --learning-rate 0.001
+   python train.py --model PPO --goal_filename jansen_traj --goal_filepath data/other_curves --epochs 100 --cuda cuda:0 --lr 0.001
 
 This will train the model and save the trained weights to the default output directory.
