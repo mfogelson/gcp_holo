@@ -254,4 +254,4 @@ python train.py --goal_filename klann_traj --goal_filepath data/other_curves
 ```
 
 ## Liscense
-GCP-HOLO is freely available for academic or non-profit organizations' noncommercial research only. Please check [the license file](LISCENSE) for further details.
+GCP-HOLO is freely available for academic or non-profit organizations' noncommercial research only. Please check [the license file](LICENSE) for further details.
