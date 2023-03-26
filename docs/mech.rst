@@ -1,5 +1,5 @@
 Mech Gym Environment
-=====
+====================
 
 :class:`Mech` follows the `gym.Env` interface.
 
@@ -16,6 +16,8 @@ Create an instance of the Mechanism environment:
    Mech(**env_kwargs)
 
 where ``env_kwargs`` is a dictionary of keyword arguments to pass to the environment. The following keyword arguments are supported:
+
+
 
 Methods
 -----------------------------
