@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>models.dqn &mdash; GCP-HOLO 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> GCP-HOLO
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../train.html">Train</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech.html">Mech Gym Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../linkage_gym.utils.html">Environment Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gradio.html">Gradio Interface</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">GCP-HOLO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>models.dqn</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for models.dqn</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">gym</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span> <span class="k">as</span> <span class="nn">th</span>
+<span class="kn">from</span> <span class="nn">torch.nn</span> <span class="kn">import</span> <span class="n">functional</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.buffers</span> <span class="kn">import</span> <span class="n">ReplayBuffer</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.preprocessing</span> <span class="kn">import</span> <span class="n">maybe_transpose</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.type_aliases</span> <span class="kn">import</span> <span class="n">GymEnv</span><span class="p">,</span> <span class="n">Schedule</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.utils</span> <span class="kn">import</span> <span class="n">is_vectorized_observation</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.type_aliases</span> <span class="kn">import</span> <span class="n">GymEnv</span><span class="p">,</span><span class="n">Schedule</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.noise</span> <span class="kn">import</span> <span class="n">ActionNoise</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3</span> <span class="kn">import</span> <span class="n">DQN</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.dqn.policies</span> <span class="kn">import</span> <span class="n">QNetwork</span><span class="p">,</span> <span class="n">DQNPolicy</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span>
+
+<span class="kn">import</span> <span class="nn">gym</span>
+<span class="kn">import</span> <span class="nn">torch</span> <span class="k">as</span> <span class="nn">th</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.torch_layers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseFeaturesExtractor</span><span class="p">,</span>
+    <span class="n">FlattenExtractor</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">stable_baselines3.common.type_aliases</span> <span class="kn">import</span> <span class="n">Schedule</span>
+
+
+<div class="viewcode-block" id="CustomQNetwork"><a class="viewcode-back" href="../../models.html#models.dqn.CustomQNetwork">[docs]</a><span class="k">class</span> <span class="nc">CustomQNetwork</span><span class="p">(</span><span class="n">QNetwork</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Action-Value (Q-Value) network for DQN</span>
+
+<span class="sd">    :param observation_space: Observation space</span>
+<span class="sd">    :param action_space: Action space</span>
+<span class="sd">    :param net_arch: The specification of the policy and value networks.</span>
+<span class="sd">    :param activation_fn: Activation function</span>
+<span class="sd">    :param normalize_images: Whether to normalize images or not,</span>
+<span class="sd">         dividing by 255.0 (True by default)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">observation_space</span><span class="p">:</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Space</span><span class="p">,</span>
+        <span class="n">action_space</span><span class="p">:</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Space</span><span class="p">,</span>
+        <span class="n">features_extractor</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="n">features_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">net_arch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">activation_fn</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">,</span>
+        <span class="n">normalize_images</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomQNetwork</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">observation_space</span><span class="p">,</span>
+            <span class="n">action_space</span><span class="p">,</span>
+            <span class="n">features_extractor</span><span class="p">,</span>
+            <span class="n">features_dim</span><span class="p">,</span> 
+            <span class="n">net_arch</span><span class="p">,</span> 
+            <span class="n">activation_fn</span><span class="p">,</span>
+            <span class="n">normalize_images</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="CustomQNetwork.forward"><a class="viewcode-back" href="../../models.html#models.dqn.CustomQNetwork.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obs</span><span class="p">:</span> <span class="n">th</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Predict the q-values.</span>
+
+<span class="sd">        :param obs: Observation</span>
+<span class="sd">        :return: The estimated Q-Value for each action.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">action_mask</span> <span class="o">=</span> <span class="n">obs</span><span class="p">[:,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span><span class="p">:]</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span> <span class="c1">#[&#39;action_mask&#39;].bool()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_net</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extract_features</span><span class="p">(</span><span class="n">obs</span><span class="p">))</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="o">~</span><span class="n">action_mask</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="c1">#.softmax(1)</span></div></div>
+
+
+
+
+<div class="viewcode-block" id="CustomDQNPolicy"><a class="viewcode-back" href="../../models.html#models.dqn.CustomDQNPolicy">[docs]</a><span class="k">class</span> <span class="nc">CustomDQNPolicy</span><span class="p">(</span><span class="n">DQNPolicy</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Policy class with Q-Value Net and target net for DQN</span>
+
+<span class="sd">    :param observation_space: Observation space</span>
+<span class="sd">    :param action_space: Action space</span>
+<span class="sd">    :param lr_schedule: Learning rate schedule (could be constant)</span>
+<span class="sd">    :param net_arch: The specification of the policy and value networks.</span>
+<span class="sd">    :param activation_fn: Activation function</span>
+<span class="sd">    :param features_extractor_class: Features extractor to use.</span>
+<span class="sd">    :param features_extractor_kwargs: Keyword arguments</span>
+<span class="sd">        to pass to the features extractor.</span>
+<span class="sd">    :param normalize_images: Whether to normalize images or not,</span>
+<span class="sd">         dividing by 255.0 (True by default)</span>
+<span class="sd">    :param optimizer_class: The optimizer to use,</span>
+<span class="sd">        ``th.optim.Adam`` by default</span>
+<span class="sd">    :param optimizer_kwargs: Additional keyword arguments,</span>
+<span class="sd">        excluding the learning rate, to pass to the optimizer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">observation_space</span><span class="p">:</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Space</span><span class="p">,</span>
+        <span class="n">action_space</span><span class="p">:</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Space</span><span class="p">,</span>
+        <span class="n">lr_schedule</span><span class="p">:</span> <span class="n">Schedule</span><span class="p">,</span>
+        <span class="n">net_arch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">activation_fn</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">,</span>
+        <span class="n">features_extractor_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseFeaturesExtractor</span><span class="p">]</span> <span class="o">=</span> <span class="n">FlattenExtractor</span><span class="p">,</span>
+        <span class="n">features_extractor_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">normalize_images</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">optimizer_class</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">th</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">,</span>
+        <span class="n">optimizer_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomDQNPolicy</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">observation_space</span><span class="p">,</span>
+            <span class="n">action_space</span><span class="p">,</span>
+            <span class="n">lr_schedule</span><span class="p">,</span> 
+            <span class="n">net_arch</span><span class="p">,</span> 
+            <span class="n">activation_fn</span><span class="p">,</span>
+            <span class="n">features_extractor_class</span><span class="p">,</span>
+            <span class="n">features_extractor_kwargs</span><span class="p">,</span>
+            <span class="n">normalize_images</span><span class="p">,</span>
+            <span class="n">optimizer_class</span><span class="o">=</span><span class="n">optimizer_class</span><span class="p">,</span>
+            <span class="n">optimizer_kwargs</span><span class="o">=</span><span class="n">optimizer_kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        
+
+
+<div class="viewcode-block" id="CustomDQNPolicy.make_q_net"><a class="viewcode-back" href="../../models.html#models.dqn.CustomDQNPolicy.make_q_net">[docs]</a>    <span class="k">def</span> <span class="nf">make_q_net</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Make sure we always have separate networks for features extractors etc</span>
+
+        <span class="n">net_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_features_extractor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">net_args</span><span class="p">,</span> <span class="n">features_extractor</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">CustomQNetwork</span><span class="p">(</span><span class="o">**</span><span class="n">net_args</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span></div></div>
+    
+
+
+<div class="viewcode-block" id="CustomDQN"><a class="viewcode-back" href="../../models.html#models.dqn.CustomDQN">[docs]</a><span class="k">class</span> <span class="nc">CustomDQN</span><span class="p">(</span><span class="n">DQN</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">policy</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">DQNPolicy</span><span class="p">]],</span>
+        <span class="n">env</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GymEnv</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">learning_rate</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Schedule</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
+        <span class="n">buffer_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1_000_000</span><span class="p">,</span>  <span class="c1"># 1e6</span>
+        <span class="n">learning_starts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50000</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+        <span class="n">tau</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.99</span><span class="p">,</span>
+        <span class="n">train_freq</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">gradient_steps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">replay_buffer_class</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ReplayBuffer</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">replay_buffer_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">optimize_memory_usage</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">target_update_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
+        <span class="n">exploration_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">exploration_initial_eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">exploration_final_eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">max_grad_norm</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">tensorboard_log</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">create_eval_env</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">policy_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">th</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">_init_setup_model</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">CustomDQN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">policy</span><span class="p">,</span>
+            <span class="n">env</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="p">,</span>
+            <span class="n">buffer_size</span><span class="p">,</span>
+            <span class="n">learning_starts</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="p">,</span>
+            <span class="n">tau</span><span class="p">,</span>
+            <span class="n">gamma</span><span class="p">,</span> 
+            <span class="n">train_freq</span><span class="p">,</span> 
+            <span class="n">gradient_steps</span><span class="p">,</span> 
+            <span class="n">replay_buffer_class</span><span class="p">,</span> 
+            <span class="n">replay_buffer_kwargs</span><span class="p">,</span> 
+            <span class="n">optimize_memory_usage</span><span class="p">,</span> 
+            <span class="n">target_update_interval</span><span class="p">,</span> 
+            <span class="n">exploration_fraction</span><span class="p">,</span> 
+            <span class="n">exploration_initial_eps</span><span class="p">,</span> 
+            <span class="n">exploration_final_eps</span><span class="p">,</span> 
+            <span class="n">max_grad_norm</span><span class="p">,</span> 
+            <span class="n">tensorboard_log</span><span class="p">,</span> 
+            <span class="n">create_eval_env</span><span class="p">,</span> 
+            <span class="n">policy_kwargs</span><span class="p">,</span> 
+            <span class="n">verbose</span><span class="p">,</span> 
+            <span class="n">seed</span><span class="p">,</span> 
+            <span class="n">device</span><span class="p">,</span> 
+            <span class="n">_init_setup_model</span>
+        <span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">_sample_action</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">learning_starts</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">action_noise</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ActionNoise</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">n_envs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sample an action according to the exploration policy.</span>
+<span class="sd">        This is either done by sampling the probability distribution of the policy,</span>
+<span class="sd">        or sampling a random action (from a uniform distribution over the action space)</span>
+<span class="sd">        or by adding noise to the deterministic output.</span>
+
+<span class="sd">        :param action_noise: Action noise that will be used for exploration</span>
+<span class="sd">            Required for deterministic policy (e.g. TD3). This can also be used</span>
+<span class="sd">            in addition to the stochastic policy for SAC.</span>
+<span class="sd">        :param learning_starts: Number of steps before learning for the warm-up phase.</span>
+<span class="sd">        :param n_envs:</span>
+<span class="sd">        :return: action to take in the environment</span>
+<span class="sd">            and scaled action that will be stored in the replay buffer.</span>
+<span class="sd">            The two differs when the action space is not normalized (bounds are not [-1, 1]).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Select action randomly or according to policy</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_timesteps</span> <span class="o">&lt;</span> <span class="n">learning_starts</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">use_sde</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_sde_at_warmup</span><span class="p">):</span>
+            <span class="n">all_actions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+            <span class="n">unscaled_action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">all_actions</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_obs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span><span class="p">:]</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_obs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_envs</span><span class="p">)])</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Note: when using continuous actions,</span>
+            <span class="c1"># we assume that the policy uses tanh to scale the action</span>
+            <span class="c1"># We use non-deterministic action in the case of SAC, for TD3, it does not matter</span>
+            <span class="n">unscaled_action</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_last_obs</span><span class="p">,</span> <span class="n">deterministic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Rescale the action from [low, high] to [-1, 1]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="p">,</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Box</span><span class="p">):</span>
+            <span class="n">scaled_action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">scale_action</span><span class="p">(</span><span class="n">unscaled_action</span><span class="p">)</span>
+
+            <span class="c1"># Add noise to the action (improve exploration)</span>
+            <span class="k">if</span> <span class="n">action_noise</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">scaled_action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">scaled_action</span> <span class="o">+</span> <span class="n">action_noise</span><span class="p">(),</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># We store the scaled action in the buffer</span>
+            <span class="n">buffer_action</span> <span class="o">=</span> <span class="n">scaled_action</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">unscale_action</span><span class="p">(</span><span class="n">scaled_action</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Discrete case, no need to normalize or clip</span>
+            <span class="n">buffer_action</span> <span class="o">=</span> <span class="n">unscaled_action</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="n">buffer_action</span>
+            
+        <span class="k">return</span> <span class="n">action</span><span class="p">,</span> <span class="n">buffer_action</span>
+    
+<div class="viewcode-block" id="CustomDQN.train"><a class="viewcode-back" href="../../models.html#models.dqn.CustomDQN.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gradient_steps</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+        <span class="c1"># Switch to train mode (this affects batch norm / dropout)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">set_training_mode</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Update learning rate according to schedule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_learning_rate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">optimizer</span><span class="p">)</span>
+
+        <span class="n">losses</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gradient_steps</span><span class="p">):</span>
+            <span class="c1"># Sample replay buffer</span>
+            <span class="n">replay_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">replay_buffer</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_vec_normalize_env</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="n">th</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+                <span class="c1"># Compute the next Q-values using the target network</span>
+                <span class="n">next_q_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_net_target</span><span class="p">(</span><span class="n">replay_data</span><span class="o">.</span><span class="n">next_observations</span><span class="p">)</span>
+                <span class="c1"># Follow greedy policy: use the one with the highest value</span>
+                <span class="n">next_q_values</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">next_q_values</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># Avoid potential broadcast issue</span>
+                <span class="n">next_q_values</span> <span class="o">=</span> <span class="n">next_q_values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># 1-step TD target</span>
+                <span class="n">target_q_values</span> <span class="o">=</span> <span class="n">replay_data</span><span class="o">.</span><span class="n">rewards</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">replay_data</span><span class="o">.</span><span class="n">dones</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">*</span> <span class="n">next_q_values</span>
+            <span class="c1"># import pdb</span>
+            <span class="c1"># pdb.set_trace()</span>
+            <span class="c1"># Get current Q-values estimates</span>
+            <span class="n">current_q_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_net</span><span class="p">(</span><span class="n">replay_data</span><span class="o">.</span><span class="n">observations</span><span class="p">)</span>
+
+            <span class="c1"># Retrieve the q-values for the actions from the replay buffer</span>
+            <span class="n">current_q_values</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="n">current_q_values</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">replay_data</span><span class="o">.</span><span class="n">actions</span><span class="o">.</span><span class="n">long</span><span class="p">())</span>
+
+            <span class="c1"># Compute Huber loss (less sensitive to outliers)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">smooth_l1_loss</span><span class="p">(</span><span class="n">current_q_values</span><span class="p">,</span> <span class="n">target_q_values</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="kn">import</span> <span class="nn">pdb</span>
+                <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span>
+                
+            <span class="n">losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+            <span class="c1"># Optimize the policy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="c1"># Clip gradient norm</span>
+            <span class="n">th</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_grad_norm</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="c1"># Increase update counter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_updates</span> <span class="o">+=</span> <span class="n">gradient_steps</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s2">&quot;train/n_updates&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_updates</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="s2">&quot;tensorboard&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">record</span><span class="p">(</span><span class="s2">&quot;train/loss&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">losses</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="CustomDQN.predict"><a class="viewcode-back" href="../../models.html#models.dqn.CustomDQN.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">observation</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">...</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">episode_start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">deterministic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overrides the base_class predict function to include epsilon-greedy exploration.</span>
+
+<span class="sd">        :param observation: the input observation</span>
+<span class="sd">        :param state: The last states (can be None, used in recurrent policies)</span>
+<span class="sd">        :param episode_start: The last masks (can be None, used in recurrent policies)</span>
+<span class="sd">        :param deterministic: Whether or not to return deterministic actions.</span>
+<span class="sd">        :return: the model&#39;s action and the next state</span>
+<span class="sd">            (used in recurrent policies)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">deterministic</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">exploration_rate</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_vectorized_observation</span><span class="p">(</span><span class="n">maybe_transpose</span><span class="p">(</span><span class="n">observation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span><span class="p">,</span> <span class="n">gym</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">Dict</span><span class="p">):</span>
+                    <span class="n">n_batch</span> <span class="o">=</span> <span class="n">observation</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">observation</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">n_batch</span> <span class="o">=</span> <span class="n">observation</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+         
+                <span class="n">all_actions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">all_actions</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">observation</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span><span class="p">:]</span><span class="o">/</span><span class="n">observation</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">n</span><span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_batch</span><span class="p">)])</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">())</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">action</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">policy</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">observation</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">episode_start</span><span class="p">,</span> <span class="n">deterministic</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">action</span><span class="p">,</span> <span class="n">state</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mitchell Fogelson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
