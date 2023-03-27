@@ -165,7 +165,7 @@ def main(parameters):
                     create_eval_env=False,
                     policy_kwargs=policy_kwargs,
                     verbose=parameters["verbose"],
-                    seed=parameters["seed+trial"],
+                    seed=parameters["seed"]+trial,
                     device=parameters["cuda"],
                     _init_setup_model=True)
             
@@ -308,33 +308,27 @@ def main(parameters):
                 plt.close(fig)
 
                 
-            #     if parameters["cmaes"]: 
-            #         cma_env = cmaes(tmp_env, sigma=0.000055, tolfun=0.00001)
-            #         reward = cma_env._get_reward()
-            #         n = cma_env.number_of_nodes()
-            #         best_cmaes[number_of_cycles] = [cma_env.paths[:n,:,0], cma_env.get_edges(), cma_env.goal, cma_env.total_dist]
+                if parameters["cmaes"]: 
+                    cma_env = cmaes(tmp_env, sigma=0.000055, tolfun=0.00001)
+                    reward = cma_env._get_reward()
+                    n = cma_env.number_of_nodes()
+                    best_cmaes[number_of_cycles] = [cma_env.paths[:n,:,0], cma_env.get_edges(), cma_env.goal, cma_env.total_dist]
                     
-            #         fig = cma_env.paper_plotting()
-            #         plt.rcParams['font.size'] = 10
-            #         fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
+                    fig = cma_env.paper_plotting()
+                    plt.rcParams['font.size'] = 10
+                    fig.suptitle(f'Algo: {parameters["model"]} | ID: {run.id} |\n Reward: {np.round(reward[0], 3)} | Number Of Cycles: {number_of_cycles}')
                     
-            #         ## Log images
-            #         wandb.log({'best_designs_cmaes': wandb.Image(fig)})
-            #         figs.append(fig)
-            #         plt.close(fig)
+                    ## Log images
+                    wandb.log({'best_designs_cmaes': wandb.Image(fig)})
+                    figs.append(fig)
+                    plt.close(fig)
 
                         
             
-            
+            #TODO Toggle this 
             # pickle.dump([evaluation_rewards, evaluation_designs], open(f"evaluations/evaluation_{parameters['model']}_{parameters['goal_filename']}_{parameters['n_eval_episodes']*parameters['n_envs']}_{parameters['m_evals']}_{run.id}.pkl", 'wb'))
                 
                 
-        # elif parameters["model == "mcts":
-        #     mcts_search(env, timesteps=parameters["steps)
-            
-        # elif parameters["model == "SA":
-        #     simulated_annealing(env, parameters["steps)
-        
         
         train = not parameters["no_train"] ## TODO
         print(f"Training set to: {train}")
@@ -350,60 +344,13 @@ def main(parameters):
             if train:
                 print("Starting Training...")
                 
-                # class MutationCallback(BaseCallback):
-                #     """
-                #     Callback for saving a model every ``save_freq`` calls
-                #     to ``env.step()``.
-
-                #     .. warning::
-
-                #     When using multiple environments, each call to  ``env.step()``
-                #     will effectively correspond to ``n_envs`` steps.
-                #     To account for that, you can use ``save_freq = max(save_freq // n_envs, 1)``
-
-                #     :param save_freq:
-                #     :param save_path: Path to the folder where the model will be saved.
-                #     :param name_prefix: Common prefix to the saved models
-                #     :param verbose:
-                #     """
-
-                #     def __init__(self, mutate_freq: int, percent_mutate: float = 0.9, verbose: int = 0):
-                #         super(MutationCallback, self).__init__(verbose)
-                #         self.mutate_freq = mutate_freq
-                #         self.percent_mutate = percent_mutate
-
-                #     def _on_step(self) -> bool:
-                #         import pdb 
-                #         if self.n_calls % self.mutate_freq == 0:
-                #             pdb.set_trace()
-
-                #             best_designs = self.training_env.get_attr('best_designs')
-                #             best_design_per_env = [max(design_reward.values()) for design_reward in best_designs if design_reward]
-                #             n = int(len(best_designs)*self.percent_mutate)
-                #             best_env_inds = np.argpartition(best_design_per_env, -n)[-n:]
-                            
-                #             design_types = self.training_env.get_attr("design_type")
-                #             if all(design_types[best_env_inds] == 0):
-                #                 # Make everything crank rockers
-                #                 raise NotImplemented
-                #             elif all(design_types[best_env_inds] == 1):
-                #                 # make everything double crank
-                #                 raise NotImplemented
-
-                #             else:
-                #                 # randomly initialize 
-                #                 raise NotImplemented
-
-                            
-                            
-                #         return True
                 # Save a checkpoint 
                 callback = CheckpointCallback(save_freq=parameters["save_freq"]//parameters["n_envs"], save_path=save_dir, name_prefix=f'{now}_{parameters["model"]}_model_{parameters["goal_filename"]}')
 
                 model.learn(parameters["steps"], log_interval=5, reset_num_timesteps=False, callback=callback) 
                 
                 print("Finished Training...")
-                 
+                
                 print("Saving Model...")
                 model.save(save_dir + f'{now}_{parameters["model"]}_model_{parameters["goal_filename"]}_final.zip')
             
