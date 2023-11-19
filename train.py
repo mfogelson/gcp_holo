@@ -37,6 +37,11 @@ import warnings
 # def fxn():
 #     warnings.warn("invalid", RuntimeWarning)
 
+#! NEW 
+import concurrent.futures
+def random_search_wrapper(args):
+            return random_search(*args)
+
 @timebudget
 def main(parameters):
 
@@ -79,10 +84,11 @@ def main(parameters):
 
         ## Load Goal information
         goal_curve = pickle.load(open(f'{parameters["goal_path"]}/{parameters["goal_filename"]}.pkl', 'rb')) # NOTE: sometimes ordering needs to be reversed add [:,::-1]
-            
-        idx = np.round(np.linspace(0, goal_curve.shape[1] - 1, parameters["sample_points"])).astype(int)
-        goal = normalize_curve(goal_curve[:,idx]) #R@normalize_curve(goal_curve[:,::-1][:,idx])
-        goal[:, -1] = goal[:, 0]
+        parameters["sample_points"] = goal_curve.shape[1]
+        print("Goal Curve Shape: ", goal_curve.shape)
+        # idx = np.round(np.linspace(0, goal_curve.shape[1] - 1, parameters["sample_points"])).astype(int)
+        goal = normalize_curve(goal_curve) #R@normalize_curve(goal_curve[:,::-1][:,idx])
+        # goal[:, -1] = goal[:, 0]
     
         
         ## Initialize Gym ENV
@@ -157,7 +163,7 @@ def main(parameters):
                     replay_buffer_kwargs=None,
                     optimize_memory_usage=False,
                     # target_update_interval=500,
-                    exploration_fraction=0.8, # percent of learning that includes exploration
+                    exploration_fraction=0.5, # percent of learning that includes exploration
                     exploration_initial_eps=1.0, # Initial random search
                     exploration_final_eps=0.2, # final stochasticity
                     max_grad_norm=10.,
@@ -227,10 +233,18 @@ def main(parameters):
             # for e in env:
             #     output.append(random_search(e, parameters["n_eval_episodes))
             st = time.time()
-            with multiprocessing.Pool(max(parameters["n_envs"], os.cpu_count()//2)) as p:
-                output = p.starmap(random_search, zip(env, repeat(parameters["n_eval_episodes"])))
+            max_processes = max(min(parameters["n_envs"], os.cpu_count() // 2), 1)
+            # with multiprocessing.Pool(max_processes) as p:
+            #     output = p.starmap(random_search, zip(env, repeat(parameters["n_eval_episodes"])))
+          
+            
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                output = executor.map(random_search_wrapper, zip(env, repeat(parameters["n_eval_episodes"])))
             
             print(f"Finished random search...{time.time()-st}")
+
+            # import pdb 
+            # pdb.set_trace()
                 # p.close()
             
             best_designs = []
@@ -353,7 +367,8 @@ def main(parameters):
                 
                 print("Saving Model...")
                 model.save(save_dir + f'{now}_{parameters["model"]}_model_{parameters["goal_filename"]}_final.zip')
-            
+            # import pdb
+            # pdb.set_trace()
             
             ## Evaluate Model
             evaluation_rewards = []

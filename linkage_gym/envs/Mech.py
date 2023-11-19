@@ -19,7 +19,7 @@ import numpy as np
 from numpy.random import MT19937, RandomState, SeedSequence
 
 sys.path.insert(0, os.path.join(sys.path[0], '..'))
-from linkage_gym.utils.env_utils import distance, normalize_curve, symbolic_kinematics
+from linkage_gym.utils.env_utils import distance, normalize_curve, parallel_method, rotate_points, symbolic_kinematics
 
 
 class Mech(gym.Env):
@@ -127,7 +127,7 @@ class Mech(gym.Env):
         # self.R_circle, _, _, _ = new_dist(goal, circle)
         # self.R_point, _, _, _ = new_dist(goal, point)
         self.goal_tol = 1e-6 ## Hyperparameter
-        self.invalid_penalty = -1.0
+        self.invalid_penalty = -100.0
         
         self.total_dist = None
         self.cycles = None
@@ -172,6 +172,13 @@ class Mech(gym.Env):
                           "edges":          edges,} 
                         #   "prev_mask":      action_mask}
         self.resets = 0
+        
+        #! NEW 
+        row_ind = np.arange(max(self.goal.shape))
+        # row_inds = row_ind[row_ind[:,None]-np.zeros_like(row_ind)].T
+        col_inds = row_ind[row_ind[:,None]-row_ind].T 
+        self.index_variants = np.vstack([col_inds, col_inds[:,::-1]])
+        
         
     def seed(self, seed=None):
         """Set the seed for gym env
@@ -574,13 +581,16 @@ class Mech(gym.Env):
         ## Plot Coupler Path 
         if show_coupler:
             ax1.plot(self.paths[coupler_idx, 0, :], self.paths[coupler_idx, 1,:], 'b-', label="coupler", linewidth=4)
-        # ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], 'yo', label="coupler joint", markersize=15)
+        ax1.plot(self.paths[coupler_idx, 0, 0],self.paths[coupler_idx, 1, 0], 'yo', label="coupler joint", markersize=15)
 
         ## Plot Shifted Goal
         mu = self.paths[coupler_idx, :, :].mean(1).reshape(-1, 1)
         std = max(self.paths[coupler_idx, :, :].std(1))
+        traj_norm = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc) 
+        total_dist, theta, _ = parallel_method(self.index_variants, self.goal, traj_norm)
         
-        goal = (normalize_curve(self.goal)*std+mu)
+        goal = (rotate_points(normalize_curve(self.goal).T, theta).T*std+mu)
+        # goal = normalize_curve(self.goal)*std+mu
         if show_goal:
             ax1.plot(goal[0,:], goal[1,:], 'y-', linewidth=4)
         
@@ -598,10 +608,13 @@ class Mech(gym.Env):
         
         ## Add Objective score to figure
         if show_obj:
-            traj_norm = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc) 
+            # traj_norm = self.coupler_traj(scale=self.goal_scale, shift=self.goal_loc) 
 
             # total_dist = distance(goal, self.paths[coupler_idx, :, :], ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
-            total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+            
+            #! total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+            #! New
+            total_dist = self.get_distance(scale=self.goal_scale, shift=self.goal_loc)
             # pdb.set_trace()
             plt.rcParams['font.size'] = 40
             text_box = AnchoredText(f"obj={round(total_dist, 2)}", frameon=False, pad=0.0, borderpad=-1.0, loc='lower right')
@@ -901,8 +914,10 @@ class Mech(gym.Env):
         """
         ## Dist
         traj_norm = self.coupler_traj(scale=scale, shift=shift) 
-
-        total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
+        #! NEW
+        total_dist, _, _ = parallel_method(self.index_variants, self.goal, traj_norm)
+        total_dist *= (np.pi*2./self.T)
+        # total_dist = distance(self.goal, traj_norm, ordered=self.ordered, distance_metric=self.distance_metric).sum()*(np.pi*2./self.T)
         
         return total_dist
 
@@ -942,7 +957,7 @@ class Mech(gym.Env):
         self.total_dist = self.get_distance(scale=self.goal_scale, shift=self.goal_loc)
         
         ## Normalize distance w.r.t circle 
-        norm_distance_reward = max((self.R_circle-self.total_dist)/self.R_circle, -0.0) # 0-1
+        norm_distance_reward = -self.total_dist #max((self.R_circle-self.total_dist)/self.R_circle, -0.0) # 0-1
         
         ## set reward
         self.reward = norm_distance_reward #max(-self.total_dist, -9.9) #(cycle_weight*cycle_reward + (1.-cycle_weight)*norm_distance_reward)*10.0
@@ -1125,7 +1140,7 @@ class Mech(gym.Env):
                 return 
             
             ## If linkage graph is better than current topology 
-            if self.total_dist > self.best_designs[self.cycles][-1]:
+            if self.reward > self.best_designs[self.cycles][-1]:
                 self.best_designs[self.cycles] = (deepcopy(self.paths[:,:,0]), deepcopy(self.get_edges()), deepcopy(self.reward))
                 return 
 
