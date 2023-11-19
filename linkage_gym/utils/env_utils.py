@@ -1,5 +1,7 @@
 from scipy.spatial.distance import cdist
 from scipy.optimize import linear_sum_assignment
+import concurrent.futures
+import time
 
 import numpy as np 
 
@@ -36,7 +38,84 @@ def normalize_curve(input, scale=None, shift=None):
 
     return output
 
+def rotate_points(points, theta):
+    """Rotate points by theta radians."""
+    rotation_matrix = np.array([[np.cos(theta), -np.sin(theta)], 
+                                [np.sin(theta), np.cos(theta)]])
+    return np.dot(points, rotation_matrix.T)
+
+def sum_of_squared_residuals(curve_i, curve_j, theta):
+    """Calculate the sum of squared residuals between rotated curve_i and curve_j."""
+    rotated_curve_i = rotate_points(curve_i, theta)
+    residuals = curve_j - rotated_curve_i
+    return np.sum(residuals**2)
+
+def gauss_newton(curve_i, curve_j, initial_theta=0, iterations=100, alpha=0.4, beta=0.5):
+    """Gauss-Newton method to find theta that minimizes the distance."""
+    theta = initial_theta
+
+    for _ in range(iterations):
+        # Calculate the Jacobian (derivative of residuals w.r.t theta)
+        epsilon = 1e-7  # Small value to approximate the derivative
+        jacobian = (sum_of_squared_residuals(curve_i, curve_j, theta + epsilon) - 
+                    sum_of_squared_residuals(curve_i, curve_j, theta - epsilon)) / (2 * epsilon)
+
+        # Backtracking line search
+        step_size = 1.0
+        while sum_of_squared_residuals(curve_i, curve_j, theta - step_size * jacobian) > sum_of_squared_residuals(curve_i, curve_j, theta) - alpha * step_size * jacobian**2:
+            step_size *= beta
+
+        # Update theta
+        theta -= step_size * jacobian
+
+        # Optional: Add convergence check here
+        if np.abs(jacobian) < 1e-5 or np.abs(step_size * jacobian) < 1e-5:
+            break
+
+    return theta, sum_of_squared_residuals(curve_i, curve_j, theta)
+
+def process_variant(args):
+    index_variant, curve_i, curve_j = args
+    local_best_obj = np.inf
+    local_best_theta = None
+    local_best_index_variant = None
+
+    # for initial_theta in [0.0, np.pi/2, np.pi, 3*np.pi/2]:
+    optimal_theta, obj = gauss_newton(curve_i[index_variant], curve_j, initial_theta=np.pi/2.0, iterations=100, alpha=0.4, beta=0.5)
+    if obj < local_best_obj:
+        local_best_obj = obj
+        local_best_theta = optimal_theta
+        local_best_index_variant = index_variant
+
+    return local_best_obj, local_best_theta, local_best_index_variant
+
+# Parallel method
+def parallel_method(index_variants, curve_i, curve_j):
+    # Ensure the curves are in the correct shape
+    if curve_i.shape[1] != 2:
+        curve_i = curve_i.T
+    if curve_j.shape[1] != 2:
+        curve_j = curve_j.T
         
+    # with concurrent.futures.ThreadPoolExecutor() as executor:
+        # results = executor.map(process_variant, [(index_variant, curve_i, curve_j) for index_variant in index_variants])
+    # for index_variant in index_variants:
+        # yield process_variant((index_variant, curve_i, curve_j))
+    results = [process_variant((index_variant, curve_i, curve_j)) for index_variant in index_variants]
+    
+    best_obj = np.inf
+    best_theta = None
+    best_index_variant = None
+
+    for result in results:
+        obj, theta, index_variant = result
+        if obj < best_obj:
+            best_obj = obj
+            best_theta = theta
+            best_index_variant = index_variant
+
+    return best_obj, best_theta, best_index_variant
+
 def distance(curve_i, curve_j, ordered=False, distance_metric='euclidean'):
     """distance between curve_i and curve_j
 
